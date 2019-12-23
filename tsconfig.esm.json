@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "index.ts",
+    "demo/index.ts"
+  ],
+  "compilerOptions": {
+    "module": "es2015",
+    "outDir": "dist/esm",
+    "plugins": [
+      {
+        "transform": "@zoltu/typescript-transformer-append-js-extension/output/index.js",
+        "after": true
+      }
+    ]
+  }
+}
