@@ -6,12 +6,6 @@
   ],
   "compilerOptions": {
     "module": "es2015",
-    "outDir": "dist/esm",
-    "plugins": [
-      {
-        "transform": "@zoltu/typescript-transformer-append-js-extension/output/index.js",
-        "after": true
-      }
-    ]
+    "outDir": "dist/esm"
   }
 }
