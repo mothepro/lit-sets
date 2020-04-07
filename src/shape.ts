@@ -28,8 +28,8 @@ export default class extends LitElement {
     display: inline-block;
     border-style: solid;
     border-color: transparent;
-    width: 1em;
-    height: 1em;
+    width: ${1 - 2 * borderSize}em;
+    height: ${1 - 2 * borderSize}em;
     border-width: ${borderSize}em;
   }
   :host([shape="${Details.Shape.SQUARE}"]) {
