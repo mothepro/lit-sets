@@ -4,6 +4,13 @@ import { Details } from 'sets-game-engine'
 // Equilateral Triangle Ratio. Thanks Amima :)
 const baseByHeight = Math.sqrt(3) / 3
 
+/** Border width ratio */
+const borderSize = 1 / 6
+
+/**
+ * A visiual representation for a shape in sets.
+ * The size of the shape can be controlled by the `font-size` property.
+ */
 @customElement('sets-shape')
 export default class extends LitElement {
 
@@ -16,77 +23,73 @@ export default class extends LitElement {
   @property({ type: Number })
   shape!: Details.Shape
 
-  @property({ type: Number })
-  size = 1
-
   static readonly styles = css`
   :host {
     display: inline-block;
     border-style: solid;
     border-color: transparent;
+    width: 1em;
+    height: 1em;
+    border-width: ${borderSize}em;
   }
-  :host([shape="${0}"]) {
-    border-radius: 8px;
+  :host([shape="${Details.Shape.SQUARE}"]) {
+    border-radius: 0.25em;
   }
-  :host([shape="${1}"]) {
+  :host([shape="${Details.Shape.CIRCLE}"]) {
     border-radius: 50%;
   }
-  :host([shape="${2}"]) {
+  :host([shape="${Details.Shape.TRIANGLE}"]) {
     position: relative;
     width: 0;
     height: 0;
+    border-width: 0 ${baseByHeight}em 1em;
   }
-  :host([shape="${2}"]) span {
+  :host([shape="${Details.Shape.TRIANGLE}"]) span {
     position: absolute;
+
+    top: ${borderSize}em;
+    left: ${-baseByHeight + 2 * borderSize}em;
+    border-width: 0
+      ${baseByHeight - 2 * borderSize}em
+      ${1 - 2 * borderSize}em;
+
     border-style: solid;
     border-color: transparent;
     border-bottom-color: var(--background-color, white);
-  }
-  `
+  }`
 
   protected get myStyle() {
-    if (this.shape == 2)
-      return html`<style>
+    if (this.shape == Details.Shape.TRIANGLE)
+      return css`
         :host(sets-shape) {
-            border-bottom-color: ${ this.cssColor() };
-            border-bottom-width: ${ this.size }em;
-            border-right-width:  ${ this.size * baseByHeight }em;
-            border-left-width:   ${ this.size * baseByHeight }em;
+          border-bottom-color: ${ this.cssColor() };
         }
         :host span {
-          opacity:             ${ this.opacity / 2 };
-          top:                 ${ this.size / 6 /* actual border width */}em;
-          left:                ${ -(this.size - this.size / 3) * baseByHeight }em;
-          border-bottom-width: ${ (this.size - this.size / 3) }em;
-          border-right-width:  ${ (this.size - this.size / 3) * baseByHeight }em;
-          border-left-width:   ${ (this.size - this.size / 3) * baseByHeight }em;
-        }   
-      </style>`
-    return html`<style>
-    :host(sets-shape) {
-      width:        ${this.size}em;
-      height:       ${this.size}em;
-      border-width: ${this.size / 6}em;
-
-      border-color:     ${this.cssColor()};
-      background-color: ${this.cssColor(this.opacity / 2)};
-    }
-    </style>`
+          opacity: ${ this.opacity / 2 };
+        }`
+    
+    return css`
+      :host(sets-shape) {
+        border-color: ${this.cssColor()};
+        background-color: ${this.cssColor(this.opacity / 2)};
+      }`
   }
 
   private cssColor(opacity = 1) {
     switch (this.color) {
-      case 0:
+      case Details.Color.BLUE:
         return css`hsla(207, 90%, 58%, ${opacity})`
-      case 1:
+      case Details.Color.RED:
         return css`hsla(45, 100%, 50%, ${opacity})`
-      case 2:
+      case Details.Color.GREEN:
         return css`hsla(4, 90%, 58%, ${opacity})`
     }
+    throw Error(`Unexpected color ${this.color}`)
   }
 
   protected readonly render = () => html`
-    ${this.myStyle}
-    <span></span>
-  `
+    <style>${this.myStyle}</style>
+    ${this.shape == Details.Shape.TRIANGLE
+      ? html`<span></span>`
+      : null }`
 }
