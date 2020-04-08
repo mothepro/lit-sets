@@ -1,5 +1,6 @@
 import { LitElement, customElement, property, html, css } from 'lit-element'
 import { Details } from 'sets-game-engine'
+import injectStyle from './injectStyle.js'
 import '@material/mwc-button'
 import './shape.js'
 
@@ -29,31 +30,36 @@ export default class extends LitElement {
 
   :host {
     display: inline-block;
-    padding: 1em;
+  }
 
-    border: thin solid red;
+  :host([index]) {
+    animation: 1s ease zoom-in both;
   }
 
   :host sets-shape {
     font-size: 50px;
     margin: .2em;
-  }
-
-  :host([index]) {
-    animation: 1s ease zoom-in both;
   }`
 
   /** This needs to override the value set. */
   protected get myStyle() { return css`
     :host {
       animation-delay: ${this.index * 500}ms !important;
-    }`
-  }
+    }` }
 
+  protected async firstUpdated() {
+    await this.updateComplete
+    injectStyle(
+      this.shadowRoot?.getElementById('mwc-button')?.shadowRoot!,
+      css`#button { height: auto }`)
+  }
+  
   protected readonly render = () => html`
-    <style>${this.myStyle}</style>
-<mwc-button raised>
-    ${[...Array(1 + this.quantity)].map(() => html`
+    ${this.index
+        ? html`<style>${this.myStyle}</style>`
+        : null}
+    <mwc-button raised id="mwc-button">
+      ${[...Array(1 + this.quantity)].map(() => html`
         <sets-shape
           opacity=${this.opacity}
           color=${this.color}
