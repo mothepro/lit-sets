@@ -7,8 +7,8 @@ import { CSSResult } from 'lit-element'
  * Here we inject a class style element since
  * `adoptedStyleSheets` isn't supported in all browsers
  */
-export default function (root: ShadowRoot, css: CSSResult) {
+export default function (root: ShadowRoot, { cssText }: CSSResult) {
   const style = document.createElement('style')
-  style.textContent = css.cssText
+  style.textContent = cssText
   root.appendChild(style)
 }
