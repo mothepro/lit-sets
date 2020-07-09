@@ -62,6 +62,13 @@ export default class extends LitElement {
     }
   }
 
+  private takeSet() {
+    this.dispatchEvent(new CustomEvent('take', {
+      detail: this.selected.map(i => this.cards[i])
+    }))
+    this.selected = []
+  }
+
   protected readonly render = () => html`
     ${this.cards.map((card, index) => html`
       <sets-card
@@ -87,7 +94,7 @@ export default class extends LitElement {
       part="take"
       ?extended=${this.showLabel}
       ?disabled=${!this.canTake || this.selected.length != 3}
-      @click=${() => this.dispatchEvent(new CustomEvent('take', { detail: this.selected.map(i => this.cards[i]) }))}
+      @click=${this.takeSet}
       icon="done_outline"
       label="Take Set"></mwc-fab>`
 }

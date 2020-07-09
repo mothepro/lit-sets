@@ -52,6 +52,7 @@
     "@material/mwc-fab": "^0.17.2",
     "@material/mwc-icon": "^0.17.2",
     "@material/mwc-list": "^0.17.2",
+    "@mothepro/lit-clock": "^0.0.4",
     "lit-element": "^2.3.1"
   }
 }
