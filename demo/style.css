@@ -1,0 +1,19 @@
+:root {
+  --color-bg: #fafafa;
+  --color-fg: hsla(0, 0, 0, 0.87);
+  --mdc-theme-primary: #fff;
+  --mdc-theme-on-primary: var(--color-fg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #303030;
+    --mdc-theme-primary: #424242;
+    --color-fg: #fff;
+  }
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+}

@@ -7,6 +7,10 @@ const baseByHeight = Math.sqrt(3) / 3
 /** Border width ratio */
 const borderSize = 1 / 6
 
+const y = borderSize * baseByHeight,
+  x = Math.sqrt(borderSize ** 2 - y ** 2),
+  b = baseByHeight - x
+
 /**
  * A visiual representation for a shape in sets.
  * The size of the shape can be controlled by the `font-size` property.
@@ -48,26 +52,26 @@ export default class extends LitElement {
     position: absolute;
 
     top: ${borderSize}em;
-    left: ${-baseByHeight + 2 * borderSize}em;
+    left: ${-b}em;
     border-width: 0
-      ${baseByHeight - 2 * borderSize}em
-      ${1 - 2 * borderSize}em;
+      ${b}em
+      ${1 - borderSize - y}em;
 
     border-style: solid;
     border-color: transparent;
-    border-bottom-color: var(--background-color, white);
+    border-bottom-color: var(--color-bg, white);
   }`
 
   protected get myStyle() {
     if (this.shape == Details.Shape.TRIANGLE)
       return css`
         :host(sets-shape) {
-          border-bottom-color: ${ this.cssColor() };
+          border-bottom-color: ${ this.cssColor()};
         }
         :host span {
-          opacity: ${ this.opacity / 2 };
+          opacity: ${ this.opacity / 2};
         }`
-    
+
     return css`
       :host(sets-shape) {
         border-color: ${this.cssColor()};
@@ -84,12 +88,11 @@ export default class extends LitElement {
       case Details.Color.GREEN:
         return css`hsla(4, 90%, 58%, ${opacity})`
     }
-    throw Error(`Unexpected color ${this.color}`)
   }
 
   protected readonly render = () => html`
     <style>${this.myStyle}</style>
     ${this.shape == Details.Shape.TRIANGLE
       ? html`<span></span>`
-      : null }`
+      : null}`
 }

@@ -9,19 +9,13 @@
   <script type="importmap-shim" src="import-map.json"></script>
   <link rel="stylesheet" href="var.css" />
   <!-- Production -->
-  <script prod-only type="prod-only-module" src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
+  <script prod-only type="prod-only-module"
+    src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type="prod-only-module-shim" src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
   <!-- Development -->
   <script dev-only type="application/javascript" src="//unpkg.com/typescript/lib/typescript.js"></script>
   <script dev-only type="module" src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
   <script dev-only type="module-shim" src="../index.ts"></script>
-  <style>
-    body {
-      background-color: var(--background-color);
-      color: var(--color);
-      font-size: 200px;
-    }
-  </style>
 </head>
 
 <body>
@@ -29,9 +23,10 @@
   <sets-shape size=5 opacity=1 shape=2 color=1></sets-shape>
   <sets-shape size=5 opacity=1 shape=1 color=2></sets-shape>
 
-  <br/>
+  <br />
 
   <sets-card index=0 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <sets-card index=3 opacity=1 shape=2 color=1 quantity=2></sets-card>
   <!-- <sets-card index=1 opacity=1 shape=1 color=2 quantity=1></sets-card>
   <sets-card index=2 opacity=1 shape=2 color=1 quantity=2></sets-card>
   <sets-card index=3 opacity=1 shape=0 color=0 quantity=1></sets-card>

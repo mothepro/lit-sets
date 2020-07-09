@@ -33,7 +33,6 @@ export default class extends LitElement {
 
     :host {
       display: inline-block;
-      --background-color: var(--mdc-theme-primary);
     }
 
     :host([index]) {
@@ -46,7 +45,8 @@ export default class extends LitElement {
     }`
 
   /** This needs to override the value set. */
-  protected get myStyle() { return css`
+  protected get myStyle() {
+    return css`
     :host {
       animation-delay: ${this.index * 500}ms !important;
     }` }
@@ -58,11 +58,10 @@ export default class extends LitElement {
       injectStyle(mwcRoot, css`#button { height: auto }`)
     addEventListener('click', console.warn)
   }
-  
-  protected readonly render = () => html`
-    ${this.index
-        ? this.myStyle.styleSheet//html`<style>${this.myStyle}</style>`
-        : null}
+
+  protected readonly render = () => html`${
+    // There has gotta be a better way to do this
+    this.index ? html`<style>${this.myStyle}</style>` : ''}
     <mwc-button raised id="mwc-button" @click=${() => this.selected = !this.selected}>
       ${[...Array(1 + this.quantity)].map(() => html`
         <sets-shape
