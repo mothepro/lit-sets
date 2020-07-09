@@ -1,23 +1,10 @@
-:root {
-  --color-bg: #fafafa;
-  --color-fg: hsla(0, 0, 0, 0.87);
-  --mdc-theme-primary: #fff;
-  --mdc-theme-on-primary: var(--color-fg);
-  --sets-shape-size: 50px;
-  --sets-shape-spacing: .2em;
-  --selected-color-bg: black;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #303030;
-    --mdc-theme-primary: #424242;
-    --color-fg: #fff;
-    --selected-color-bg: white;
-  }
-}
-
 body {
   background-color: var(--color-bg);
   color: var(--color-fg);
+}
+
+dark-mode-toggle {
+  position: fixed;
+  top: 0;
+  right: 0;
 }

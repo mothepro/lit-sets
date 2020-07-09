@@ -66,10 +66,10 @@ export default class extends LitElement {
     if (this.shape == Details.Shape.TRIANGLE)
       return css`
         :host(sets-shape) {
-          border-bottom-color: ${ this.cssColor()};
+          border-bottom-color: ${this.cssColor()};
         }
         :host span {
-          opacity: ${ this.opacity / 2};
+          opacity: ${this.opacity / 2};
         }`
 
     return css`
