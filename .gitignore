@@ -1,6 +1,7 @@
 node_modules
 build
 dist
+*DO_NOT_COMMIT*
 
 .vscode
 .DS_Store
