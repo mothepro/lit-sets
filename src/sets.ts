@@ -47,6 +47,7 @@ export default class extends LitElement {
   selected: number[] = []
 
   firstUpdated() {
+    // TODO arrow key support
     this.addEventListener('keypress', ({ key }: KeyboardEvent) => this.takeOnKey && key == this.takeOnKey && this.takeSet())
   }
 
@@ -60,7 +61,11 @@ export default class extends LitElement {
     }`
 
   private selectCard(index: number) {
-    return () => {
+    return ({ detail }: MouseEvent) => {
+      // Do not select if they press "Enter"
+      if (this.takeOnKey && !detail)
+        return
+
       const selected = new Set(this.selected)
       if (selected.has(index))
         selected.delete(index)

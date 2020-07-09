@@ -6,10 +6,10 @@ import '@material/mwc-list'
 @customElement('sets-leaderboard')
 export default class extends LitElement {
 
-  @property({ type: Array, reflect: true })
+  @property({ type: Array })
   players: Player[] = []
 
-  @property({ type: Array })
+  @property({ type: Array, reflect: true })
   names: string[] = []
 
   static readonly styles = css`
