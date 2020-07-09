@@ -22,24 +22,28 @@ export default class extends LitElement {
   @property({ type: Number })
   index = 0
 
+  @property({ type: Boolean })
+  selected = false
+
   static readonly styles = css`
-  @keyframes zoom-in {
-    from { transform: scale(0) }
-    to { transform: scale(1) }
-  }
+    @keyframes zoom-in {
+      from { transform: scale(0) }
+      to { transform: scale(1) }
+    }
 
-  :host {
-    display: inline-block;
-  }
+    :host {
+      display: inline-block;
+      --background-color: var(--mdc-theme-primary);
+    }
 
-  :host([index]) {
-    animation: 1s ease zoom-in both;
-  }
+    :host([index]) {
+      animation: 1s ease zoom-in both;
+    }
 
-  :host sets-shape {
-    font-size: 50px;
-    margin: .2em;
-  }`
+    :host sets-shape {
+      font-size: 50px;
+      margin: .2em;
+    }`
 
   /** This needs to override the value set. */
   protected get myStyle() { return css`
@@ -49,16 +53,17 @@ export default class extends LitElement {
 
   protected async firstUpdated() {
     await this.updateComplete
-    injectStyle(
-      this.shadowRoot?.getElementById('mwc-button')?.shadowRoot!,
-      css`#button { height: auto }`)
+    const mwcRoot = this.shadowRoot?.getElementById('mwc-button')?.shadowRoot
+    if (mwcRoot)
+      injectStyle(mwcRoot, css`#button { height: auto }`)
+    addEventListener('click', console.warn)
   }
   
   protected readonly render = () => html`
     ${this.index
-        ? html`<style>${this.myStyle}</style>`
+        ? this.myStyle.styleSheet//html`<style>${this.myStyle}</style>`
         : null}
-    <mwc-button raised id="mwc-button">
+    <mwc-button raised id="mwc-button" @click=${() => this.selected = !this.selected}>
       ${[...Array(1 + this.quantity)].map(() => html`
         <sets-shape
           opacity=${this.opacity}

@@ -6,31 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Lit Sets Demo</title>
-  <script type="module" src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script type="importmap-shim" src="import-map.json"></script>
+  <link rel="stylesheet" href="var.css" />
   <!-- Production -->
+  <script prod-only type="prod-only-module" src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type="prod-only-module-shim" src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
   <!-- Development -->
-  <script dev-only type="application/javascript" src="//unpkg.com/typescript@3.7.4/lib/typescript.js"></script>
-  <script dev-only type="module" src="//unpkg.com/@mothepro/ts-module-shim/dist/esm/index.js"></script>
+  <script dev-only type="application/javascript" src="//unpkg.com/typescrip/lib/typescript.js"></script>
+  <script dev-only type="module" src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
   <script dev-only type="module-shim" src="../index.ts"></script>
   <style>
-    sets-shape {
-      margin-left: 8px;
-      margin-right: 8px;
+    body {
+      background-color: var(--background-color);
+      color: var(--color);
+      font-size: 200px;
     }
   </style>
 </head>
 
 <body>
-  <sets-card size=4 index=0 opacity=1 shape=2 color=1 quantity=2></sets-card>
-  <sets-card size=4 index=1 opacity=1 shape=1 color=2 quantity=1></sets-card>
-  <sets-card size=4 index=2 opacity=1 shape=2 color=1 quantity=2></sets-card>
-  <sets-card size=4 index=3 opacity=1 shape=0 color=0 quantity=1></sets-card>
-  <sets-card size=4 index=4 opacity=1 shape=2 color=1 quantity=2></sets-card>
-  <sets-card size=4 index=5 opacity=1 shape=2 color=1 quantity=2></sets-card>
-  <sets-card size=4 index=6 opacity=1 shape=2 color=1 quantity=2></sets-card>
-  <sets-card size=4 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <sets-shape size=5 opacity=1 shape=0 color=0></sets-shape>
+  <sets-shape size=5 opacity=1 shape=2 color=1></sets-shape>
+  <sets-shape size=5 opacity=1 shape=1 color=2></sets-shape>
+
+  <br/>
+
+  <sets-card index=0 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <!-- <sets-card index=1 opacity=1 shape=1 color=2 quantity=1></sets-card>
+  <sets-card index=2 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <sets-card index=3 opacity=1 shape=0 color=0 quantity=1></sets-card>
+  <sets-card index=4 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <sets-card index=5 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <sets-card index=6 opacity=1 shape=2 color=1 quantity=2></sets-card>
+  <sets-card opacity=1 shape=2 color=1 quantity=2></sets-card> -->
 </body>
 
 </html>
