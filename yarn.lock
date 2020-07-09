@@ -106,6 +106,16 @@
     lit-html "^1.1.2"
     tslib "^1.10.0"
 
+"@material/mwc-fab@^0.17.2":
+  version "0.17.2"
+  resolved "https://registry.yarnpkg.com/@material/mwc-fab/-/mwc-fab-0.17.2.tgz#837e1aa489b7673a434fa49a3c319e8081721a6a"
+  integrity sha512-YmN+IlP4sca3dD5kHi79WDaha862QH1FzsgNLuOeL9tz3dE6cmuYZ7v7cok1LZVQOd0oVbGmJsTdfdJsFYMDXg==
+  dependencies:
+    "@material/mwc-ripple" "^0.17.2"
+    lit-element "^2.3.0"
+    lit-html "^1.1.2"
+    tslib "^1.10.0"
+
 "@material/mwc-icon@^0.17.2":
   version "0.17.2"
   resolved "https://registry.yarnpkg.com/@material/mwc-icon/-/mwc-icon-0.17.2.tgz#06f019525001b3e42e18106fc6f321b4c8ca0b3c"

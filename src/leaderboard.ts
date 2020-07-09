@@ -6,7 +6,7 @@ import '@material/mwc-list'
 @customElement('sets-leaderboard')
 export default class extends LitElement {
 
-  @property({type: Array})
+  @property({ type: Array, reflect: true })
   players: Player[] = []
 
   @property({ type: Array })
@@ -16,7 +16,7 @@ export default class extends LitElement {
     aside {
       float: right;
     }`
-  
+
   protected updated() {
     for (const player of this.players) {
       player.ban.on(() => this.requestUpdate())

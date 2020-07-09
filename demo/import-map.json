@@ -1,5 +1,7 @@
 {
   "imports": {
+    "@material/mwc-fab/": "https://unpkg.com/@material/mwc-fab@0.17.2/",
+    "@material/mwc-fab": "https://unpkg.com/@material/mwc-fab@0.17.2/mwc-fab.js",
     "@material/mwc-list/": "https://unpkg.com/@material/mwc-list@0.17.2/",
     "@material/mwc-list": "https://unpkg.com/@material/mwc-list@0.17.2/mwc-list.js",
     "@material/mwc-button/": "https://unpkg.com/@material/mwc-button@0.17.2/",
@@ -14,6 +16,8 @@
     "@material/base/": "//unpkg.com/@material/base@7.0.0/",
     "@material/dom": "//unpkg.com/@material/dom@7.0.0/dist/mdc.dom.js",
     "@material/dom/": "//unpkg.com/@material/dom@7.0.0/",
+    "@material/list": "//unpkg.com/@material/list@7.0.0/dist/mdc.list.js",
+    "@material/list/": "//unpkg.com/@material/list@7.0.0/",
     "@material/mwc-ripple": "//unpkg.com/@material/mwc-ripple@0.17.2/mwc-ripple.js",
     "@material/mwc-ripple/": "//unpkg.com/@material/mwc-ripple@0.17.2/",
     "@material/mwc-icon": "//unpkg.com/@material/mwc-icon@0.17.2/mwc-icon.js",
