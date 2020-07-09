@@ -74,24 +74,26 @@ export default class extends LitElement {
   /** Works on the engine on behalf of a peer */
   private bindPeer = async ({ message, close }: peers[0], index: number) => {
     try {
-      for await (const data of message) {
-        if (data == 'hint')
-          this.engine.takeHint(this.mainPlayer)
-        else
-          this.engine.takeSet(this.mainPlayer, data)
-      }
+      for await (const data of message)
+        switch ((data as ArrayBuffer).byteLength ?? 0) {
+          case 1: // Hint
+            this.engine.takeHint(this.engine.players[index])
+            break
+
+          case 3: // Take
+            //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+            this.engine.takeFromMarket(
+              this.engine.players[index],
+              [...new Uint8Array(data as ArrayBuffer)] as [number, number, number])
+            break
+
+          default:
+            throw Error(`Unexpected data from ${name}: ${data}`)
+        }
     } catch (error) {
       this.dispatchEvent(new ErrorEvent('p2p-error', { error }))
     }
     close()
-  }
-
-  private takeSet({ detail }: TakeEvent) {
-    this.broadcast(detail)
-  }
-
-  private getHint() {
-    this.broadcast('hint')
   }
 
   protected readonly render = () => this.engine && this.mainPlayer && html`
@@ -102,8 +104,8 @@ export default class extends LitElement {
       take-on-key="Enter"
       .cards=${this.engine.cards}
       .hint=${this.mainPlayer.hintCards}
-      @take=${this.takeSet}
-      @hint=${this.getHint}
+      @take=${({ detail }: TakeEvent) => this.broadcast(new Uint8Array(detail))}
+      @hint=${() => this.broadcast(new Uint8Array([0]))}
     ></lit-sets>
     <sets-leaderboard
       .players=${this.engine.players}
