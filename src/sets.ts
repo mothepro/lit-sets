@@ -30,6 +30,10 @@ export default class extends LitElement {
   @property({ type: Boolean, attribute: 'show-label' })
   showLabel = false
 
+  /** Key to press to take a set. */
+  @property({ type: String, attribute: 'take-on-key' })
+  takeOnKey = ''
+
   /** Cards in the market */
   @property({ type: Array })
   cards: Card[] = []
@@ -41,6 +45,10 @@ export default class extends LitElement {
   /** Indexes of the selected cards */
   @property({ type: Array, reflect: true })
   selected: number[] = []
+
+  firstUpdated() {
+    this.addEventListener('keypress', ({ key }: KeyboardEvent) => this.takeOnKey && key == this.takeOnKey && this.takeSet())
+  }
 
   static readonly styles = css`
     mwc-fab[disabled] {
@@ -63,10 +71,12 @@ export default class extends LitElement {
   }
 
   private takeSet() {
-    this.dispatchEvent(new CustomEvent('take', {
-      detail: this.selected.map(i => this.cards[i])
-    }))
-    this.selected = []
+    if (this.canTake && this.selected.length == 3) {
+      this.dispatchEvent(new CustomEvent('take', {
+        detail: this.selected.map(i => this.cards[i])
+      }))
+      this.selected = []
+    }
   }
 
   protected readonly render = () => html`

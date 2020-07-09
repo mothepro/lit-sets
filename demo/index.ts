@@ -66,16 +66,15 @@ export default class extends LitElement {
       if (this.peers[i].isYou)
         this.mainPlayer = this.engine.players[i]
 
-    this.mainPlayer.hintUpdate.on(() => console.log(this.requestUpdate()))
+    this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
     this.mainPlayer.unban.on(() => this.requestUpdate())
     this.mainPlayer.ban.on(() => this.requestUpdate())
   }
 
   /** Works on the engine on behalf of a peer */
-  private bindPeer = async ({ isYou, message }: peers[0], index: number) => {
+  private bindPeer = async ({ message, close }: peers[0], index: number) => {
     try {
       for await (const data of message) {
-        console.log(data)
         if (data == 'hint')
           this.engine.takeHint(this.mainPlayer)
         else
@@ -100,6 +99,7 @@ export default class extends LitElement {
       ?hint-available=${this.mainPlayer.hintCards.length < 3}
       ?can-take=${!this.mainPlayer.isBanned}
       show-label
+      take-on-key="Enter"
       .cards=${this.engine.cards}
       .hint=${this.mainPlayer.hintCards}
       @take=${this.takeSet}
