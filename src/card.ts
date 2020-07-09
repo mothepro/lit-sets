@@ -25,6 +25,15 @@ export default class extends LitElement {
   @property({ type: Boolean, reflect: true })
   selected = false
 
+  @property({ type: Boolean, reflect: true })
+  hint = false
+
+  @property({ type: String })
+  hintIcon = 'star'
+
+  @property({ type: String })
+  selectedIcon = 'done'
+
   static readonly styles = css`
     @keyframes zoom-in {
       from { transform: scale(0) }
@@ -41,24 +50,24 @@ export default class extends LitElement {
       animation: 1s ease zoom-in both;
     }
 
-    :host:before {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1;
-      background-color: var(--selected-color-bg, black);
-      content: "";
+    .hint, .selected {
       pointer-events: none;
-      opacity: 0;
-      border-radius: 5px;
+      position: absolute;
+    }
+    .hint {
+      top: var(--sets-card-icon-spacing, 0.25em);
+      left: var(--sets-card-icon-spacing, 0.25em);
+      color: var(--sets-hint-color-fg);
+    }
+    .selected {
+      bottom: var(--sets-card-icon-spacing, 0.25em);
+      right: var(--sets-card-icon-spacing, 0.25em);
+      color: var(--sets-selected-color-fg);
     }
 
-    :host([selected]):before {
-      opacity: 0.15;
+    mwc-button {
+      height: 100%;
     }
-
     sets-shape {
       font-size: var(--sets-shape-size, 50px);
       margin: var(--sets-shape-spacing, .2em);
@@ -89,5 +98,7 @@ export default class extends LitElement {
           shape=${this.shape}
         ></sets-shape>`)}
     </mwc-button>
+    ${this.hint ? html`<mwc-icon class="hint" label="Hint">${this.hintIcon}</mwc-icon>` : ''}
+    ${this.selected ? html`<mwc-icon class="selected" label="Selected">${this.selectedIcon}</mwc-icon>` : ''}
     ${this.index ? html`<style>${this.myStyle}</style>` : '' /* There has gotta be a better way to do this */}`
 }

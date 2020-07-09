@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@material/mwc-button": "^0.17.2",
+    "@material/mwc-icon": "^0.17.2",
     "lit-element": "^2.3.1"
   }
 }
