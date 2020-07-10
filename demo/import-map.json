@@ -10,8 +10,8 @@
     "lit-p2p": "//unpkg.com/lit-p2p@0.1.4/dist/esm/index.js",
     "fancy-emitter/": "//unpkg.com/fancy-emitter@2.0.0/dist/esm/",
     "fancy-emitter": "//unpkg.com/fancy-emitter@2.0.0/dist/esm/index.js",
-    "sets-game-engine/": "//unpkg.com/sets-game-engine@1.0.4/dist/esm/",
-    "sets-game-engine": "//unpkg.com/sets-game-engine@1.0.4/dist/esm/index.js",
+    "sets-game-engine/": "//unpkg.com/sets-game-engine@1.0.5/dist/esm/",
+    "sets-game-engine": "//unpkg.com/sets-game-engine@1.0.5/dist/esm/index.js",
 
     "lit-element/": "https://unpkg.com/lit-element@2.3.1/",
     "lit-element": "https://unpkg.com/lit-element@2.3.1/lit-element.js",

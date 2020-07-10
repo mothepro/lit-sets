@@ -5,7 +5,7 @@ import '@material/mwc-fab'
 import './card.js'
 import './leaderboard.js'
 
-export type TakeEvent = CustomEvent<CardSet>
+export type TakeEvent = CustomEvent<[number, number, number]>
 export type HintEvent = CustomEvent<void>
 
 declare global {
@@ -77,9 +77,7 @@ export default class extends LitElement {
 
   private takeSet() {
     if (this.canTake && this.selected.length == 3) {
-      this.dispatchEvent(new CustomEvent('take', {
-        detail: this.selected.map(i => this.cards[i])
-      }))
+      this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
       this.selected = []
     }
   }

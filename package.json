@@ -42,7 +42,7 @@
     "mocha": "^8.0.1",
     "np": "^6.3.1",
     "replace": "^1.2.0",
-    "sets-game-engine": "^1.0.4",
+    "sets-game-engine": "^1.0.5",
     "should": "^13.2.3",
     "should-sinon": "^0.0.6",
     "sinon": "^9.0.2",

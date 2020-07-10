@@ -62,9 +62,9 @@ export default class extends LitElement {
 
   /** Sets main player & updates this element when the player performs some actions. */
   private async bindMainPlayer() {
-    for (let i = 0; i < this.peers.length; i++)
-      if (this.peers[i].isYou)
-        this.mainPlayer = this.engine.players[i]
+    for (const [index, { isYou }] of this.peers.entries())
+      if (isYou)
+        this.mainPlayer = this.engine.players[index]
 
     this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
     this.mainPlayer.unban.on(() => this.requestUpdate())
@@ -92,6 +92,7 @@ export default class extends LitElement {
         }
     } catch (error) {
       this.dispatchEvent(new ErrorEvent('p2p-error', { error }))
+      console.error('Lost connection with', name, error)
     }
     close()
   }

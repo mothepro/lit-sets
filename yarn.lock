@@ -3342,10 +3342,10 @@ set-blocking@^2.0.0:
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
   integrity sha1-BF+XgtARrppoA93TgrJDkrPYkPc=
 
-sets-game-engine@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/sets-game-engine/-/sets-game-engine-1.0.4.tgz#7304ede8cc621c9db3dadd1952321ba8aee054cc"
-  integrity sha512-oLdtPdeUha+E+h3frVkxOLmWYGFqSVpVrVzKErcW5zx0BckKaJ6I42Dj6meXuGjJ8/OtL6IwtLTZDukW9xyahw==
+sets-game-engine@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/sets-game-engine/-/sets-game-engine-1.0.5.tgz#67d388aadfaaeea40d0b5bc8d7676590ffdd3b1a"
+  integrity sha512-GAq73PlzIFa3J5xMloJcBZNGEd45lJYzMfYB5NvMVB9sv48/xUEhqrDeF8ehatH8He8RkdENw0lsE4JQGlFW0g==
   dependencies:
     fancy-emitter "2.0.0"
 
