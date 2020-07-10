@@ -69,7 +69,7 @@ export default class extends LitElement {
           border-bottom-color: ${this.cssColor()};
         }
         :host span {
-          opacity: ${this.opacity / 2};
+          opacity: ${1 - this.opacity / 2};
         }`
 
     return css`
