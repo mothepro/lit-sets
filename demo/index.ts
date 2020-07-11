@@ -174,8 +174,16 @@ export default class extends LitElement {
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
         @tick=${() => this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))}
+      ></lit-clock>
+      <mwc-fab
+        part="clock-toggle"
+        class="clock-toggle"
+        mini
         @click=${() => this.showClock = !this.showClock}
-      ></lit-clock>`
+        icon=${this.showClock ? 'timer_off' : 'timer'}
+        label=${this.showClock ? 'Hide time' : 'Show time'}
+        title=${this.showClock ? 'Hide time' : 'Show time'}
+      ></mwc-fab>`
 
       // Game over
       : html`

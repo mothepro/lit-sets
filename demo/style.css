@@ -76,6 +76,11 @@ dark-mode-toggle.icon {
 .offline {
   right: 5em;
 }
+::part(clock-toggle) {
+  position: fixed;
+  bottom: 1em;
+  left: 4em;
+}
 
 /* Parts */
 ::part(sets) {

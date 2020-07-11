@@ -69,6 +69,9 @@ export default class extends LitElement {
   mwc-fab.take {
     right: 1rem;
   }
+  mwc-fab.hint {
+    left: 1rem;
+  }
 
   /* Should be built in tbh... */
   mwc-fab[disabled] {
@@ -118,7 +121,6 @@ export default class extends LitElement {
       part="hint"
       class="hint"
       mini
-      ?extended=${this.showLabel}
       ?disabled=${!this.hintAvailable}
       @click=${() => this.dispatchEvent(new CustomEvent('hint'))}
       icon="help_outline"
