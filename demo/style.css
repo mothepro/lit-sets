@@ -1,6 +1,6 @@
 :root { /* Shared vars for light and dark theme */
   --chart-line-width: 2px;
-  --chart-circle-radius: 1;
+  --chart-circle-radius: 0;
   --chart-circle-width: 2px;
   --chart-line-width-hover: 15px;
   --chart-color-0: royalblue;

@@ -1,7 +1,7 @@
 import { LitElement, customElement, property, html, css, internalProperty, PropertyValues } from 'lit-element'
-import Game, { Player } from 'sets-game-engine'
+import Game, { Player, Details, Card } from 'sets-game-engine'
 import type { peers, broadcast, random } from 'lit-p2p'
-import type { TakeEvent } from '../index.js'
+import { TakeEvent, card } from '../index.js'
 
 import 'lit-p2p'
 import 'lit-confetti'
@@ -63,9 +63,9 @@ export default class extends LitElement {
       width: 1em;
       height: 1em;
     }`,
-    
-    // CSS vars for the colors in the chart
-    ...[...Array(10)].map((_, i) => css`
+
+  // CSS vars for the colors in the chart
+  ...[...Array(10)].map((_, i) => css`
       ::part(for-${i}) {
         stroke: var(--chart-color-${i});
       }
@@ -76,36 +76,38 @@ export default class extends LitElement {
   updated(changed: PropertyValues) {
     if (changed.has('peers') && this.peers) {
       this.peers.map(this.bindPeer)
-      delete this.engine // We need to remake this thing
+      delete this.engine // We need to remake this game
     }
 
-    if (!this.engine && this.peers)
-      this.bindEngine()
-  }
+    if (!this.engine && this.peers) {
+      // Shuffle cards
+      const cards = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.abs(this.random(true)) % i;
+        [cards[j], cards[i]] = [cards[i], cards[j]]
+      }
 
-  /** Updates this element when the engine changes. */
-  private async bindEngine() {
-    this.engine = new Game
+      this.engine = new Game([...Array(this.peers.length)].map(() => new Player), cards)
 
-    // Reset running scores
-    this.runningScores = this.engine.players.map(() => [])
-    this.bindMainPlayer()
+      // Set main player
+      for (const [index, { isYou }] of this.peers.entries())
+        if (isYou)
+          this.mainPlayer = this.engine.players[index]
 
-    for await (const _ of this.engine.filled)
-      this.requestUpdate()
-    this.confetti = 100
-    setTimeout(() => this.confetti = 0, 10 * 1000)
-  }
+      // Reset running scores
+      this.runningScores = this.engine.players.map(() => [])
 
-  /** Sets main player & updates this element when the player performs some actions. */
-  private async bindMainPlayer() {
-    for (const [index, { isYou }] of this.peers.entries())
-      if (isYou)
-        this.mainPlayer = this.engine.players[index]
-
-    this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
-    this.mainPlayer.unban.on(() => this.requestUpdate())
-    this.mainPlayer.ban.on(() => this.requestUpdate())
+      // Refresh when market changes OR when the player performs some actions. */
+      this.engine.filled
+        .on(() => this.requestUpdate())
+        .then(() => {
+          this.confetti = 100
+          setTimeout(() => this.confetti = 0, 10 * 1000)
+        })
+      this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
+      this.mainPlayer.unban.on(() => this.requestUpdate())
+      this.mainPlayer.ban.on(() => this.requestUpdate())
+    }
   }
 
   /** Works on the engine on behalf of a peer */
@@ -141,7 +143,7 @@ export default class extends LitElement {
         winners.push(this.peers[index].isYou
           ? 'You'
           : this.peers[index].name)
-    return `${winners.join(' & ')} Win${winners.length == 1 ? 's' : ''}`
+    return `${winners.join(' & ')} Win${winners.length == 1 && winners[0] != 'You' ? 's' : ''}`
   }
 
   protected readonly render = () => this.engine && this.mainPlayer && (
@@ -174,7 +176,7 @@ export default class extends LitElement {
       : html`
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
       ${this.engine.players.length > 1
-        ? html`<h2 part="title">${this.winnerText}!</h2>`: ''}
+          ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}
       <lit-chart
         part="chart"
         width="500"
@@ -182,7 +184,7 @@ export default class extends LitElement {
         .data=${this.runningScores}
       ></lit-chart>
       ${this.engine.players.length > 1 // TODO legend should live inside the chart
-        ? html`
+          ? html`
         <legend part="legend">${this.peers.map(({ name }, index) => html`
           <div part="legend-for legend-for-${index}" class="for for-${index}">
             <div class="block"></div>
