@@ -187,10 +187,9 @@ export default class extends LitElement {
 
       // Game over
       : html`
-      ${console.log(this.engine, this.mainPlayer, this.engine.filled.isAlive)}
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
-      ${this.engine.players.length > 1
-          ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}
+      ${this.engine.players.length > 1 ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}
+      Finished ${this.runningScores[0].length} seconds!<br/>
       <lit-chart
         part="chart"
         width="500"
