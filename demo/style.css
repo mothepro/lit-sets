@@ -17,12 +17,14 @@ html {
   color: var(--color-fg);
 }
 
-h1, ::part(title) {
+h1, h2, h3, h4, h5, h6, ::part(title) {
   text-align: center;
-  font-size: 3rem;
   font-weight: 300;
   line-height: 1;
   letter-spacing: -0.00833em;
+}
+h1.title {
+  font-size: 3rem;
 }
 h1 span {
   font-size: 1rem;

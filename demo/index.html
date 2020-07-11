@@ -17,6 +17,8 @@
   <script prod-only type="prod-only-module"
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type="prod-only-module-shim" src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
+  <script prod-only type=prod-only-application/javascript async
+    src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-1"></script>
   <!-- Development -->
   <script dev-only type="application/javascript" src="//unpkg.com/typescript/lib/typescript.js"></script>
   <script dev-only type="module" src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
@@ -39,7 +41,7 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
-    <h1>
+    <h1 class="title">
       Sets
       <span class="subtitle">by Mo</span>
     </h1>
@@ -61,17 +63,35 @@
       labelText="Not connected to the Peer-to-Peer network. You're now playing offline!"
     ></mwc-snackbar>
 
-    <a href="#p2p-offline" class="icon offline p2p-lobby">
-      <mwc-icon label="Offline Mode" title="Play game solo">offline_bolt</mwc-icon>
+    <a title="Play game solo" href="/#p2p-offline" class="icon offline p2p-lobby">
+      <mwc-icon label="Offline Mode">offline_bolt</mwc-icon>
     </a>
 
     <p2p-sets slot="p2p"></p2p-sets>
   </p2p-switch>
-
   <dark-mode-toggle permanent class="icon"></dark-mode-toggle>
-  <a class="icon feedback" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
+  <a
+    class="icon feedback"
+    title="Improve this game"
+    target="_blank"
+    href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
     <mwc-icon label="Feedback">feedback</mwc-icon>
   </a>
 </body>
+
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'UA-172429940-2')
+
+  document.body.addEventListener('p2p-error', error => {
+    console.error(error)
+    ga('send', 'exception', {
+      exDescription: `${error.message} -- ${error.stack}`,
+      exFatal: false, // idk...
+    })
+  })
+</script>
 
 </html>
