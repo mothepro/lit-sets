@@ -59,7 +59,7 @@ export default class extends LitElement {
 
     border-style: solid;
     border-color: transparent;
-    border-bottom-color: var(--color-bg, white);
+    border-bottom-color: var(--mdc-theme-primary, white);
   }`
 
   protected get myStyle() {
