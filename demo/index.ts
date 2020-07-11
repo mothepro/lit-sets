@@ -162,7 +162,7 @@ export default class extends LitElement {
         @hint=${() => this.broadcast(new Uint8Array([0]))}
       ></lit-sets>
       <sets-leaderboard
-        part="leaderboard"
+        part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
         .players=${this.engine.players}
         .names=${this.peers?.map(peer => peer.name) ?? []}
       ></sets-leaderboard>

@@ -12,11 +12,6 @@ export default class extends LitElement {
   @property({ type: Array, reflect: true })
   names: string[] = []
 
-  static readonly styles = css`
-    aside {
-      float: right;
-    }`
-
   protected updated() {
     for (const player of this.players) {
       player.ban.on(() => this.requestUpdate())
@@ -29,11 +24,13 @@ export default class extends LitElement {
   protected readonly render = () => this.players.length == 1
     ? html`Your score is ${this.players[0].score}.`
     : html`<mwc-list roottabble>${this.players.map((player, index) => html`
+      ${index != 0 ? html`<li divider padded role="separator"></li>` : ''}
       <mwc-list-item
         noninteractive
+        hasMeta
         ?disabled=${player.isBanned}>
         ${this.names[index]}
-        <aside>${player.score}</aside>
+        <span slot="meta">${player.score}</span>
       </mwc-list-item>
     `)}</mwc-list>`
 }
