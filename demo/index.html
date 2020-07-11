@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Lit Sets Demo</title>
+  <title>Sets the Game</title>
   <script type="importmap-shim" src="import-map.json"></script>
   <link rel="stylesheet" href="light.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
   <link rel="stylesheet" href="dark.css" media="(prefers-color-scheme: dark)">
@@ -14,15 +14,15 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
   <link rel="stylesheet" href="style.css" />
   <!-- Production -->
-  <script prod-only type="prod-only-module"
+  <script prod-only type=prod-only-module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type="prod-only-module-shim" src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
+  <script prod-only type=prod-only-module-shim src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
   <script prod-only type=prod-only-application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-1"></script>
   <!-- Development -->
-  <script dev-only type="application/javascript" src="//unpkg.com/typescript/lib/typescript.js"></script>
-  <script dev-only type="module" src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
-  <script dev-only type="module-shim" src="./index.ts"></script>
+  <script dev-only type=application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
+  <script dev-only type=module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
+  <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
 <body>
@@ -63,7 +63,7 @@
       labelText="Not connected to the Peer-to-Peer network. You're now playing offline!"
     ></mwc-snackbar>
 
-    <a title="Play game solo" href="/#p2p-offline" class="icon offline p2p-lobby">
+    <a title="Play game solo" href="#p2p-offline" class="icon offline p2p-lobby">
       <mwc-icon label="Offline Mode">offline_bolt</mwc-icon>
     </a>
 
