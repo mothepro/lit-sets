@@ -62,21 +62,6 @@ h1 span {
   font-size: 1rem;
 }
 
-::part(leaderboard) {
-  display: block;
-  text-align: center;
-  font-family: var(--font-family);
-  color: var(--color-fg);
-}
-::part(clock) {
-  position: fixed;
-  bottom: 3em;
-  left: 1em;
-  font-family: monospace;
-  font-size: 1.5em;
-  user-select: none;
-}
-
 /* Icons */
 .icon {
   position: fixed;
@@ -110,6 +95,23 @@ dark-mode-toggle.icon {
   max-width: 400px;
   border: 1px solid #d3d3d3;
   border-radius: 0.5em;
+  font-family: var(--font-family);
+  color: var(--color-fg);
+}
+
+::part(leaderboard-simple) {
+  display: block;
+  text-align: center;
+  margin-bottom: 3em;
+}
+
+::part(clock) {
+  position: fixed;
+  bottom: 3em;
+  left: 1em;
+  font-family: monospace;
+  font-size: 1.5em;
+  user-select: none;
 }
 
 /* Loading */
