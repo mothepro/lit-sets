@@ -29,16 +29,20 @@ h1 span {
 }
 
 /* Icons */
-dark-mode-toggle {
-  position: fixed;
-  top: 0;
-  right: 0;
-}
 .icon {
   position: fixed;
   top: .5em;
-  right: 3em;
   color: hsla(0, 0%, 0%, 0.87);
+}
+dark-mode-toggle.icon {
+  top: 0;
+  right: 0;
+}
+.feedback {
+  right: 3em;
+}
+.offline {
+  right: 5em;
 }
 
 /* Loading */

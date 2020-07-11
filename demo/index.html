@@ -24,7 +24,6 @@
 </head>
 
 <body>
-  <dark-mode-toggle permanent></dark-mode-toggle>
   <p2p-switch 
     local-storage
     max-peers="5"
@@ -55,20 +54,22 @@
       <div></div>
     </div>
 
-    <a href="#p2p-offline" class="p2p-lobby">Play offline</a>
-
     <mwc-snackbar
       open
       slot="disconnected"
       timeoutMs="10000"
-      labelText="Not connected to the Peer-to-Peer network. You're now playing offline!">
-      <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
-    </mwc-snackbar>
+      labelText="Not connected to the Peer-to-Peer network. You're now playing offline!"
+    ></mwc-snackbar>
+
+    <a href="#p2p-offline" class="icon offline p2p-lobby">
+      <mwc-icon label="Offline Mode" title="Play game solo">offline_bolt</mwc-icon>
+    </a>
 
     <p2p-sets slot="p2p"></p2p-sets>
   </p2p-switch>
 
-  <a class="icon" target="_blank" href="https://docs.google.com/forms/d/1L-Rcw98-n3FtxSM6BTkWm0uXBwzqkmhcMm0KWibyAKs/viewform">
+  <dark-mode-toggle permanent class="icon"></dark-mode-toggle>
+  <a class="icon feedback" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
     <mwc-icon label="Feedback">feedback</mwc-icon>
   </a>
 </body>

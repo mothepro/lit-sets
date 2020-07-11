@@ -64,7 +64,7 @@ export default class extends LitElement {
       height: 1em;
     }`,
     
-    // Add color slots for the chart
+    // CSS vars for the colors in the chart
     ...[...Array(10)].map((_, i) => css`
       ::part(for-${i}) {
         stroke: var(--chart-color-${i});
