@@ -85,6 +85,7 @@ export default class extends LitElement {
     await this.updateComplete
 
     // TODO since <mwc-card> isn't launched yet.
+    //   https://github.com/material-components/material-components-web-components/issues/1504
     const mwcRoot = this.shadowRoot?.firstElementChild?.shadowRoot
     if (mwcRoot)
       injectStyle(mwcRoot, css`#button { height: auto }`)
