@@ -27,7 +27,7 @@
   <dark-mode-toggle permanent></dark-mode-toggle>
   <p2p-switch 
     local-storage
-    max-peers="1"
+    max-peers="5"
     signaling="wss://ws.parkshade.com:443"
     version="0.3.2"
     retries="2"
@@ -60,7 +60,7 @@
     <mwc-snackbar
       open
       slot="disconnected"
-      timeoutMs="-1"
+      timeoutMs="10000"
       labelText="Not connected to the Peer-to-Peer network. You're now playing offline!">
       <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
     </mwc-snackbar>

@@ -1,14 +1,39 @@
-body {
+:root { /* Shared vars for light and dark theme */
+  --chart-line-width: 2px;
+  --chart-circle-radius: 1;
+  --chart-circle-width: 2px;
+  --chart-line-width-hover: 15px;
+  --chart-color-0: royalblue;
+  --chart-color-1: red;
+  --chart-color-2: green;
+  --chart-color-3: purple;
+  --chart-color-4: yellow;
+  --chart-color-5: orange;
+}
+
+html {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   background-color: var(--color-bg);
   color: var(--color-fg);
 }
 
+h1, ::part(title) {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.00833em;
+}
+h1 span {
+  font-size: 1rem;
+}
+
+/* Icons */
 dark-mode-toggle {
   position: fixed;
   top: 0;
   right: 0;
 }
-
 .icon {
   position: fixed;
   top: .5em;

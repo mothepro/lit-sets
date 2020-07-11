@@ -5,6 +5,7 @@ import type { TakeEvent } from '../index.js'
 
 import 'lit-p2p'
 import 'lit-confetti'
+import '@mothepro/lit-chart'
 import '@mothepro/lit-clock'
 import '../index.js'
 
@@ -33,10 +34,44 @@ export default class extends LitElement {
   /** The instance my player in the game engine */
   mainPlayer!: Player
 
-  static readonly styles = css`
+  /** Scores of all the players every tick */
+  runningScores: number[][] = []
+
+  static readonly styles = [css`
     lit-confetti {
       position: fixed;
-    }`
+    }
+
+    /* Chart */
+    ::part(line) {
+      stroke-width: var(--chart-line-width, 2px);
+    }
+
+    ::part(circle) {
+      r: var(--chart-circle-radius, 1);
+      stroke-width: var(--chart-circle-width, 2px);
+    }
+
+    ::part(circle):hover {
+      stroke-width: var(--chart-line-width-hover, 15px);
+    }
+
+    legend .block {
+      border: thin solid black;
+      display:inline-block;
+      position: relative;
+      width: 1em;
+      height: 1em;
+    }`,
+    
+    // Add color slots for the chart
+    ...[...Array(10)].map((_, i) => css`
+      ::part(for-${i}) {
+        stroke: var(--chart-color-${i});
+      }
+      legend .for-${i} .block {
+        background-color:  var(--chart-color-${i});
+      }`)]
 
   updated(changed: PropertyValues) {
     if (changed.has('peers') && this.peers) {
@@ -52,6 +87,8 @@ export default class extends LitElement {
   private async bindEngine() {
     this.engine = new Game
 
+    // Reset running scores
+    this.runningScores = this.engine.players.map(() => [])
     this.bindMainPlayer()
 
     for await (const _ of this.engine.filled)
@@ -97,21 +134,59 @@ export default class extends LitElement {
     close()
   }
 
-  protected readonly render = () => this.engine && this.mainPlayer && html`
-    <lit-sets
-      ?hint-available=${this.mainPlayer.hintCards.length < 3}
-      ?can-take=${!this.mainPlayer.isBanned}
-      show-label
-      take-on-key="Enter"
-      .cards=${this.engine.cards}
-      .hint=${this.mainPlayer.hintCards}
-      @take=${({ detail }: TakeEvent) => this.broadcast(new Uint8Array(detail))}
-      @hint=${() => this.broadcast(new Uint8Array([0]))}
-    ></lit-sets>
-    <sets-leaderboard
-      .players=${this.engine.players}
-      .names=${this.peers?.map(peer => peer.name) ?? []}
-    ></sets-leaderboard>
-    <lit-clock ?pause-on-blur=${this.engine.players.length == 1}></lit-clock>
-    <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>`
+  private get winnerText() {
+    const winners: string[] = []
+    for (const [index, { score }] of this.engine.players.entries())
+      if (score == this.engine.maxScore)
+        winners.push(this.peers[index].isYou
+          ? 'You'
+          : this.peers[index].name)
+    return `${winners.join(' & ')} Win${winners.length == 1 ? 's' : ''}`
+  }
+
+  protected readonly render = () => this.engine && this.mainPlayer && (
+    this.engine.filled.isAlive
+      // In game
+      ? html`
+      <lit-sets
+        part="sets"
+        ?hint-available=${this.mainPlayer.hintCards.length < 3}
+        ?can-take=${!this.mainPlayer.isBanned}
+        show-label
+        take-on-key="Enter"
+        .cards=${this.engine.cards}
+        .hint=${this.mainPlayer.hintCards}
+        @take=${({ detail }: TakeEvent) => this.broadcast(new Uint8Array(detail))}
+        @hint=${() => this.broadcast(new Uint8Array([0]))}
+      ></lit-sets>
+      <sets-leaderboard
+        part="leaderboard"
+        .players=${this.engine.players}
+        .names=${this.peers?.map(peer => peer.name) ?? []}
+      ></sets-leaderboard>
+      <lit-clock
+        part="clock"
+        ?pause-on-blur=${this.engine.players.length == 1}
+        @tick=${() => this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))}
+      ></lit-clock>`
+
+      // Game over
+      : html`
+      <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
+      ${this.engine.players.length > 1
+        ? html`<h2 part="title">${this.winnerText}!</h2>`: ''}
+      <lit-chart
+        part="chart"
+        width="500"
+        height="300"
+        .data=${this.runningScores}
+      ></lit-chart>
+      ${this.engine.players.length > 1 // TODO legend should live inside the chart
+        ? html`
+        <legend part="legend">${this.peers.map(({ name }, index) => html`
+          <div part="legend-for legend-for-${index}" class="for for-${index}">
+            <div class="block"></div>
+            ${name}
+          </div>`)}
+        </legend>` : ''}`)
 }
