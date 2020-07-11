@@ -18,7 +18,7 @@
   "scripts": {
     "build": "npm run build:npm && npm run build:esm",
     "pretest": "npm run build:npm",
-    "test": "mocha -r should -r should-sinon dist/npm/test/*.js",
+    "test": "echo 'no tests yet...'",
     "prerelease": "npm run build:npm && npm run deploy",
     "release": "np",
     "importmap": "importly --host unpkg < package.json > demo/import-map.json",
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@mothepro/fancy-p2p": "^0.0.17",
+    "@mothepro/signaling-lobby": "^0.3.3",
     "@types/mocha": "^7.0.2",
     "@types/should-sinon": "^0.0.6",
     "gh-pages": "^3.1.0",
