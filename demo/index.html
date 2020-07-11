@@ -14,7 +14,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
   <link rel="stylesheet" href="style.css" />
   <!-- Production -->
-  <script prod-only type="prod-only-module" src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
+  <script prod-only type="prod-only-module"
+    src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type="prod-only-module-shim" src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
   <!-- Development -->
   <script dev-only type="application/javascript" src="//unpkg.com/typescript/lib/typescript.js"></script>
@@ -43,8 +44,7 @@
       Sets
       <span class="subtitle">by Mo</span>
     </h1>
-    <p2p-sets slot="p2p"></p2p-sets>
-  
+
     <div slot="offline" class="loading">
       <div></div>
       <div></div>
@@ -55,10 +55,15 @@
       <div></div>
     </div>
 
-    <div slot="disconnected">
-      <p>Not connected to the Peer-to-Peer network. Try out the game locally!</p>
-      <p2p-sets></p2p-sets>
-    </div>
+  <mwc-snackbar
+    open
+    slot="disconnected"
+    timeoutMs="-1"
+    labelText="Not connected to the Peer-to-Peer network. You're now playing offline!">
+    <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+  </mwc-snackbar>
+
+    <p2p-sets slot="p2p"></p2p-sets>
   </p2p-switch>
 </body>
 
