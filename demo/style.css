@@ -43,9 +43,9 @@
 }
 
 /* Main page */
-html, ::part(leaderboard), ::part(clock) {
-  font-family: var(--font-family);
+html {
   background-color: var(--color-bg);
+  font-family: var(--font-family);
   color: var(--color-fg);
 }
 
@@ -60,6 +60,21 @@ h1.title {
 }
 h1 span {
   font-size: 1rem;
+}
+
+::part(leaderboard) {
+  display: block;
+  text-align: center;
+  font-family: var(--font-family);
+  color: var(--color-fg);
+}
+::part(clock) {
+  position: fixed;
+  bottom: 3em;
+  left: 1em;
+  font-family: monospace;
+  font-size: 1.5em;
+  user-select: none;
 }
 
 /* Icons */
