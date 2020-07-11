@@ -28,6 +28,9 @@ export default class extends LitElement {
   @internalProperty()
   protected confetti = 0
 
+  @internalProperty()
+  protected showClock = true
+
   /** The sets game engine */
   private engine!: Game
 
@@ -168,8 +171,10 @@ export default class extends LitElement {
       ></sets-leaderboard>
       <lit-clock
         part="clock"
+        ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
         @tick=${() => this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))}
+        @click=${() => this.showClock = !this.showClock}
       ></lit-clock>`
 
       // Game over
