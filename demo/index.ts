@@ -57,8 +57,8 @@ export default class extends LitElement {
     }
 
     legend .block {
+      display: inline-block;
       border: thin solid black;
-      display:inline-block;
       position: relative;
       width: 1em;
       height: 1em;
@@ -79,12 +79,12 @@ export default class extends LitElement {
       delete this.engine // We need to remake this game
     }
 
-    if (!this.engine && this.peers) {
+    if (!this.engine && this.peers && this.random) {
       // Shuffle cards
       const cards = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
       for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.abs(this.random(true)) % i;
-        [cards[j], cards[i]] = [cards[i], cards[j]]
+        const j = Math.floor(this.random() * i)
+          ;[cards[j], cards[i]] = [cards[i], cards[j]]
       }
 
       this.engine = new Game([...Array(this.peers.length)].map(() => new Player), cards)
@@ -174,6 +174,7 @@ export default class extends LitElement {
 
       // Game over
       : html`
+      ${console.log(this.engine, this.mainPlayer, this.engine.filled.isAlive)}
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
       ${this.engine.players.length > 1
           ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}

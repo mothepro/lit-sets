@@ -1,4 +1,10 @@
 :root { /* Shared vars for light and dark theme */
+  --sets-shape-size: 3em;
+  --sets-shape-spacing: .2em;
+  --sets-grid-template-columns: repeat(2, minmax(200px, 400px));
+  --sets-gap: 2em;
+  --sets-cards-per-row: 2;
+
   --chart-line-width: 2px;
   --chart-circle-radius: 0;
   --chart-circle-width: 2px;
@@ -9,6 +15,28 @@
   --chart-color-3: purple;
   --chart-color-4: yellow;
   --chart-color-5: orange;
+}
+
+@media (min-width: 576px) { /* bootstrap "sm" */
+  :root {
+    --sets-grid-template-columns: repeat(3, minmax(200px, 400px));
+    --sets-shape-size: 3.5em;
+  }
+}
+@media (min-width: 768px) { /* bootstrap "md" */
+  :root {
+    --sets-shape-spacing: .35em;
+  }
+}
+@media (min-width: 992px) { /* bootstrap "lg" */
+  :root {
+    --nothing: '';
+  }
+}
+@media (min-width: 1200px) { /* bootstrap "xl" */
+  :root {
+    --sets-shape-size: 4em;
+  }
 }
 
 html {
