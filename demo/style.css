@@ -9,6 +9,13 @@ dark-mode-toggle {
   right: 0;
 }
 
+.icon {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  color: hsla(0, 0%, 0%, 0.87);
+}
+
 /* Loading */
 .loading {
   text-align: center;
