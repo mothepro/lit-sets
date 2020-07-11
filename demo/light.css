@@ -1,0 +1,9 @@
+:root {
+  --color-bg: #fafafa;
+  --color-fg: hsla(0, 0, 0, 0.87);
+  --mdc-theme-primary: #fff;
+  --mdc-theme-on-primary: var(--color-fg);
+  --sets-shape-size: 50px;
+  --sets-shape-spacing: .2em;
+  --selected-color-bg: black;
+}

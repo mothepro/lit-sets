@@ -1,0 +1,10 @@
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+}
+
+dark-mode-toggle {
+  position: fixed;
+  top: 0;
+  right: 0;
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Lit Sets Demo</title>
+  <script type="importmap-shim" src="import-map.json"></script>
+  <link rel="stylesheet" href="light.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+  <link rel="stylesheet" href="dark.css" media="(prefers-color-scheme: dark)">
+  <script type="module" src="https://googlechromelabs.github.io/dark-mode-toggle/src/dark-mode-toggle.mjs"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Production -->
+  <script prod-only type="prod-only-module" src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
+  <script prod-only type="prod-only-module-shim" src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
+  <!-- Development -->
+  <script dev-only type="application/javascript" src="//unpkg.com/typescript/lib/typescript.js"></script>
+  <script dev-only type="module" src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
+  <script dev-only type="module-shim" src="./index.ts"></script>
+</head>
+
+<body>
+  <dark-mode-toggle permanent></dark-mode-toggle>
+  <p2p-switch 
+    local-storage
+    max-peers="1"
+    signaling="wss://ws.parkshade.com:443"
+    version="0.3.2"
+    retries="2"
+    timeout="22500"
+    stuns='[
+      "stun:stun.stunprotocol.org",
+      "stun:stun.l.google.com:19302",
+      "stun:stun1.l.google.com:19302",
+      "stun:stun2.l.google.com:19302",
+      "stun:stun3.l.google.com:19302",
+      "stun:stun4.l.google.com:19302"
+    ]'>
+    <h1 class="not-p2p-ready">
+      Sets
+      <span class="subtitle">by Mo</span>
+    </h1>
+    <p2p-sets slot="p2p"></p2p-sets>
+  
+    <div slot="offline" class="loading">
+      <div></div>
+      <div></div>
+    </div>
+
+    <div slot="loading" class="loading">
+      <div></div>
+      <div></div>
+    </div>
+
+    <div slot="disconnected">
+      <p>Not connected to the Peer-to-Peer network. Try out the game locally!</p>
+      <p2p-sets></p2p-sets>
+    </div>
+  </p2p-switch>
+</body>
+
+</html>

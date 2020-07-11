@@ -1,0 +1,8 @@
+:root {
+  --color-bg: #303030;
+  --mdc-theme-primary: #424242;
+  --color-fg: #fff;
+  --selected-color-bg: white;
+  --mdc-theme-on-primary: var(--color-fg);
+  --mdc-theme-text-primary-on-background: var(--color-fg);
+}
