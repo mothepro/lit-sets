@@ -40,7 +40,7 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
-    <h1 class="not-p2p-ready">
+    <h1>
       Sets
       <span class="subtitle">by Mo</span>
     </h1>
@@ -55,13 +55,15 @@
       <div></div>
     </div>
 
-  <mwc-snackbar
-    open
-    slot="disconnected"
-    timeoutMs="-1"
-    labelText="Not connected to the Peer-to-Peer network. You're now playing offline!">
-    <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
-  </mwc-snackbar>
+    <a href="#p2p-offline" class="p2p-lobby">Play offline</a>
+
+    <mwc-snackbar
+      open
+      slot="disconnected"
+      timeoutMs="-1"
+      labelText="Not connected to the Peer-to-Peer network. You're now playing offline!">
+      <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+    </mwc-snackbar>
 
     <p2p-sets slot="p2p"></p2p-sets>
   </p2p-switch>

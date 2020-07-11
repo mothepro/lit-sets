@@ -11,8 +11,8 @@ dark-mode-toggle {
 
 .icon {
   position: fixed;
-  top: 1em;
-  right: 1em;
+  top: .5em;
+  right: 3em;
   color: hsla(0, 0%, 0%, 0.87);
 }
 
@@ -57,10 +57,19 @@ dark-mode-toggle {
 }
 
 /* Only show slots when state matches. */
-p2p-switch[state="3"] .not-p2p-ready,
+p2p-switch:not([state="-1"]) [slot="disconnected"],
+p2p-switch:not([state="-1"]) .p2p-disconnected,
+
+p2p-switch:not([state="0"]) [slot="offline"],
 p2p-switch:not([state="0"]) .p2p-offline,
-p2p-switch:not([state="3"]) .p2p-ready,
+
+p2p-switch:not([state="1"]) [slot="lobby"],
+p2p-switch:not([state="1"]) .p2p-lobby,
+
 p2p-switch:not([state="2"]) [slot="loading"],
-p2p-switch:not([state="-1"]) [slot="disconnected"] {
+p2p-switch:not([state="2"]) .p2p-loading,
+
+p2p-switch:not([state="3"]) [slot="ready"],
+p2p-switch:not([state="3"]) .p2p-ready {
   display: none;
 }
