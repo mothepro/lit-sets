@@ -6,10 +6,14 @@
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
 
+  --sets-shape-blue-hsl: 207, 90%, 58%;
+  --sets-shape-red-hsl: 45, 100%, 50%;
+  --sets-shape-green-hsl: 4, 90%, 58%; /* Actually yellow */
+
   --chart-line-width: 2px;
   --chart-circle-radius: 0;
-  --chart-circle-width: 2px;
-  --chart-line-width-hover: 15px;
+  --chart-circle-width: 0;
+  --chart-line-width-hover: 0;
   --chart-color-0: royalblue;
   --chart-color-1: red;
   --chart-color-2: green;
@@ -156,6 +160,8 @@ dark-mode-toggle.icon {
 }
 
 /* Only show slots when state matches. */
+p2p-switch:not([state]) [slot="p2p"],
+
 p2p-switch:not([state="-1"]) [slot="disconnected"],
 p2p-switch:not([state="-1"]) .p2p-disconnected,
 

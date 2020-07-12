@@ -47,7 +47,6 @@ export default class extends LitElement {
   selected: number[] = []
 
   firstUpdated() {
-    // TODO arrow key support
     addEventListener('keypress', ({ code }: KeyboardEvent) => this.takeOnKey && code == this.takeOnKey && this.takeSet())
   }
 
@@ -76,10 +75,13 @@ export default class extends LitElement {
   /* Should be built in tbh... */
   mwc-fab[disabled] {
     pointer-events: none;
-    --mdc-theme-secondary: lightgrey;
-    --mdc-fab-box-shadow: none;
-    --mdc-fab-box-shadow-hover: none;
-    --mdc-fab-box-shadow-active: none;
+    cursor: default !important;
+    --mdc-theme-on-secondary:  white;
+    --mdc-theme-secondary:  lightgrey;
+    --mdc-fab-box-shadow:  none;
+    --mdc-fab-box-shadow-hover:  none;
+    --mdc-fab-box-shadow-active:  none;
+    --mdc-ripple-fg-opacity:  0;
   }`
 
   private selectCard(index: number) {

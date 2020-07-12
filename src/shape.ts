@@ -4,11 +4,11 @@ import { LitElement, customElement, property, css, html } from 'lit-element'
 function cssColor(color: Details.Color, opacity = Details.Opacity.SOLID) {
   switch (color) {
     case Details.Color.BLUE:
-      return css`hsla(207, 90%, 58%, ${1 - opacity / 2})`
+      return css`hsla(var(--sets-shape-blue-hsl, 207, 90%, 58%), ${1 - opacity / 2})`
     case Details.Color.RED:
-      return css`hsla(45, 100%, 50%, ${1 - opacity / 2})`
+      return css`hsla(var(--sets-shape-red-hsl, 45, 100%, 50%), ${1 - opacity / 2})`
     case Details.Color.GREEN:
-      return css`hsla(4, 90%, 58%, ${1 - opacity / 2})`
+      return css`hsla(var(--sets-shape-green-hsl, 4, 90%, 58%), ${1 - opacity / 2})`
   }
 }
 
