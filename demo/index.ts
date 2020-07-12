@@ -1,7 +1,7 @@
 import { LitElement, customElement, property, html, css, internalProperty, PropertyValues } from 'lit-element'
 import Game, { Player, Details, Card } from 'sets-game-engine'
 import type { peers, broadcast, random } from 'lit-p2p'
-import { TakeEvent, card } from '../index.js'
+import { TakeEvent } from '../index.js'
 
 import 'lit-p2p'
 import 'lit-confetti'
@@ -17,7 +17,7 @@ import '../index.js'
 export default class extends LitElement {
 
   @property({ attribute: false })
-  peers!: peers
+  peers!: peers<ArrayBuffer>
 
   @property({ attribute: false })
   broadcast!: broadcast
@@ -114,10 +114,10 @@ export default class extends LitElement {
   }
 
   /** Works on the engine on behalf of a peer */
-  private bindPeer = async ({ message, close }: peers[0], index: number) => {
+  private bindPeer = async ({ message, close }: peers<ArrayBuffer>[0], index: number) => {
     try {
       for await (const data of message)
-        switch ((data as ArrayBuffer).byteLength ?? 0) {
+        switch (data.byteLength ?? 0) {
           case 1: // Hint
             this.engine.takeHint(this.engine.players[index])
             break
@@ -126,15 +126,15 @@ export default class extends LitElement {
             //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
             this.engine.takeFromMarket(
               this.engine.players[index],
-              [...new Uint8Array(data as ArrayBuffer)] as [number, number, number])
+              [...new Uint8Array(data)] as [number, number, number])
             break
 
           default:
             throw Error(`Unexpected data from ${name}: ${data}`)
         }
     } catch (error) {
+      error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error }))
-      console.error('Lost connection with', name, error)
     }
     close()
   }
