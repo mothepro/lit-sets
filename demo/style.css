@@ -1,7 +1,7 @@
 /* Shared vars for light and dark theme */
 :root {
   --sets-shape-size: 3em;
-  --sets-shape-spacing: .2em;
+  --sets-shape-spacing: 8px;
   --sets-grid-template-columns: repeat(2, minmax(200px, 400px));
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
@@ -15,7 +15,7 @@
   --chart-color-2: green;
   --chart-color-3: purple;
   --chart-color-4: yellow;
-  --chart-color-5: orange;
+  --chart-color-5: limegreen;
 
   --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
@@ -28,12 +28,12 @@
 }
 @media (min-width: 768px) { /* bootstrap "md" */
   :root {
-    --sets-shape-spacing: .35em;
+    --sets-shape-spacing: 12px;
   }
 }
 @media (min-width: 992px) { /* bootstrap "lg" */
   :root {
-    --nothing: '';
+    --sets-shape-spacing: 18px 12px;
   }
 }
 @media (min-width: 1200px) { /* bootstrap "xl" */
