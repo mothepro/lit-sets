@@ -48,7 +48,7 @@ export default class extends LitElement {
 
   firstUpdated() {
     // TODO arrow key support
-    this.addEventListener('keypress', ({ key }: KeyboardEvent) => this.takeOnKey && key == this.takeOnKey && this.takeSet())
+    addEventListener('keypress', ({ code }: KeyboardEvent) => this.takeOnKey && code == this.takeOnKey && this.takeSet())
   }
 
   static readonly styles = css`
