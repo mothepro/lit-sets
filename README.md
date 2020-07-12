@@ -9,3 +9,5 @@
 ## How to Use
 
 TODO...
+
++ Arrow key to choose card

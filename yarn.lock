@@ -2399,10 +2399,10 @@ lit-html@^1.1.1, lit-html@^1.1.2:
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
   integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
 
-lit-p2p@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.1.5.tgz#ceb174ffa470a6d44bb1a204561d1f725816d9af"
-  integrity sha512-TBHUatr5rJH09I3qLaIYOQpMuJ06LFq1WEjlZeDytjctKUxogKRjV3yfm6zgw4xRarHmk+r0cWbPH8Icc0Z7ug==
+lit-p2p@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.1.6.tgz#0de962574b0d1ac02e2883788c3589b64c547020"
+  integrity sha512-QIPmotOLhFQwEgzSz4zGLzwAuC7ZUqCosRnyLG2u3JUq+fKx9H61VhOZF7s3ylRTOZAMNeatEn1WPOzMlbYhgg==
   dependencies:
     "@material/fab" "^7.0.0"
     "@material/mwc-icon" "^0.17.2"
