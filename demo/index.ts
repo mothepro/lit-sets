@@ -192,8 +192,8 @@ export default class extends LitElement {
       Finished ${this.runningScores[0].length} seconds!<br/>
       <lit-chart
         part="chart"
-        width="500"
-        height="300"
+        width=${document.body.clientWidth}
+        height=${Math.floor(document.body.clientWidth * 4 / 9)}
         .data=${this.runningScores}
       ></lit-chart>
       ${this.engine.players.length > 1 // TODO legend should live inside the chart
