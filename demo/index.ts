@@ -1,7 +1,7 @@
 import { LitElement, customElement, property, html, css, internalProperty, PropertyValues } from 'lit-element'
 import Game, { Player, Details, Card } from 'sets-game-engine'
 import type { peers, broadcast, random } from 'lit-p2p'
-import { TakeEvent } from '../index.js'
+import type { TakeEvent } from '../index.js'
 
 import 'lit-p2p'
 import 'lit-confetti'
@@ -83,14 +83,7 @@ export default class extends LitElement {
     }
 
     if (!this.engine && this.peers && this.random) {
-      // Shuffle cards
-      const cards = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
-      for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(this.random() * i)
-          ;[cards[j], cards[i]] = [cards[i], cards[j]]
-      }
-
-      this.engine = new Game([...Array(this.peers.length)].map(() => new Player), cards)
+      this.engine = new Game([...Array(this.peers.length)].map(() => new Player), this.cardGenerator())
 
       // Set main player
       for (const [index, { isYou }] of this.peers.entries())
@@ -134,9 +127,22 @@ export default class extends LitElement {
         }
     } catch (error) {
       error.peer = name
-      this.dispatchEvent(new ErrorEvent('p2p-error', { error }))
+      this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
     }
     close()
+  }
+
+  // Shuffle all cards using given RNG
+  private *cardGenerator() {
+    const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
+    while (cards.length) {
+      const last = cards.length - 1,
+        swap = Math.floor(this.random() * last)
+
+        ;[cards[swap], cards[last]] = [cards[last], cards[swap]]
+
+      yield cards.pop()!
+    }
   }
 
   private get winnerText() {
