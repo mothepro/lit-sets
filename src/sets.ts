@@ -63,14 +63,14 @@ export default class extends LitElement {
   }
 
   mwc-fab {
-    position: fixed;
+    position: var(--sets-fab-position, fixed);
     bottom: 1rem;
   }
   mwc-fab.take {
     right: 1rem;
   }
   mwc-fab.hint {
-    left: 1rem;
+    left: 4rem;
   }
 
   /* Should be built in tbh... */

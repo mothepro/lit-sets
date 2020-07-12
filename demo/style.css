@@ -78,11 +78,6 @@ dark-mode-toggle.icon {
 .offline {
   right: 5em;
 }
-::part(clock-toggle) {
-  position: fixed;
-  bottom: 1em;
-  left: 4em;
-}
 
 /* Parts */
 ::part(sets) {
@@ -112,6 +107,12 @@ dark-mode-toggle.icon {
   font-family: monospace;
   font-size: 1.5em;
   user-select: none;
+}
+
+::part(clock-toggle) {
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
 }
 
 /* Loading */
