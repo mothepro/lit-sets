@@ -16,15 +16,6 @@ import '../index.js'
 @customElement('p2p-sets')
 export default class extends LitElement {
 
-  @property({ attribute: false })
-  peers!: peers<ArrayBuffer>
-
-  @property({ attribute: false })
-  broadcast!: broadcast
-
-  @property({ attribute: false })
-  random!: random
-
   @internalProperty()
   protected confetti = 0
 
@@ -32,7 +23,7 @@ export default class extends LitElement {
   protected showClock = true
 
   /** The sets game engine */
-  private engine!: Game
+  private engine = new Game([...Array(p2p.peers.length)].map(() => new Player), this.cardGenerator())
 
   /** The instance my player in the game engine */
   mainPlayer!: Player
@@ -76,55 +67,47 @@ export default class extends LitElement {
         background-color:  var(--chart-color-${i});
       }`)]
 
-  updated(changed: PropertyValues) {
-    if (changed.has('peers') && this.peers) {
-      this.peers.map(this.bindPeer)
-      delete this.engine // We need to remake this game
-    }
+  protected async firstUpdated() {
+    p2p.peers.map(this.bindPeer)
 
-    if (!this.engine && this.peers && this.random) {
-      this.engine = new Game([...Array(this.peers.length)].map(() => new Player), this.cardGenerator())
+    // Reset running scores
+    this.runningScores = this.engine.players.map(() => [])
 
-      // Set main player
-      for (const [index, { isYou }] of this.peers.entries())
-        if (isYou)
-          this.mainPlayer = this.engine.players[index]
-
-      // Reset running scores
-      this.runningScores = this.engine.players.map(() => [])
-
-      // Refresh when market changes OR when the player performs some actions. */
-      this.engine.filled
-        .on(() => this.requestUpdate())
-        .then(() => {
-          this.confetti = 100
-          setTimeout(() => this.confetti = 0, 10 * 1000)
-        })
-      this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
-      this.mainPlayer.unban.on(() => this.requestUpdate())
-      this.mainPlayer.ban.on(() => this.requestUpdate())
-    }
+    // Refresh when market changes OR when the player performs some actions. */
+    this.engine.filled
+      .on(() => this.requestUpdate())
+      .then(() => {
+        this.confetti = 100
+        setTimeout(() => this.confetti = 0, 10 * 1000)
+      })
+    this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
+    this.mainPlayer.unban.on(() => this.requestUpdate())
+    this.mainPlayer.ban.on(() => this.requestUpdate())
   }
 
-  /** Works on the engine on behalf of a peer */
-  private bindPeer = async ({ message, close }: peers<ArrayBuffer>[0], index: number) => {
+  /** Works on the engine on behalf of a peer & sets main player */
+  private bindPeer = async ({ message, close, isYou }: peers[0], index: number) => {
+    if (isYou)
+      this.mainPlayer = this.engine.players[index]
+
     try {
       for await (const data of message)
-        switch (data.byteLength ?? 0) {
-          case 1: // Hint
-            this.engine.takeHint(this.engine.players[index])
-            break
+        if (data instanceof ArrayBuffer)
+          switch (data.byteLength) {
+            case 1: // Hint
+              this.engine.takeHint(this.engine.players[index])
+              break
 
-          case 3: // Take
-            //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
-            this.engine.takeFromMarket(
-              this.engine.players[index],
-              [...new Uint8Array(data)] as [number, number, number])
-            break
+            case 3: // Take
+              //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+              this.engine.takeFromMarket(
+                this.engine.players[index],
+                [...new Uint8Array(data)] as [number, number, number])
+              break
 
-          default:
-            throw Error(`Unexpected data from ${name}: ${data}`)
-        }
+            default:
+              throw Error(`Unexpected data from ${name}: ${data}`)
+          }
     } catch (error) {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
@@ -137,7 +120,7 @@ export default class extends LitElement {
     const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
     while (cards.length) {
       const last = cards.length - 1,
-        swap = Math.floor(this.random() * last)
+        swap = Math.abs(p2p.random(true)) % last
 
         ;[cards[swap], cards[last]] = [cards[last], cards[swap]]
 
@@ -149,16 +132,15 @@ export default class extends LitElement {
     const winners: string[] = []
     for (const [index, { score }] of this.engine.players.entries())
       if (score == this.engine.maxScore)
-        winners.push(this.peers[index].isYou
+        winners.push(p2p.peers[index].isYou
           ? 'You'
-          : this.peers[index].name)
+          : p2p.peers[index].name)
     return `${winners.join(' & ')} Win${winners.length == 1 && winners[0] != 'You' ? 's' : ''}`
   }
 
-  protected readonly render = () => this.engine && this.mainPlayer && (
-    this.engine.filled.isAlive
-      // In game
-      ? html`
+  protected readonly render = () => this.engine.filled.isAlive
+    // In game
+    ? html`
       <lit-sets
         part="sets"
         ?hint-available=${this.mainPlayer.hintCards.length < 3}
@@ -167,13 +149,13 @@ export default class extends LitElement {
         take-on-key="Enter"
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards}
-        @take=${({ detail }: TakeEvent) => this.broadcast(new Uint8Array(detail))}
-        @hint=${() => this.broadcast(new Uint8Array([0]))}
+        @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
+        @hint=${() => p2p.broadcast(new Uint8Array([0]))}
       ></lit-sets>
       <sets-leaderboard
         part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
         .players=${this.engine.players}
-        .names=${this.peers?.map(peer => peer.name) ?? []}
+        .names=${p2p.peers?.map(peer => peer.name) ?? []}
       ></sets-leaderboard>
       <lit-clock
         part="clock"
@@ -191,8 +173,8 @@ export default class extends LitElement {
         title=${this.showClock ? 'Hide time' : 'Show time'}
       ></mwc-fab>`
 
-      // Game over
-      : html`
+    // Game over
+    : html`
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
       ${this.engine.players.length > 1 ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}
       Finished ${this.runningScores[0].length} seconds!<br/>
@@ -203,11 +185,11 @@ export default class extends LitElement {
         .data=${this.runningScores}
       ></lit-chart>
       ${this.engine.players.length > 1 // TODO legend should live inside the chart
-          ? html`
-        <legend part="legend">${this.peers.map(({ name }, index) => html`
+        ? html`
+        <legend part="legend">${p2p.peers.map(({ name }, index) => html`
           <div part="legend-for legend-for-${index}" class="for for-${index}">
             <div class="block"></div>
             ${name}
           </div>`)}
-        </legend>` : ''}`)
+        </legend>` : ''}`
 }
