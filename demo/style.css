@@ -19,7 +19,7 @@
   --chart-color-2: green;
   --chart-color-3: purple;
   --chart-color-4: yellow;
-  --chart-color-5: limegreen;
+  --chart-color-5: cyan;
 
   --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
@@ -70,7 +70,7 @@ h1 span {
 .icon {
   position: fixed;
   top: .5em;
-  color: hsla(0, 0%, 0%, 0.87);
+  color: var(--color-fg);
 }
 dark-mode-toggle.icon {
   top: 0;
@@ -88,7 +88,7 @@ dark-mode-toggle.icon {
   margin-bottom: 3em;
 }
 
-::part(lobby), ::part(leaderboard-full) {
+::part(client-list), ::part(leaderboard-full) {
   display: block;
   margin: 0 auto;
   max-width: 400px;

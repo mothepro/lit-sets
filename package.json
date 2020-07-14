@@ -58,6 +58,6 @@
     "@mothepro/lit-clock": "^0.0.4",
     "lit-confetti": "^0.1.5",
     "lit-element": "^2.3.1",
-    "lit-p2p": "^0.2.0"
+    "lit-p2p": "^0.2.1"
   }
 }
