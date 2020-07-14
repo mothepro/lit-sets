@@ -1,6 +1,5 @@
 import { LitElement, customElement, property, html, css, internalProperty, PropertyValues } from 'lit-element'
 import Game, { Player, Details, Card } from 'sets-game-engine'
-import type { peers, broadcast, random } from 'lit-p2p'
 import type { TakeEvent } from '../index.js'
 
 import 'lit-p2p'
@@ -23,13 +22,13 @@ export default class extends LitElement {
   protected showClock = true
 
   /** The sets game engine */
-  private engine = new Game([...Array(p2p.peers.length)].map(() => new Player), this.cardGenerator())
+  private engine!: Game
 
   /** The instance my player in the game engine */
-  mainPlayer!: Player
+  private mainPlayer!: Player
 
   /** Scores of all the players every tick */
-  runningScores: number[][] = []
+  private runningScores: number[][] = []
 
   static readonly styles = [css`
     lit-confetti {
@@ -68,25 +67,36 @@ export default class extends LitElement {
       }`)]
 
   protected async firstUpdated() {
+    addEventListener('p2p-update', this.go)
+    this.go()
+  }
+
+  private go = async () => {
+    // Shuffle all cards using given RNG
+    const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.abs(p2p.random(true)) % i
+        ;[cards[j], cards[i]] = [cards[i], cards[j]]
+    }
+
+    this.engine = new Game([...Array(p2p.peers.length)].map(() => new Player), cards)
     p2p.peers.map(this.bindPeer)
 
     // Reset running scores
     this.runningScores = this.engine.players.map(() => [])
 
     // Refresh when market changes OR when the player performs some actions. */
-    this.engine.filled
-      .on(() => this.requestUpdate())
-      .then(() => {
-        this.confetti = 100
-        setTimeout(() => this.confetti = 0, 10 * 1000)
-      })
     this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
     this.mainPlayer.unban.on(() => this.requestUpdate())
     this.mainPlayer.ban.on(() => this.requestUpdate())
+    for await (const _ of this.engine.filled)
+      this.requestUpdate()
+    this.confetti = 100
+    setTimeout(() => this.confetti = 0, 10 * 1000)
   }
 
   /** Works on the engine on behalf of a peer & sets main player */
-  private bindPeer = async ({ message, close, isYou }: peers[0], index: number) => {
+  private bindPeer = async ({ message, close, isYou }: typeof p2p.peers[0], index: number) => {
     if (isYou)
       this.mainPlayer = this.engine.players[index]
 
@@ -115,19 +125,6 @@ export default class extends LitElement {
     close()
   }
 
-  // Shuffle all cards using given RNG
-  private *cardGenerator() {
-    const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
-    while (cards.length) {
-      const last = cards.length - 1,
-        swap = Math.abs(p2p.random(true)) % last
-
-        ;[cards[swap], cards[last]] = [cards[last], cards[swap]]
-
-      yield cards.pop()!
-    }
-  }
-
   private get winnerText() {
     const winners: string[] = []
     for (const [index, { score }] of this.engine.players.entries())
@@ -138,7 +135,7 @@ export default class extends LitElement {
     return `${winners.join(' & ')} Win${winners.length == 1 && winners[0] != 'You' ? 's' : ''}`
   }
 
-  protected readonly render = () => this.engine.filled.isAlive
+  protected readonly render = () => p2p && (this.engine.filled.isAlive
     // In game
     ? html`
       <lit-sets
@@ -191,5 +188,5 @@ export default class extends LitElement {
             <div class="block"></div>
             ${name}
           </div>`)}
-        </legend>` : ''}`
+        </legend>` : ''}`)
 }
