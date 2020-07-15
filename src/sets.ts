@@ -47,6 +47,7 @@ export default class extends LitElement {
   selected: number[] = []
 
   firstUpdated() {
+    // TODO do not select a card
     addEventListener('keypress', ({ code }: KeyboardEvent) => this.takeOnKey && code == this.takeOnKey && this.takeSet())
   }
 

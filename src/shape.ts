@@ -90,7 +90,7 @@ export default class extends LitElement {
   // Inner triangle
   ...opacities.map(opacity => css`
     :host([opacity="${opacity}"]) span {
-      opacity: ${1 - opacity / 2};
+      opacity: ${opacity / 2};
     }`),
 
   // Inner square and circle

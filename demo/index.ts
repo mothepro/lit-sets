@@ -21,6 +21,9 @@ export default class extends LitElement {
   @internalProperty()
   protected showClock = true
 
+  @internalProperty()
+  protected restartClock = false
+
   /** The sets game engine */
   private engine!: Game
 
@@ -71,6 +74,11 @@ export default class extends LitElement {
     this.go()
   }
 
+  updated(changed: PropertyValues) {
+    if (changed.has('restartClock') && this.restartClock)
+      this.restartClock = false
+  }
+
   private go = async () => {
     // Shuffle all cards using given RNG
     const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
@@ -84,6 +92,7 @@ export default class extends LitElement {
 
     // Reset running scores
     this.runningScores = this.engine.players.map(() => [])
+    this.restartClock = true
 
     // Refresh when market changes OR when the player performs some actions. */
     this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
@@ -156,6 +165,7 @@ export default class extends LitElement {
       ></sets-leaderboard>
       <lit-clock
         part="clock"
+        .ticks=${this.restartClock ? 0 : null}
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
         @tick=${() => this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))}
