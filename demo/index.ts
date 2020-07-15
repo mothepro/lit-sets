@@ -135,7 +135,7 @@ export default class extends LitElement {
     return `${winners.join(' & ')} Win${winners.length == 1 && winners[0] != 'You' ? 's' : ''}`
   }
 
-  protected readonly render = () => p2p && (this.engine.filled.isAlive
+  protected readonly render = () => p2p && this.engine && this.mainPlayer && (this.engine.filled.isAlive
     // In game
     ? html`
       <lit-sets
