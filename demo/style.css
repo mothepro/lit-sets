@@ -119,6 +119,12 @@ dark-mode-toggle.icon {
   left: 1em;
 }
 
+::part(make-group) {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+}
+
 /* Loading */
 .loading {
   text-align: center;
@@ -161,9 +167,9 @@ dark-mode-toggle.icon {
 
 /* Only show slots when state matches. */
 p2p-switch:not([state]) [slot="p2p"],
-p2p-switch:not([state="0"]) [slot="p2p"],
-p2p-switch:not([state="1"]) [slot="p2p"],
-p2p-switch:not([state="2"]) [slot="p2p"],
+p2p-switch[state="0"] [slot="p2p"],
+p2p-switch[state="1"] [slot="p2p"],
+p2p-switch[state="2"] [slot="p2p"],
 
 p2p-switch:not([state="-1"]) .p2p-disconnected,
 p2p-switch:not([state="0"]) .p2p-offline,
