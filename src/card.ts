@@ -1,5 +1,5 @@
 import { LitElement, customElement, property, html, css } from 'lit-element'
-import { Details } from 'sets-game-engine'
+import type { Details } from 'sets-game-engine'
 import injectStyle from './injectStyle.js'
 
 import '@material/mwc-button'

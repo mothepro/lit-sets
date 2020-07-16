@@ -1,5 +1,5 @@
-import { LitElement, customElement, property, html, css, internalProperty, PropertyValues } from 'lit-element'
-import Game, { Player, Details, Card } from 'sets-game-engine'
+import { LitElement, customElement, html, css, internalProperty, PropertyValues } from 'lit-element'
+import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import type { TakeEvent } from '../index.js'
 
 import 'lit-p2p'
@@ -61,7 +61,7 @@ export default class extends LitElement {
     }`,
 
   // CSS vars for the colors in the chart
-  ...[...Array(10)].map((_, i) => css`
+  ...[...Array(10).keys()].map(i => css`
       ::part(for-${i}) {
         stroke: var(--chart-color-${i});
       }
@@ -118,10 +118,11 @@ export default class extends LitElement {
               break
 
             case 3: // Take
+              const indexs = new Set(new Uint8Array(data))
               //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
-              this.engine.takeFromMarket(
+              this.engine.takeSet(
                 this.engine.players[index],
-                [...new Uint8Array(data)] as [number, number, number])
+                this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
               break
 
             default:
@@ -168,7 +169,8 @@ export default class extends LitElement {
         .ticks=${this.restartClock ? 0 : null}
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
-        @tick=${() => this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))}
+        @tick=${() => this.engine.players.map(({ score }, index) => this.engine.filled.isAlive
+          && this.runningScores[index].push(score))}
       ></lit-clock>
       <mwc-fab
         part="clock-toggle"
