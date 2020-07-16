@@ -48,7 +48,12 @@ export default class extends LitElement {
 
   firstUpdated() {
     // TODO do not select a card
-    addEventListener('keypress', ({ code }: KeyboardEvent) => this.takeOnKey && code == this.takeOnKey && this.takeSet())
+    addEventListener('keypress', (event: KeyboardEvent) => {
+      if (this.takeOnKey && event.code == this.takeOnKey) {
+        event.preventDefault()
+        this.takeSet()
+      }
+    })
   }
 
   static readonly styles = css`
@@ -86,11 +91,7 @@ export default class extends LitElement {
   }`
 
   private selectCard(index: number) {
-    return ({ detail }: MouseEvent) => {
-      // Do not select if they press "Enter"
-      if (this.takeOnKey && !detail)
-        return
-
+    return () => {
       const selected = new Set(this.selected)
       if (selected.has(index))
         selected.delete(index)
