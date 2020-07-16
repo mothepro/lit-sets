@@ -5,4 +5,5 @@
   --selected-color-bg: black;
   --mdc-theme-on-primary: var(--color-fg);
   --mdc-theme-text-primary-on-background: var(--color-fg);
+  --mdc-theme-text-hint-on-background: var(--color-fg);
 }

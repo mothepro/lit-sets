@@ -1,21 +1,25 @@
 /* Shared vars for light and dark theme */
 :root {
   --sets-shape-size: 3em;
-  --sets-shape-spacing: .2em;
+  --sets-shape-spacing: 8px;
   --sets-grid-template-columns: repeat(2, minmax(200px, 400px));
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
 
+  --sets-shape-blue-hsl: 207, 90%, 58%;
+  --sets-shape-red-hsl: 45, 100%, 50%;
+  --sets-shape-green-hsl: 4, 90%, 58%; /* Actually yellow */
+
   --chart-line-width: 2px;
   --chart-circle-radius: 0;
-  --chart-circle-width: 2px;
-  --chart-line-width-hover: 15px;
+  --chart-circle-width: 0;
+  --chart-line-width-hover: 0;
   --chart-color-0: royalblue;
   --chart-color-1: red;
   --chart-color-2: green;
   --chart-color-3: purple;
   --chart-color-4: yellow;
-  --chart-color-5: orange;
+  --chart-color-5: cyan;
 
   --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
@@ -28,12 +32,12 @@
 }
 @media (min-width: 768px) { /* bootstrap "md" */
   :root {
-    --sets-shape-spacing: .35em;
+    --sets-shape-spacing: 12px;
   }
 }
 @media (min-width: 992px) { /* bootstrap "lg" */
   :root {
-    --nothing: '';
+    --sets-shape-spacing: 18px 12px;
   }
 }
 @media (min-width: 1200px) { /* bootstrap "xl" */
@@ -62,26 +66,11 @@ h1 span {
   font-size: 1rem;
 }
 
-::part(leaderboard) {
-  display: block;
-  text-align: center;
-  font-family: var(--font-family);
-  color: var(--color-fg);
-}
-::part(clock) {
-  position: fixed;
-  bottom: 3em;
-  left: 1em;
-  font-family: monospace;
-  font-size: 1.5em;
-  user-select: none;
-}
-
 /* Icons */
 .icon {
   position: fixed;
   top: .5em;
-  color: hsla(0, 0%, 0%, 0.87);
+  color: var(--color-fg);
 }
 dark-mode-toggle.icon {
   top: 0;
@@ -93,23 +82,47 @@ dark-mode-toggle.icon {
 .offline {
   right: 5em;
 }
-::part(clock-toggle) {
-  position: fixed;
-  bottom: 1em;
-  left: 4em;
-}
 
 /* Parts */
 ::part(sets) {
   margin-bottom: 3em;
 }
 
-::part(lobby), ::part(leaderboard-full) {
+::part(client-list), ::part(leaderboard-full) {
   display: block;
   margin: 0 auto;
   max-width: 400px;
   border: 1px solid #d3d3d3;
   border-radius: 0.5em;
+  font-family: var(--font-family);
+  color: var(--color-fg);
+}
+
+::part(leaderboard-simple) {
+  display: block;
+  text-align: center;
+  margin-bottom: 3em;
+}
+
+::part(clock) {
+  position: fixed;
+  bottom: 3em;
+  left: 1em;
+  font-family: monospace;
+  font-size: 1.5em;
+  user-select: none;
+}
+
+::part(clock-toggle) {
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
+}
+
+::part(make-group) {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
 }
 
 /* Loading */
@@ -153,19 +166,15 @@ dark-mode-toggle.icon {
 }
 
 /* Only show slots when state matches. */
-p2p-switch:not([state="-1"]) [slot="disconnected"],
+p2p-switch:not([state]) [slot="p2p"],
+p2p-switch[state="0"] [slot="p2p"],
+p2p-switch[state="1"] [slot="p2p"],
+p2p-switch[state="2"] [slot="p2p"],
+
 p2p-switch:not([state="-1"]) .p2p-disconnected,
-
-p2p-switch:not([state="0"]) [slot="offline"],
 p2p-switch:not([state="0"]) .p2p-offline,
-
-p2p-switch:not([state="1"]) [slot="lobby"],
 p2p-switch:not([state="1"]) .p2p-lobby,
-
-p2p-switch:not([state="2"]) [slot="loading"],
 p2p-switch:not([state="2"]) .p2p-loading,
-
-p2p-switch:not([state="3"]) [slot="ready"],
 p2p-switch:not([state="3"]) .p2p-ready {
   display: none;
 }
