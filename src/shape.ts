@@ -1,4 +1,5 @@
 import { LitElement, customElement, property, css, html } from 'lit-element'
+import { Details } from 'sets-game-engine'
 
 /** Convert a Color and opacity into */
 function cssColor(color: Details.Color, opacity = Details.Opacity.SOLID) {
