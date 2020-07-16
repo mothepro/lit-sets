@@ -35,7 +35,7 @@ export default class extends LitElement {
   @property({ type: String })
   selectedIcon = 'done'
 
-  static readonly styles = css`
+  static readonly styles = [css`
     @keyframes zoom-in {
       from { transform: scale(0) }
       to { transform: scale(1) }
@@ -72,14 +72,13 @@ export default class extends LitElement {
     sets-shape {
       font-size: var(--sets-shape-size, 50px);
       margin: var(--sets-shape-spacing, .2em);
-    }`
+    }`,
 
-  /** This needs to override the value set. */
-  protected get myStyle() {
-    return css`
-    :host {
-      animation-delay: ${this.index * 500}ms !important;
-    }` }
+  // The animation delays
+  ...[...Array(21).keys()].map(i => css`
+    :host([index="${i}"]) {
+      animation-delay: ${i * 500}ms !important;
+    }`)]
 
   protected async firstUpdated() {
     await this.updateComplete
@@ -101,6 +100,5 @@ export default class extends LitElement {
         ></sets-shape>`)}
     </mwc-button>
     ${this.hint ? html`<mwc-icon class="hint" label="Hint">${this.hintIcon}</mwc-icon>` : ''}
-    ${this.selected ? html`<mwc-icon class="selected" label="Selected">${this.selectedIcon}</mwc-icon>` : ''}
-    ${this.index ? html`<style>${this.myStyle}</style>` : '' /* There has gotta be a better way to do this */}`
+    ${this.selected ? html`<mwc-icon class="selected" label="Selected">${this.selectedIcon}</mwc-icon>` : ''}`
 }
