@@ -118,7 +118,7 @@ export default class extends LitElement {
         color=${card.color}
         shape=${card.shape}
         quantity=${card.quantity}
-        index=${index}
+        zoom-in=${index}
         @click=${this.selectCard(index)}
       ></sets-card>`)}
     <mwc-fab

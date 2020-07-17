@@ -20,8 +20,8 @@ export default class extends LitElement {
   @property({ type: Number })
   quantity!: Details.Quantity
 
-  @property({ type: Number })
-  index = 0
+  @property({ type: Number, attribute: 'zoom-in' })
+  zoomIn = 0
 
   @property({ type: Boolean, reflect: true })
   selected = false
@@ -47,7 +47,7 @@ export default class extends LitElement {
       margin-bottom: 5px;
     }
 
-    :host([index]) {
+    :host([zoom-in]) {
       animation: 1s ease zoom-in both;
     }
 
@@ -76,8 +76,8 @@ export default class extends LitElement {
 
   // The animation delays
   ...[...Array(21).keys()].map(i => css`
-    :host([index="${i}"]) {
-      animation-delay: ${i * 500}ms !important;
+    :host([zoom-in="${i}"]) {
+      animation-delay: calc(var(--sets-card-animation-delay, 100ms) * ${i});
     }`)]
 
   protected async firstUpdated() {
