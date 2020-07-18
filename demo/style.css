@@ -85,8 +85,8 @@ dark-mode-toggle.icon {
 }
 
 /* Parts */
-::part(sets) {
-  margin-bottom: 3em;
+::part(leaderboard) {
+  margin-top: 3em;
 }
 
 ::part(client-list), ::part(leaderboard-full) {

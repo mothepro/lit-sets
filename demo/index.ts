@@ -155,7 +155,7 @@ export default class extends LitElement {
         show-label
         take-on-key="Enter"
         .cards=${this.engine.cards}
-        .hint=${this.mainPlayer.hintCards}
+        .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
         @hint=${() => p2p.broadcast(new Uint8Array([0]))}
       ></lit-sets>

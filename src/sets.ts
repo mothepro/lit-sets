@@ -57,7 +57,7 @@ export default class extends LitElement {
   }
 
   static readonly styles = css`
-  :host {
+  .grid {
     display: grid;
     grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
     gap: var(--sets-gap, 2em);
@@ -109,9 +109,10 @@ export default class extends LitElement {
   }
 
   protected readonly render = () => html`
-    ${this.cards.map((card, index) => html`
+    <div class="grid">${this.cards.map((card, index) => html`
       <sets-card
         part="card card-${index}"
+        interactive
         ?selected=${this.selected.includes(index)}
         ?hint=${this.hint.includes(card)}
         opacity=${card.opacity}
@@ -121,6 +122,7 @@ export default class extends LitElement {
         zoom-in=${index}
         @click=${this.selectCard(index)}
       ></sets-card>`)}
+    </div>
     <mwc-fab
       part="hint"
       class="hint"

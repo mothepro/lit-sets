@@ -20,20 +20,17 @@ export default class extends LitElement {
   @property({ type: Number })
   quantity!: Details.Quantity
 
-  @property({ type: Number, attribute: 'zoom-in' })
+  @property({ type: Number, attribute: 'zoom-in', reflect: true })
   zoomIn = 0
+
+  @property({ type: Boolean, reflect: true })
+  interactive = false
 
   @property({ type: Boolean, reflect: true })
   selected = false
 
   @property({ type: Boolean, reflect: true })
   hint = false
-
-  @property({ type: String })
-  hintIcon = 'star'
-
-  @property({ type: String })
-  selectedIcon = 'done'
 
   static readonly styles = [css`
     @keyframes zoom-in {
@@ -42,16 +39,14 @@ export default class extends LitElement {
     }
 
     :host {
-      display: inline-block;
       position: relative;
       margin-bottom: 5px;
     }
-
     :host([zoom-in]) {
       animation: 1s ease zoom-in both;
     }
 
-    .hint, .selected {
+    mwc-icon {
       pointer-events: none;
       position: absolute;
     }
@@ -90,8 +85,20 @@ export default class extends LitElement {
       injectStyle(mwcRoot, css`#button { height: auto }`)
   }
 
+  private toggle(e: Event) {
+    if (!this.interactive) {
+      e.stopPropagation()
+      e.preventDefault()
+    } else
+      this.selected = !this.selected
+  }
+
   protected readonly render = () => html`
-    <mwc-button raised fullwidth  @click=${() => this.selected = !this.selected}>
+    <mwc-button
+      raised
+      fullwidth
+      ?disabled=${!this.interactive}
+      @click=${this.toggle}>
       ${[...Array(1 + this.quantity)].map(() => html`
         <sets-shape
           opacity=${this.opacity}
@@ -99,6 +106,12 @@ export default class extends LitElement {
           shape=${this.shape}
         ></sets-shape>`)}
     </mwc-button>
-    ${this.hint ? html`<mwc-icon class="hint" label="Hint">${this.hintIcon}</mwc-icon>` : ''}
-    ${this.selected ? html`<mwc-icon class="selected" label="Selected">${this.selectedIcon}</mwc-icon>` : ''}`
+    ${this.hint ? html`
+      <slot name="hint">
+        <mwc-icon class="hint" label="Hint">star</mwc-icon>
+      </slot>` : ''}
+    ${this.selected ? html`
+      <slot name="selected">
+        <mwc-icon class="selected" label="Selected">done</mwc-icon>
+      </slot>` : ''}`
 }
