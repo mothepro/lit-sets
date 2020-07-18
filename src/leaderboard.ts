@@ -6,31 +6,25 @@ import '@material/mwc-list'
 @customElement('sets-leaderboard')
 export default class extends LitElement {
 
-  @property({ type: Array })
-  players: Player[] = []
+  @property({ type: Array, reflect: true })
+  scores: number[] = []
+  
+  @property({ type: Array, reflect: true })
+  isBanned: boolean[] = []
 
   @property({ type: Array, reflect: true })
   names: string[] = []
 
-  protected updated() {
-    for (const player of this.players) {
-      player.ban.on(() => this.requestUpdate())
-      player.unban.on(() => this.requestUpdate())
-      player.take.on(() => this.requestUpdate())
-      player.hintUpdate.on(() => this.requestUpdate())
-    }
-  }
-
-  protected readonly render = () => this.players.length == 1
-    ? html`Your score is ${this.players[0].score}.`
-    : html`<mwc-list roottabble>${this.players.map((player, index) => html`
+  protected readonly render = () => this.scores.length == 1
+    ? html`Your score is ${this.scores[0]}.`
+    : html`<mwc-list roottabble>${this.scores.map((score, index) => html`
       ${index != 0 ? html`<li divider padded role="separator"></li>` : ''}
       <mwc-list-item
         noninteractive
         hasMeta
-        ?disabled=${player.isBanned}>
+        ?disabled=${this.isBanned[index]}>
         ${this.names[index]}
-        <span slot="meta">${player.score}</span>
+        <span slot="meta">${score}</span>
       </mwc-list-item>
     `)}</mwc-list>`
 }

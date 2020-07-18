@@ -94,10 +94,14 @@ export default class extends LitElement {
     this.runningScores = this.engine.players.map(() => [])
     this.restartClock = true
 
-    // Refresh when market changes OR when the player performs some actions. */
-    this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
-    this.mainPlayer.unban.on(() => this.requestUpdate())
-    this.mainPlayer.ban.on(() => this.requestUpdate())
+    // Refresh when market changes OR when the player performs some actions that could change score. */
+    for (const player of this.engine.players) {
+      player.ban.on(() => this.requestUpdate())
+      player.unban.on(() => this.requestUpdate())
+      player.take.on(() => this.requestUpdate())
+      player.hintUpdate.on(() => this.requestUpdate())
+    }
+      
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     this.confetti = 100
@@ -161,7 +165,8 @@ export default class extends LitElement {
       ></lit-sets>
       <sets-leaderboard
         part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
-        .players=${this.engine.players}
+        .scores=${this.engine.players.map(({score}) => score)}
+        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
         .names=${p2p.peers?.map(peer => peer.name) ?? []}
       ></sets-leaderboard>
       <lit-clock
