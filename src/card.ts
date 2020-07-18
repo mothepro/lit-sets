@@ -1,6 +1,6 @@
 import { LitElement, customElement, property, html, css } from 'lit-element'
 import type { Details } from 'sets-game-engine'
-import injectStyle from './injectStyle.js'
+import { injectStyle, hasArrayChanged } from './helper.js'
 
 import '@material/mwc-button'
 import './shape.js'

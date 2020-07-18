@@ -1,31 +1,11 @@
 import { LitElement, customElement, property, css, html } from 'lit-element'
 import { Details } from 'sets-game-engine'
+import { borderSize, baseByHeight, borderSizeByHeight, hypotnousSize, cssColor } from './helper.js'
 
-/** Convert a Color and opacity into */
-function cssColor(color: Details.Color, opacity = Details.Opacity.SOLID) {
-  switch (color) {
-    case Details.Color.BLUE:
-      return css`hsla(var(--sets-shape-blue-hsl, 207, 90%, 58%), ${1 - opacity / 2})`
-    case Details.Color.RED:
-      return css`hsla(var(--sets-shape-red-hsl, 45, 100%, 50%), ${1 - opacity / 2})`
-    case Details.Color.GREEN:
-      return css`hsla(var(--sets-shape-green-hsl, 4, 90%, 58%), ${1 - opacity / 2})`
-  }
-}
-
-const
-  /** Equilateral Triangle Ratio. Thanks Amima :) */
-  baseByHeight = Math.sqrt(3) / 3,
-  /** Border width ratio */
-  borderSize = 1 / 6,
-  /** All possible colors */
-  colors = [Details.Color.RED, Details.Color.GREEN, Details.Color.BLUE],
-  /** All possible opacities */
-  opacities = [Details.Opacity.EMPTY, Details.Opacity.HALF, Details.Opacity.SOLID]
-
-const y = borderSize * baseByHeight,
-  x = Math.sqrt(borderSize ** 2 - y ** 2),
-  b = baseByHeight - x
+/** All possible colors */
+const colors = [Details.Color.RED, Details.Color.GREEN, Details.Color.BLUE]
+/** All possible opacities */
+const opacities = [Details.Opacity.EMPTY, Details.Opacity.HALF, Details.Opacity.SOLID]
 
 /**
  * A visiual representation for a shape in sets.
@@ -68,10 +48,10 @@ export default class extends LitElement {
     position: absolute;
 
     top: ${borderSize}em;
-    left: ${-b}em;
+    left: ${-hypotnousSize}em;
     border-width: 0
-      ${b}em
-      ${1 - borderSize - y}em;
+      ${hypotnousSize}em
+      ${1 - borderSize - borderSizeByHeight}em;
 
     border-style: solid;
     border-color: transparent;

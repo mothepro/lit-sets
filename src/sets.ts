@@ -1,5 +1,6 @@
-import { LitElement, customElement, property, html, css } from 'lit-element'
+import { LitElement, customElement, property, html, css, PropertyValues } from 'lit-element'
 import type { Card } from 'sets-game-engine'
+import { hasArrayChanged } from './helper.js'
 
 import '@material/mwc-fab'
 import './card.js'
@@ -35,7 +36,7 @@ export default class extends LitElement {
   takeOnKey = ''
 
   /** Cards in the market */
-  @property({ type: Array })
+  @property({ type: Array, hasChanged: hasArrayChanged })
   cards: Card[] = []
 
   /** The cards that are labeled as hints */

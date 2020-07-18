@@ -1,4 +1,4 @@
-import { LitElement, customElement, property, html, css, PropertyValues, internalProperty } from 'lit-element'
+import { LitElement, customElement, property, html, css, PropertyValues } from 'lit-element'
 import { hasArrayChanged } from './helper.js'
 
 import '@material/mwc-list'
