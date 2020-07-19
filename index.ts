@@ -1,6 +1,7 @@
 import { LitElement, customElement, html, css, internalProperty, PropertyValues } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import type { TakeEvent } from '../index.js'
+import { milliseconds } from '../src/helper.js'
 
 import 'lit-p2p'
 import 'lit-confetti'
@@ -94,14 +95,19 @@ export default class extends LitElement {
     this.runningScores = this.engine.players.map(() => [])
     this.restartClock = true
 
-    // Refresh when market changes OR when the player performs some actions. */
-    this.mainPlayer.hintUpdate.on(() => this.requestUpdate())
-    this.mainPlayer.unban.on(() => this.requestUpdate())
-    this.mainPlayer.ban.on(() => this.requestUpdate())
+    // Refresh when market changes OR when the player performs some actions that could change score. */
+    for (const player of this.engine.players) {
+      player.ban.on(() => this.requestUpdate())
+      player.unban.on(() => this.requestUpdate())
+      player.take.on(() => this.requestUpdate())
+      player.hintUpdate.on(() => this.requestUpdate())
+    }
+      
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     this.confetti = 100
-    setTimeout(() => this.confetti = 0, 10 * 1000)
+    await milliseconds(10 * 1000)
+    this.confetti = 0
   }
 
   /** Works on the engine on behalf of a peer & sets main player */
@@ -155,13 +161,14 @@ export default class extends LitElement {
         show-label
         take-on-key="Enter"
         .cards=${this.engine.cards}
-        .hint=${this.mainPlayer.hintCards}
+        .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
         @hint=${() => p2p.broadcast(new Uint8Array([0]))}
       ></lit-sets>
       <sets-leaderboard
         part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
-        .players=${this.engine.players}
+        .scores=${this.engine.players.map(({score}) => score)}
+        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
         .names=${p2p.peers?.map(peer => peer.name) ?? []}
       ></sets-leaderboard>
       <lit-clock

@@ -15,8 +15,8 @@
     "sets-game-engine/": "//unpkg.com/sets-game-engine@1.0.5/dist/esm/",
     "sets-game-engine": "//unpkg.com/sets-game-engine@1.0.5/dist/esm/index.js",
 
-    "lit-element/": "https://unpkg.com/lit-element@2.3.1/",
-    "lit-element": "https://unpkg.com/lit-element@2.3.1/lit-element.js",
+    "lit-element/": "//unpkg.com/lit-element@2.3.1/",
+    "lit-element": "//unpkg.com/lit-element@2.3.1/lit-element.js",
     "lit-html/": "//unpkg.com/lit-html@1.2.1/",
     "lit-html": "//unpkg.com/lit-html@1.2.1/lit-html.js",
 
@@ -32,25 +32,25 @@
     "@material/list/": "//unpkg.com/@material/list@7.0.0/",
     "@material/snackbar": "//unpkg.com/@material/snackbar@7.0.0/dist/mdc.snackbar.js",
     "@material/snackbar/": "//unpkg.com/@material/snackbar@7.0.0/",
-    "@material/floating-label/": "https://unpkg.com/@material/floating-label@7.0.0/",
-    "@material/floating-label": "https://unpkg.com/@material/floating-label@7.0.0/dist/mdc.floating-label.js",
+    "@material/floating-label/": "//unpkg.com/@material/floating-label@7.0.0/",
+    "@material/floating-label": "//unpkg.com/@material/floating-label@7.0.0/dist/mdc.floating-label.js",
     "@material/notched-outline": "//unpkg.com/@material/notched-outline@7.0.0/dist/mdc.notched-outline.js",
     "@material/notched-outline/": "//unpkg.com/@material/notched-outline@7.0.0/",
-    "@material/line-ripple/": "https://unpkg.com/@material/line-ripple@7.0.0/",
-    "@material/line-ripple": "https://unpkg.com/@material/line-ripple@7.0.0/dist/mdc.line-ripple.js",
+    "@material/line-ripple/": "//unpkg.com/@material/line-ripple@7.0.0/",
+    "@material/line-ripple": "//unpkg.com/@material/line-ripple@7.0.0/dist/mdc.line-ripple.js",
 
-    "@material/mwc-line-ripple/": "https://unpkg.com/@material/mwc-line-ripple@0.17.2/",
-    "@material/mwc-line-ripple": "https://unpkg.com/@material/mwc-line-ripple@0.17.2/mwc-line-ripple-directive.js",
-    "@material/mwc-floating-label/": "https://unpkg.com/@material/mwc-floating-label@0.17.2/",
-    "@material/mwc-floating-label": "https://unpkg.com/@material/mwc-floating-label@0.17.2/mwc-floating-label-directive.js",
-    "@material/mwc-notched-outline/": "https://unpkg.com/@material/mwc-notched-outline@0.17.2/",
-    "@material/mwc-notched-outline": "https://unpkg.com/@material/mwc-notched-outline@0.17.2/mwc-notched-outline.js",
-    "@material/mwc-fab/": "https://unpkg.com/@material/mwc-fab@0.17.2/",
-    "@material/mwc-fab": "https://unpkg.com/@material/mwc-fab@0.17.2/mwc-fab.js",
-    "@material/mwc-list/": "https://unpkg.com/@material/mwc-list@0.17.2/",
-    "@material/mwc-list": "https://unpkg.com/@material/mwc-list@0.17.2/mwc-list.js",
-    "@material/mwc-button/": "https://unpkg.com/@material/mwc-button@0.17.2/",
-    "@material/mwc-button": "https://unpkg.com/@material/mwc-button@0.17.2/mwc-button.js",
+    "@material/mwc-line-ripple/": "//unpkg.com/@material/mwc-line-ripple@0.17.2/",
+    "@material/mwc-line-ripple": "//unpkg.com/@material/mwc-line-ripple@0.17.2/mwc-line-ripple-directive.js",
+    "@material/mwc-floating-label/": "//unpkg.com/@material/mwc-floating-label@0.17.2/",
+    "@material/mwc-floating-label": "//unpkg.com/@material/mwc-floating-label@0.17.2/mwc-floating-label-directive.js",
+    "@material/mwc-notched-outline/": "//unpkg.com/@material/mwc-notched-outline@0.17.2/",
+    "@material/mwc-notched-outline": "//unpkg.com/@material/mwc-notched-outline@0.17.2/mwc-notched-outline.js",
+    "@material/mwc-fab/": "//unpkg.com/@material/mwc-fab@0.17.2/",
+    "@material/mwc-fab": "//unpkg.com/@material/mwc-fab@0.17.2/mwc-fab.js",
+    "@material/mwc-list/": "//unpkg.com/@material/mwc-list@0.17.2/",
+    "@material/mwc-list": "//unpkg.com/@material/mwc-list@0.17.2/mwc-list.js",
+    "@material/mwc-button/": "//unpkg.com/@material/mwc-button@0.17.2/",
+    "@material/mwc-button": "//unpkg.com/@material/mwc-button@0.17.2/mwc-button.js",
     "@material/mwc-ripple": "//unpkg.com/@material/mwc-ripple@0.17.2/mwc-ripple.js",
     "@material/mwc-ripple/": "//unpkg.com/@material/mwc-ripple@0.17.2/",
     "@material/mwc-checkbox": "//unpkg.com/@material/mwc-checkbox@0.17.2/mwc-checkbox.js",
@@ -67,9 +67,9 @@
     "@material/mwc-base/": "//unpkg.com/@material/mwc-base@0.17.2/",
     "std:kv-storage": [
       "std:kv-storage",
-      "https://unpkg.com/kv-storage-polyfill@2.0.0/dist/kv-storage-polyfill.mjs"
+      "//unpkg.com/kv-storage-polyfill@2.0.0/dist/kv-storage-polyfill.mjs"
     ],
-    "simple-peer": "https://unpkg.com/simple-peer@9.7.2/simplepeer.min.js",
-    "tslib": "https://unpkg.com/tslib@2.0.0/tslib.es6.js"
+    "simple-peer": "//unpkg.com/simple-peer@9.7.2/simplepeer.min.js",
+    "tslib": "//unpkg.com/tslib@2.0.0/tslib.es6.js"
   }
 }

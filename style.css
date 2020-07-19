@@ -5,6 +5,7 @@
   --sets-grid-template-columns: repeat(2, minmax(200px, 400px));
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
+  --sets-card-animation-delay: 500ms;
 
   --sets-shape-blue-hsl: 207, 90%, 58%;
   --sets-shape-red-hsl: 45, 100%, 50%;
@@ -20,6 +21,10 @@
   --chart-color-3: purple;
   --chart-color-4: yellow;
   --chart-color-5: cyan;
+
+  --leaderboard-diff-duration: 2s;
+  --leaderboard-diff-positive-color-fg: limegreen;
+  --leaderboard-diff-negative-color-fg: red;
 
   --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
@@ -84,13 +89,12 @@ dark-mode-toggle.icon {
 }
 
 /* Parts */
-::part(sets) {
-  margin-bottom: 3em;
+::part(client-list) {
+  margin: 0 auto;
 }
 
 ::part(client-list), ::part(leaderboard-full) {
   display: block;
-  margin: 0 auto;
   max-width: 400px;
   border: 1px solid #d3d3d3;
   border-radius: 0.5em;
@@ -101,7 +105,10 @@ dark-mode-toggle.icon {
 ::part(leaderboard-simple) {
   display: block;
   text-align: center;
-  margin-bottom: 3em;
+}
+
+::part(leaderboard) {
+  margin: 3em auto;
 }
 
 ::part(clock) {

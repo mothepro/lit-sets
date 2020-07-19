@@ -33,7 +33,7 @@
     version="0.3.2"
     retries="2"
     timeout="22500"
-    lobby="lit-sets@0.0.1"
+    lobby="lit-sets@0.0.2"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -87,7 +87,7 @@
   gtag('js', new Date())
   gtag('config', 'UA-172429940-2')
 
-  document.body.addEventListener('p2p-error', error => {
+  document.body.firstElementChild.addEventListener('p2p-error', error => {
     console.error('Lost connection', error)
     ga('send', 'exception', {
       exDescription: `${error.message} -- ${error.stack}`,
