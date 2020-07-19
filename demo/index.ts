@@ -1,6 +1,7 @@
 import { LitElement, customElement, html, css, internalProperty, PropertyValues } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import type { TakeEvent } from '../index.js'
+import { milliseconds } from '../src/helper.js'
 
 import 'lit-p2p'
 import 'lit-confetti'
@@ -105,7 +106,8 @@ export default class extends LitElement {
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     this.confetti = 100
-    setTimeout(() => this.confetti = 0, 10 * 1000)
+    await milliseconds(10 * 1000)
+    this.confetti = 0
   }
 
   /** Works on the engine on behalf of a peer & sets main player */

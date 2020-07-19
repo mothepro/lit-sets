@@ -87,7 +87,7 @@
   gtag('js', new Date())
   gtag('config', 'UA-172429940-2')
 
-  document.body.addEventListener('p2p-error', error => {
+  document.body.firstElementChild.addEventListener('p2p-error', error => {
     console.error('Lost connection', error)
     ga('send', 'exception', {
       exDescription: `${error.message} -- ${error.stack}`,

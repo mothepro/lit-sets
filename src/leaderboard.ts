@@ -65,7 +65,7 @@ export default class extends LitElement {
   }
   [part~="diff-0"] { display: none; }`
 
-  protected shouldUpdate(changed: PropertyValues) {
+  protected update(changed: PropertyValues) {
     if (changed.has('scores')) {
       this.diff = this.scores.map((score, i) => score - ((changed.get('scores') as number[] ?? [])[i] ?? 0))
 
@@ -78,7 +78,7 @@ export default class extends LitElement {
         }))
     }
 
-    return super.shouldUpdate(changed)
+    return super.update(changed)
   }
 
   protected readonly render = () => this.scores.length == 1

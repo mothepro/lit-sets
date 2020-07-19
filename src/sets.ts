@@ -1,6 +1,7 @@
-import { LitElement, customElement, property, html, css, PropertyValues } from 'lit-element'
+import { LitElement, customElement, property, html, css, PropertyValues, internalProperty } from 'lit-element'
 import type { Card } from 'sets-game-engine'
-import { hasArrayChanged } from './helper.js'
+import { hasArrayChanged, milliseconds } from './helper.js'
+import { animationDuration } from './card.js'
 
 import '@material/mwc-fab'
 import './card.js'
@@ -40,12 +41,22 @@ export default class extends LitElement {
   cards: Card[] = []
 
   /** The cards that are labeled as hints */
-  @property({ type: Array })
-  hint: Card[] = []
+  @property({ type: Array, reflect: true })
+  hint: number[] = []
 
   /** Indexes of the selected cards */
   @property({ type: Array, reflect: true })
   selected: number[] = []
+
+  @internalProperty()
+  private display: {
+    /** Whether the transition to remove should be run */
+    remove: boolean
+    /** Animation & transtion delay to use */
+    delay: number
+    /** Card to show */
+    card: Card
+  }[] = []
 
   firstUpdated() {
     // TODO do not select a card
@@ -55,6 +66,35 @@ export default class extends LitElement {
         this.takeSet()
       }
     })
+  }
+
+  update(changed: PropertyValues) {
+    if (changed.has('cards')) {
+      if (changed.get('cards')) { // Remove cards no longer in the deck
+        this.display = this.display.map(({ card }) => ({
+          card,
+          delay: -1,
+          remove: !this.cards.includes(card),
+        }))
+        this.updateDisplay()
+      } else // We werent displaying anything before... nothing to remove!
+        this.display = this.cards.map((card, delay) => ({ card, delay, remove: false }))
+    }
+
+    super.update(changed)
+  }
+
+/** Makes the display match the `cards`, updating their delay to match the new order. */
+  // TODO move to `updated`
+  private async updateDisplay() {
+    await this.updateComplete
+    await milliseconds(animationDuration)
+    let next = 0
+    this.display = this.cards.map(card => ({
+      card,
+      remove: false,
+      delay: this.display.map(({ card: c }) => c).includes(card) ? -1 : next++,
+    }))
   }
 
   static readonly styles = css`
@@ -110,18 +150,21 @@ export default class extends LitElement {
   }
 
   protected readonly render = () => html`
-    <div class="grid">${this.cards.map((card, index) => html`
+    <div class="grid">${this.display.map(({ remove, delay, card }, index) => html`
       <sets-card
-        part="card card-${index}"
-        interactive
+        part="card card-${remove ? 'removal' : 'entrance'}"
+        zoom
+        index=${index}
+        delay=${delay}
+        ?out=${remove}
+        ?interactive=${!remove}
         ?selected=${this.selected.includes(index)}
-        ?hint=${this.hint.includes(card)}
+        ?hint=${this.hint.includes(index)}
         opacity=${card.opacity}
         color=${card.color}
         shape=${card.shape}
         quantity=${card.quantity}
-        zoom-in=${index}
-        @click=${this.selectCard(index)}
+        @click=${!remove && this.selectCard(index)}
       ></sets-card>`)}
     </div>
     <mwc-fab

@@ -1,6 +1,9 @@
 import { CSSResult, css } from 'lit-element'
 import { Details } from 'sets-game-engine'
 
+/** Returns a promise that resolves in `ms`. */
+export const milliseconds = (ms = 0) => new Promise(ok => setTimeout(ok, ms))
+
 /** Whether an array has actually changed */
 export const hasArrayChanged = (newVals: any[], oldVals: any[] = []) =>
   !oldVals

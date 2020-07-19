@@ -1,9 +1,12 @@
 import { LitElement, customElement, property, html, css } from 'lit-element'
 import type { Details } from 'sets-game-engine'
-import { injectStyle, hasArrayChanged } from './helper.js'
+import { injectStyle } from './helper.js'
 
 import '@material/mwc-button'
 import './shape.js'
+
+/** Number of milliseconds to complete animation/transition */
+export const animationDuration = 1000
 
 @customElement('sets-card')
 export default class extends LitElement {
@@ -20,9 +23,6 @@ export default class extends LitElement {
   @property({ type: Number })
   quantity!: Details.Quantity
 
-  @property({ type: Number, attribute: 'zoom-in', reflect: true })
-  zoomIn = 0
-
   @property({ type: Boolean, reflect: true })
   interactive = false
 
@@ -32,8 +32,9 @@ export default class extends LitElement {
   @property({ type: Boolean, reflect: true })
   hint = false
 
+  // TODO transtitions as CSS vars
   static readonly styles = [css`
-    @keyframes zoom-in {
+    @keyframes zoom {
       from { transform: scale(0) }
       to { transform: scale(1) }
     }
@@ -42,8 +43,15 @@ export default class extends LitElement {
       position: relative;
       margin-bottom: 5px;
     }
-    :host([zoom-in]) {
-      animation: 1s ease zoom-in both;
+    /* Animations are used to bring cards into view, since these must happen ASAP. */
+    :host([zoom]) {
+      animation: ${animationDuration}ms ease zoom both;
+      transition: opacity ${animationDuration}ms ease;
+    }
+    /* Transitions are easier to use, so they are to remove elements. */
+    :host([zoom][out]) {
+      animation-name: none;
+      opacity: 0;
     }
 
     mwc-icon {
@@ -71,7 +79,7 @@ export default class extends LitElement {
 
   // The animation delays
   ...[...Array(21).keys()].map(i => css`
-    :host([zoom-in="${i}"]) {
+    :host([zoom][delay="${i}"]) {
       animation-delay: calc(var(--sets-card-animation-delay, 100ms) * ${i});
     }`)]
 
