@@ -26,12 +26,16 @@
 </head>
 
 <body>
-  <p2p-switch 
+  <h1 class="title">
+    Sets
+    <span class="subtitle">by Mo</span>
+  </h1>
+
+  <lit-p2p
     local-storage
     max-peers="5"
     signaling="wss://ws.parkshade.com:443"
     version="0.3.2"
-    retries="2"
     timeout="22500"
     lobby="lit-sets@0.0.2"
     stuns='[
@@ -42,11 +46,6 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
-    <h1 class="title">
-      Sets
-      <span class="subtitle">by Mo</span>
-    </h1>
-
     <div slot="offline" class="loading">
       <div></div>
       <div></div>
@@ -70,7 +69,7 @@
     </a>
 
     <p2p-sets slot="p2p"></p2p-sets>
-  </p2p-switch>
+  </lit-p2p>
   <dark-mode-toggle permanent class="icon"></dark-mode-toggle>
   <a
     class="icon feedback"
