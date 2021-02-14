@@ -112,10 +112,10 @@ theme-toggle.icon {
 
 ::part(clock) {
   position: fixed;
-  bottom: 3em;
-  left: 1em;
+  bottom: 2em;
+  left: 0.5em;
   font-family: monospace;
-  font-size: 1.5em;
+  font-size: 2.5em;
   user-select: none;
 }
 
