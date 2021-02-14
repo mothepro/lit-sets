@@ -34,6 +34,8 @@
     "build:esm": "tsc -p tsconfig.esm.json"
   },
   "devDependencies": {
+    "@material/icon-button": "^10.0.0",
+    "@material/mwc-icon-button-toggle": "^0.20.0",
     "@mothepro/fancy-p2p": "^0.0.20",
     "@mothepro/signaling-lobby": "^0.3.3",
     "@types/mocha": "^8.2.0",

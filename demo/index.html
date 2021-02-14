@@ -32,6 +32,7 @@
   </h1>
 
   <lit-p2p
+    id="p2p"
     local-storage
     max-peers="5"
     signaling="wss://ws.parkshade.com:443"
@@ -56,28 +57,38 @@
       <div></div>
     </div>
 
-    <mwc-snackbar
-      open
-      slot="disconnected"
-      timeoutMs="10000"
-      class="p2p-disconnected"
-      labelText="Not connected to the Peer-to-Peer network. You're now playing offline!"
-    ></mwc-snackbar>
-
-    <a title="Play game solo" href="#p2p-offline" class="icon offline p2p-lobby">
-      <mwc-icon-button label="Offline Mode" icon="offline_bolt"></mwc-icon-button>
-    </a>
-    <a
-      class="icon feedback"
-      title="Improve this game"
-      target="_blank"
-      href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
-      <mwc-icon-button label="Send feedback" icon="feedback"></mwc-icon-button>
-    </a>
-    <theme-toggle persistent class="icon">
-      <mwc-icon-button label="Switch to light theme" title="Switch to light theme" icon="brightness_5" slot="dark"></mwc-icon-button>
-      <mwc-icon-button label="Switch to dark theme" title="Switch to dark theme" icon="nightlight" slot="light"></mwc-icon-button>
-    </theme-toggle>
+    <div class="top-icons">
+      <mwc-icon-button-toggle
+        offIcon="groups"
+        onIcon="person"
+        id="toggle-online"
+        title="Play with friends"
+        label="Play with friends"
+      ></mwc-icon-button-toggle>
+      <a
+        title="Improve this game"
+        target="_blank"
+        href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
+        <mwc-icon-button
+          icon="feedback"
+          label="Send feedback"
+        ></mwc-icon-button>
+      </a>
+      <theme-toggle persistent>
+        <mwc-icon-button
+          slot="dark"
+          icon="brightness_5"
+          label="Switch to light theme"
+          title="Switch to light theme"
+        ></mwc-icon-button>
+        <mwc-icon-button
+          slot="light"
+          icon="nightlight"
+          label="Switch to dark theme"
+          title="Switch to dark theme"
+        ></mwc-icon-button>
+      </theme-toggle>
+    </div>
 
     <p2p-sets slot="p2p"></p2p-sets>
   </lit-p2p>
