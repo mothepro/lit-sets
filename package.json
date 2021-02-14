@@ -55,6 +55,7 @@
     "@material/mwc-list": "^0.20.0",
     "@mothepro/lit-chart": "^0.0.2",
     "@mothepro/lit-clock": "^0.0.4",
+    "@mothepro/theme-toggle": "^0.0.2",
     "lit-confetti": "^0.1.5",
     "lit-element": "^2.4.0",
     "lit-p2p": "^0.4.0",
