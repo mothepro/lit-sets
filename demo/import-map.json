@@ -40,8 +40,6 @@
     "@material/notched-outline/": "//unpkg.com/@material/notched-outline@10.0.0/",
     "@material/line-ripple/": "//unpkg.com/@material/line-ripple@10.0.0/",
     "@material/line-ripple": "//unpkg.com/@material/line-ripple@10.0.0/dist/mdc.line-ripple.js",
-    "@material/icon-button/": "//unpkg.com/@material/icon-button@10.0.0/",
-    "@material/icon-button": "//unpkg.com/@material/icon-button@10.0.0/dist/mdc.icon-button.js",
 
     "@material/mwc-line-ripple/": "//unpkg.com/@material/mwc-line-ripple@0.20.0/",
     "@material/mwc-line-ripple": "//unpkg.com/@material/mwc-line-ripple@0.20.0/mwc-line-ripple-directive.js",
@@ -65,8 +63,6 @@
     "@material/mwc-snackbar/": "//unpkg.com/@material/mwc-snackbar@0.20.0/",
     "@material/mwc-icon-button": "//unpkg.com/@material/mwc-icon-button@0.20.0/mwc-icon-button.js",
     "@material/mwc-icon-button/": "//unpkg.com/@material/mwc-icon-button@0.20.0/",
-    "@material/mwc-icon-button-toggle": "//unpkg.com/@material/mwc-icon-button-toggle@0.20.0/mwc-icon-button-toggle.js",
-    "@material/mwc-icon-button-toggle/": "//unpkg.com/@material/mwc-icon-button-toggle@0.20.0/",
     "@material/mwc-icon": "//unpkg.com/@material/mwc-icon@0.20.0/mwc-icon.js",
     "@material/mwc-icon/": "//unpkg.com/@material/mwc-icon@0.20.0/",
     "@material/mwc-base": "//unpkg.com/@material/mwc-base@0.20.0/mwc-base.js",

@@ -25,7 +25,7 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body>
+<body first-visit>
   <h1 class="title">
     Sets
     <span class="subtitle">by Mo</span>
@@ -47,6 +47,7 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
+    <!-- temporary until next litp2p update --><span slot=disconnected></span>
     <div slot="offline" class="loading">
       <div></div>
       <div></div>
@@ -58,13 +59,36 @@
     </div>
 
     <div class="top-icons">
-      <mwc-icon-button-toggle
-        offIcon="groups"
-        onIcon="person"
-        id="toggle-online"
+      <mwc-button
+        raised
+        toggle-online-btn
+        class="first-visit p2p-disconnected mt6px"
+        trailingIcon
+        icon="groups"
+        label="Play with friends"
+      ></mwc-button>
+      <mwc-icon-button
+        toggle-online-btn
+        icon="groups"
+        class="not-first-visit p2p-disconnected"
         title="Play with friends"
         label="Play with friends"
-      ></mwc-icon-button-toggle>
+      ></mwc-icon-button>
+      <mwc-button
+        raised
+        toggle-online-btn
+        class="first-visit p2p-connected mt6px"
+        trailingIcon
+        icon="person"
+        label="Play solo"
+      ></mwc-button>
+      <mwc-icon-button
+        toggle-online-btn
+        icon="person"
+        class="not-first-visit p2p-connected"
+        title="Play solo"
+        label="Play solo"
+      ></mwc-icon-button>
       <a
         title="Improve this game"
         target="_blank"
