@@ -1,8 +1,8 @@
 /* Shared vars for light and dark theme */
 :root {
-  --sets-shape-size: 3em;
+  --sets-shape-size: 2.4em;
   --sets-shape-spacing: 8px;
-  --sets-grid-template-columns: repeat(2, minmax(200px, 400px));
+  --sets-grid-template-columns: repeat(2, minmax(150px, 45vw));
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
   --sets-card-animation-delay: 500ms;
@@ -29,11 +29,17 @@
   --mdc-typography-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   --mdc-text-field-ink-color: var(--color-fg);
   --mdc-text-field-label-ink-color: var(--color-fg);
+
+  --mdc-theme-surface: var(--color-bg);
+  --mdc-dialog-heading-ink-color: var(--color-fg);
+  --mdc-dialog-content-ink-color: var(--color-fg);
+  --mdc-dialog-scroll-divider-color: transparent;
+  --mdc-dialog-max-width: 768px;
 }
 
 @media (min-width: 576px) { /* bootstrap "sm" */
   :root {
-    --sets-grid-template-columns: repeat(3, minmax(200px, 400px));
+    --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --sets-shape-size: 3.5em;
   }
 }
@@ -176,6 +182,11 @@ h1 span {
 
 /*** Helpers ***/
 .mt6px { margin-top: 6px }
+
+/* Hide how to play text outside of dialog*/
+mwc-dialog:not([open]) {
+  color: var(--color-bg);
+}
 
 body:not([first-visit]) .first-visit,
 body[first-visit] .not-first-visit {

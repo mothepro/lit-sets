@@ -25,7 +25,7 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit>
+<body first-visit theme-toggle-key="theme" first-visit-help-delay="10000">
   <h1 class="title">
     Sets
     <span class="subtitle">by Mo</span>
@@ -93,6 +93,11 @@
         title="Play solo"
         label="Play solo"
       ></mwc-icon-button>
+      <mwc-icon-button
+        icon="help"
+        label="How to Play"
+        title="How to Play"
+      ></mwc-icon-button>
       <a
         title="Improve this game"
         target="_blank"
@@ -123,6 +128,9 @@
 
     <p2p-sets slot="p2p-disconnected"></p2p-sets>
     <p2p-sets slot="p2p-ready"></p2p-sets>
+
+    <mwc-dialog heading="How to Play" hideActions>
+    </mwc-dialog>
   </lit-p2p>
 </body>
 

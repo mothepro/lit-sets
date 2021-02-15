@@ -40,6 +40,10 @@
     "@material/notched-outline/": "//unpkg.com/@material/notched-outline@10.0.0/",
     "@material/line-ripple/": "//unpkg.com/@material/line-ripple@10.0.0/",
     "@material/line-ripple": "//unpkg.com/@material/line-ripple@10.0.0/dist/mdc.line-ripple.js",
+    "@material/dialog/": "//unpkg.com/@material/dialog@10.0.0/",
+    "@material/dialog": "//unpkg.com/@material/dialog@10.0.0/dist/mdc.dialog.js",
+    "@material/animation/": "//unpkg.com/@material/animation@10.0.0/",
+    "@material/animation": "//unpkg.com/@material/animation@10.0.0/dist/mdc.animation.js",
 
     "@material/mwc-line-ripple/": "//unpkg.com/@material/mwc-line-ripple@0.20.0/",
     "@material/mwc-line-ripple": "//unpkg.com/@material/mwc-line-ripple@0.20.0/mwc-line-ripple-directive.js",
@@ -67,6 +71,12 @@
     "@material/mwc-icon/": "//unpkg.com/@material/mwc-icon@0.20.0/",
     "@material/mwc-base": "//unpkg.com/@material/mwc-base@0.20.0/mwc-base.js",
     "@material/mwc-base/": "//unpkg.com/@material/mwc-base@0.20.0/",
+    "@material/mwc-dialog": "//unpkg.com/@material/mwc-dialog@0.20.0/mwc-dialog.js",
+    "@material/mwc-dialog/": "//unpkg.com/@material/mwc-dialog@0.20.0/",
+    "blocking-elements": "//unpkg.com/blocking-elements@0.1.1/dist/blocking-elements.min.js",
+    "blocking-elements/": "//unpkg.com/blocking-elements@0.1.1/",
+    "wicg-inert": "//unpkg.com/wicg-inert@3.1.0/dist/inert.js",
+    "wicg-inert/": "//unpkg.com/wicg-inert@3.1.0/dist/",
     "simple-peer": "//unpkg.com/simple-peer@9.7.2/simplepeer.min.js",
     "tslib": "//unpkg.com/tslib@2.0.0/tslib.es6.js"
   }

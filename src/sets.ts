@@ -173,7 +173,7 @@ export default class extends LitElement {
       mini
       ?disabled=${!this.hintAvailable}
       @click=${() => this.dispatchEvent(new CustomEvent('hint'))}
-      icon="help_outline"
+      icon="lightbulb"
       label="Get Hint"
       title="Get a hint"
     ></mwc-fab>
