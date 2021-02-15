@@ -6,8 +6,7 @@ const
   toggleOnlineBtns = document.querySelectorAll('[toggle-online-btn]')!,
   litP2pElement = document.querySelector('lit-p2p')!,
   helpBtn = document.querySelector('mwc-icon-button[icon=help]')!,
-  dialogElement = document.querySelector('mwc-dialog')!,
-  themeToggleKey = 'theme' // Since we use `<theme-toggle`>
+  dialogElement = document.querySelector('mwc-dialog')!
 
 // Make the toggle button actually do something
 // @ts-ignore TODO find this hidden type exported from the module directly...
@@ -18,7 +17,7 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
       : '-1')) // not trying to connect
 
 // Check for 1st time visit
-if (localStorage.getItem(themeToggleKey))
+if (localStorage.getItem(document.body.getAttribute('toggle-theme-key') ?? 'theme'))
   document.body.removeAttribute('first-visit')
 else // add [open] to <mwc-dialog> after some time
   setTimeout(

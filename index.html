@@ -7,6 +7,13 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="color-scheme" content="light dark">
   <title>Mo's Sets</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
   <script type="importmap-shim" src="import-map.json"></script>
   <link rel="stylesheet" href="light.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
   <link rel="stylesheet" href="dark.css" media="(prefers-color-scheme: dark)">
@@ -20,9 +27,9 @@
   <script prod-only type=application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-1"></script>
   <!-- Development -->
-  <script dev-only type=dev-only-application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
-  <script dev-only type=dev-only-module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
-  <script dev-only type=dev-only-module-shim src="./index.ts"></script>
+  <script dev-only type=dev-only-dev-only-application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
+  <script dev-only type=dev-only-dev-only-module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
+  <script dev-only type=dev-only-dev-only-module-shim src="./index.ts"></script>
 </head>
 
 <body first-visit theme-toggle-key="theme" first-visit-help-delay="10000">
@@ -35,7 +42,7 @@
     fallback
     local-storage
     max-peers="5"
-    signaling="wss://ws.parkshade.com:443"
+    signaling="ws://localhost:12345"
     version="0.3.2"
     timeout="25000"
     lobby="lit-sets@0.0.2"
