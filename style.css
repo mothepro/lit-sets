@@ -1,8 +1,11 @@
 /* Shared vars for light and dark theme */
 :root {
-  --sets-shape-size: 3em;
+  --how-to-table-template-columns: 100%;
+  --how-to-sets-template-columns: 100%;
+
+  --sets-shape-size: 2.4em;
   --sets-shape-spacing: 8px;
-  --sets-grid-template-columns: repeat(2, minmax(200px, 400px));
+  --sets-grid-template-columns: repeat(2, minmax(150px, 45vw));
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
   --sets-card-animation-delay: 500ms;
@@ -26,12 +29,21 @@
   --leaderboard-diff-positive-color-fg: limegreen;
   --leaderboard-diff-negative-color-fg: red;
 
-  --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  --mdc-typography-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  --mdc-text-field-ink-color: var(--color-fg);
+  --mdc-text-field-label-ink-color: var(--color-fg);
+  --mdc-theme-surface: var(--color-bg);
+  --mdc-dialog-heading-ink-color: var(--color-fg);
+  --mdc-dialog-content-ink-color: var(--color-fg);
+  --mdc-dialog-scroll-divider-color: transparent;
+  --mdc-dialog-max-width: 768px;
 }
 
 @media (min-width: 576px) { /* bootstrap "sm" */
   :root {
-    --sets-grid-template-columns: repeat(3, minmax(200px, 400px));
+    --how-to-table-template-columns: 50% 50%;
+    --how-to-sets-template-columns: 30% 30% 30%;
+    --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --sets-shape-size: 3.5em;
   }
 }
@@ -54,8 +66,8 @@
 /* Main page */
 html {
   background-color: var(--color-bg);
-  font-family: var(--font-family);
   color: var(--color-fg);
+  font-family: var(--mdc-typography-font-family);
 }
 
 h1, h2, h3, h4, h5, h6, ::part(title) {
@@ -64,28 +76,19 @@ h1, h2, h3, h4, h5, h6, ::part(title) {
   line-height: 1;
   letter-spacing: -0.00833em;
 }
-h1.title {
-  font-size: 3rem;
-}
-h1 span {
-  font-size: 1rem;
-}
+h1.title { font-size: 3rem; }
+h1 span, h2 span { font-size: 1rem; }
 
 /* Icons */
-.icon {
+.top-icons {
   position: fixed;
-  top: .5em;
-  color: var(--color-fg);
-}
-dark-mode-toggle.icon {
   top: 0;
   right: 0;
+  z-index: 10;
 }
-.feedback {
-  right: 3em;
-}
-.offline {
-  right: 5em;
+.top-icons, .top-icons a {
+  color: var(--color-fg);
+  text-decoration: none;
 }
 
 /* Parts */
@@ -98,7 +101,6 @@ dark-mode-toggle.icon {
   max-width: 400px;
   border: 1px solid #d3d3d3;
   border-radius: 0.5em;
-  font-family: var(--font-family);
   color: var(--color-fg);
 }
 
@@ -113,10 +115,10 @@ dark-mode-toggle.icon {
 
 ::part(clock) {
   position: fixed;
-  bottom: 3em;
-  left: 1em;
+  bottom: 2em;
+  left: 0.5em;
   font-family: monospace;
-  font-size: 1.5em;
+  font-size: 2.5em;
   user-select: none;
 }
 
@@ -130,6 +132,12 @@ dark-mode-toggle.icon {
   position: fixed;
   bottom: 1em;
   right: 1em;
+}
+
+::part(name-input),
+::part(can-edit) {
+  --mdc-theme-primary: var(--color-fg);
+  --mdc-typography-button-text-transform: none;
 }
 
 /* Loading */
@@ -172,16 +180,71 @@ dark-mode-toggle.icon {
   }
 }
 
-/* Only show slots when state matches. */
-p2p-switch:not([state]) [slot="p2p"],
-p2p-switch[state="0"] [slot="p2p"],
-p2p-switch[state="1"] [slot="p2p"],
-p2p-switch[state="2"] [slot="p2p"],
+/* How To */
+mwc-dialog { text-align: start; }
+mwc-dialog:not([open]) { display: none; } /* Find a way for this to be analyzed by bots */
+mwc-dialog sets-card { min-height: 5em; }
 
-p2p-switch:not([state="-1"]) .p2p-disconnected,
-p2p-switch:not([state="0"]) .p2p-offline,
-p2p-switch:not([state="1"]) .p2p-lobby,
-p2p-switch:not([state="2"]) .p2p-loading,
-p2p-switch:not([state="3"]) .p2p-ready {
+mwc-dialog .card-table {
+  display: grid;
+  grid-template-columns: var(--how-to-table-template-columns);
+  grid-column-gap: 1.5em;
+  grid-row-gap: 1.5em;
+  padding: 1.5em;
+}
+
+mwc-dialog .card-table sets-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 5em;
+}
+
+mwc-dialog table { 
+  display: table;
+  padding: 0 1.5em;
+}
+mwc-dialog table .key { text-align: start; }
+mwc-dialog table .value { text-align: end; }
+
+mwc-dialog .set {
+  --sets-shape-size: 2.4em;
+
+  display: grid;
+  grid-template-columns: var(--how-to-sets-template-columns);
+  grid-column-gap: 1.5em;
+  grid-row-gap: 1.5em;
+  padding: 1.5em;
+}
+
+/*** Helpers ***/
+.mt6px { margin-top: 6px }
+
+body:not([first-visit]) .first-visit,
+body[first-visit] .not-first-visit {
+  display: none;
+}
+
+lit-p2p {
+  display: block;
+  text-align: center;
+}
+
+.next-to-lobby {
+  display: inline-block;
+  line-height: 36px;
+  margin-top: 2px;
+  margin-bottom: 1em;
+  /* margin-right: 1ch; */
+}
+
+/* Only show slots when state matches. */
+lit-p2p[state]       .p2p-default-state, 
+lit-p2p[state="-1"]  .p2p-trying-to-connect, lit-p2p:not([state]) .p2p-trying-to-connect,
+lit-p2p[state=""]    .p2p-trying-to-connect,
+lit-p2p[state="0"]   .p2p-disconnected, lit-p2p:not([state="0"]) .p2p-offline,
+lit-p2p[state="1"]   .p2p-disconnected, lit-p2p:not([state="1"]) .p2p-lobby,
+lit-p2p[state="2"]   .p2p-disconnected, lit-p2p:not([state="2"]) .p2p-loading,
+lit-p2p[state="3"]   .p2p-disconnected, lit-p2p:not([state="3"]) .p2p-ready {
   display: none;
 }
