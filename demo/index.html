@@ -32,12 +32,12 @@
   </h1>
 
   <lit-p2p
-    id="p2p"
+    fallback
     local-storage
     max-peers="5"
     signaling="wss://ws.parkshade.com:443"
     version="0.3.2"
-    timeout="22500"
+    timeout="25000"
     lobby="lit-sets@0.0.2"
     stuns='[
       "stun:stun.stunprotocol.org",
@@ -47,12 +47,17 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
-    <div slot="offline" class="loading">
+    <div class="loading p2p-default-state">
       <div></div>
       <div></div>
     </div>
 
-    <div slot="loading" class="loading p2p-loading">
+    <div slot="p2p-offline" class="loading p2p-offline">
+      <div></div>
+      <div></div>
+    </div>
+
+    <div slot="p2p-loading" class="loading p2p-loading">
       <div></div>
       <div></div>
     </div>
@@ -76,7 +81,7 @@
       <mwc-button
         raised
         toggle-online-btn
-        class="first-visit p2p-connected mt6px"
+        class="first-visit p2p-lobby mt6px"
         trailingIcon
         icon="person"
         label="Play solo"
@@ -84,7 +89,7 @@
       <mwc-icon-button
         toggle-online-btn
         icon="person"
-        class="not-first-visit p2p-connected"
+        class="not-first-visit p2p-lobby"
         title="Play solo"
         label="Play solo"
       ></mwc-icon-button>
@@ -113,7 +118,11 @@
       </theme-toggle>
     </div>
 
-    <p2p-sets slot="p2p"></p2p-sets>
+    <span class="p2p-lobby next-to-lobby">You're playing as</span>
+    <br slot="p2p-lobby" class="p2p-lobby" />
+
+    <p2p-sets slot="p2p-disconnected"></p2p-sets>
+    <p2p-sets slot="p2p-ready"></p2p-sets>
   </lit-p2p>
 </body>
 

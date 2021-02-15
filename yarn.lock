@@ -2420,10 +2420,10 @@ lit-html@^1.1.1, lit-html@^1.1.2:
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
   integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
 
-lit-p2p@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.4.2.tgz#e311b921f634737456bc159ba42059e170a8042c"
-  integrity sha512-z0azcQPKYVv6LMsQOxs3csT2cRsKaAVQ7R1ptCj41E2icxmMGSVTULRZU4NInTiuXl3DmOc0ZgOk7hO11caihw==
+lit-p2p@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.4.3.tgz#ed5f0d30c4cebf9096a7f4653f9f5efccf41420e"
+  integrity sha512-M6UcUdrOVhwUvQH8Su2kSCRHzoMGU6DonxXzqK6jeN9VhrjTdSb07rR88eTBRp0QJaFnU9KtdFKRXaLzOSajiA==
   dependencies:
     "@material/fab" "^10.0.0"
     "@material/mwc-button" "^0.20.0"

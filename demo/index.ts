@@ -3,7 +3,7 @@ import '@mothepro/theme-toggle'
   
 const
   toggleOnlineBtns = document.querySelectorAll('[toggle-online-btn]')!,
-  litP2pElement = document.getElementById('p2p')!,
+  litP2pElement = document.querySelector('lit-p2p')!,
   themeToggleKey = 'theme' // Since we use `<theme-toggle`>
 
 // Make the toggle button actually do something
