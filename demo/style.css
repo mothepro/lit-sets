@@ -1,5 +1,8 @@
 /* Shared vars for light and dark theme */
 :root {
+  --how-to-table-template-columns: 100%;
+  --how-to-sets-template-columns: 100%;
+
   --sets-shape-size: 2.4em;
   --sets-shape-spacing: 8px;
   --sets-grid-template-columns: repeat(2, minmax(150px, 45vw));
@@ -29,7 +32,6 @@
   --mdc-typography-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   --mdc-text-field-ink-color: var(--color-fg);
   --mdc-text-field-label-ink-color: var(--color-fg);
-
   --mdc-theme-surface: var(--color-bg);
   --mdc-dialog-heading-ink-color: var(--color-fg);
   --mdc-dialog-content-ink-color: var(--color-fg);
@@ -39,6 +41,8 @@
 
 @media (min-width: 576px) { /* bootstrap "sm" */
   :root {
+    --how-to-table-template-columns: 50% 50%;
+    --how-to-sets-template-columns: 30% 30% 30%;
     --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --sets-shape-size: 3.5em;
   }
@@ -72,12 +76,8 @@ h1, h2, h3, h4, h5, h6, ::part(title) {
   line-height: 1;
   letter-spacing: -0.00833em;
 }
-h1.title {
-  font-size: 3rem;
-}
-h1 span {
-  font-size: 1rem;
-}
+h1.title { font-size: 3rem; }
+h1 span, h2 span { font-size: 1rem; }
 
 /* Icons */
 .top-icons {
@@ -180,13 +180,45 @@ h1 span {
   }
 }
 
+/* How To */
+mwc-dialog { text-align: start; }
+mwc-dialog:not([open]) { display: none; } /* Find a way for this to be analyzed by bots */
+mwc-dialog sets-card { min-height: 5em; }
+
+mwc-dialog .card-table {
+  display: grid;
+  grid-template-columns: var(--how-to-table-template-columns);
+  grid-column-gap: 1.5em;
+  grid-row-gap: 1.5em;
+  padding: 1.5em;
+}
+
+mwc-dialog .card-table sets-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 5em;
+}
+
+mwc-dialog table { 
+  display: table;
+  padding: 0 1.5em;
+}
+mwc-dialog table .key { text-align: start; }
+mwc-dialog table .value { text-align: end; }
+
+mwc-dialog .set {
+  --sets-shape-size: 2.4em;
+
+  display: grid;
+  grid-template-columns: var(--how-to-sets-template-columns);
+  grid-column-gap: 1.5em;
+  grid-row-gap: 1.5em;
+  padding: 1.5em;
+}
+
 /*** Helpers ***/
 .mt6px { margin-top: 6px }
-
-/* Hide how to play text outside of dialog*/
-mwc-dialog:not([open]) {
-  color: var(--color-bg);
-}
 
 body:not([first-visit]) .first-visit,
 body[first-visit] .not-first-visit {
