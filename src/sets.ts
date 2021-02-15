@@ -70,7 +70,7 @@ export default class extends LitElement {
 
   update(changed: PropertyValues) {
     if (changed.has('cards')) {
-      if (changed.get('cards')) { // Remove cards no longer in the deck
+      if ((changed.get('cards') as Card[])?.length) { // Remove cards no longer in the deck
         this.display = this.display.map(({ card }) => ({
           card,
           delay: -1,
@@ -84,7 +84,7 @@ export default class extends LitElement {
     super.update(changed)
   }
 
-/** Makes the display match the `cards`, updating their delay to match the new order. */
+  /** Makes the display match the `cards`, updating their delay to match the new order. */
   // TODO move to `updated`
   private async updateDisplay() {
     await this.updateComplete
