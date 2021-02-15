@@ -127,6 +127,11 @@ h1 span {
   right: 1em;
 }
 
+::part(can-edit),
+mwc-button:not([raised]) { /* Material makes reading buttons impossible with */
+  --mdc-theme-primary: var(--color-fg);
+}
+
 /* Loading */
 .loading {
   text-align: center;
@@ -168,11 +173,6 @@ h1 span {
 }
 
 /*** Helpers ***/
-
-/* Material makes reading buttons impossible with */
-mwc-button:not([raised]) {
-  --mdc-theme-primary: var(--color-fg);
-}
 .mt6px { margin-top: 6px }
 
 body:not([first-visit]) .first-visit,

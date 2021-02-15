@@ -5,8 +5,8 @@ const
   toggleOnlineBtns = document.querySelectorAll('[toggle-online-btn]')!,
   litP2pElement = document.getElementById('p2p')!,
   themeToggleKey = 'theme' // Since we use `<theme-toggle`>
-  
-/** Sets the <lit-p2p> state to the given value. Defaults to the opposite one. */
+
+// Make the toggle button actually do something
 // @ts-ignore TODO find this hidden type exported from the module directly...
 for (const toggleOnlineBtn of toggleOnlineBtns)
   toggleOnlineBtn.addEventListener('click', () => 
