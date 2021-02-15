@@ -84,7 +84,7 @@ h1 span, h2 span { font-size: 1rem; }
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 10;
+  z-index: 1;
 }
 .top-icons, .top-icons a {
   color: var(--color-fg);
@@ -181,8 +181,11 @@ h1 span, h2 span { font-size: 1rem; }
 }
 
 /* How To */
-mwc-dialog { text-align: start; }
 mwc-dialog:not([open]) { display: none; } /* Find a way for this to be analyzed by bots */
+
+p, ul { 
+  text-align: start;
+}
 
 mwc-dialog mwc-icon-button {
   vertical-align: middle;

@@ -106,9 +106,19 @@
         title="How to Play"
       ></mwc-icon-button>
       <a
+        class="not-first-visit"
+        title="See how it works"
+        target="_blank"
+        href="//github.com/mothepro/lit-p2p">
+        <mwc-icon-button
+          icon="code"
+          label="View code"
+        ></mwc-icon-button>
+      </a>
+      <a
         title="Improve this game"
         target="_blank"
-        href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
+        href="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
         <mwc-icon-button
           icon="feedback"
           label="Send feedback"
@@ -146,7 +156,7 @@
         designed by Marsha Falco in 1974.
       </p>
 
-      <p>The goal is to take all cards on the screen in groups known as sets.</p>
+      <p>The goal is to take all cards on the screen in groups of 3 known as sets.</p>
 
       <p>
         The deck contains 81 cards each one with 4 unique features. These are the color, shape, opacity, and count.
@@ -255,18 +265,21 @@
 
       <div class="set">
         <sets-card
+          interactive
           color="0"
           quantity="0"
           shape="2"
           opacity="0"
         ></sets-card>
         <sets-card
+          interactive
           color="0"
           quantity="1"
           shape="1"
           opacity="0"
         ></sets-card>
         <sets-card
+          interactive
           color="0"
           quantity="2"
           shape="0"
@@ -282,18 +295,21 @@
       
       <div class="set">
         <sets-card
+          interactive
           color="2"
           quantity="0"
           shape="1"
           opacity="0"
         ></sets-card>
         <sets-card
+          interactive
           color="1"
           quantity="1"
           shape="1"
           opacity="1"
         ></sets-card>
         <sets-card
+          interactive
           color="1"
           quantity="2"
           shape="1"
@@ -302,8 +318,8 @@
       </div>
 
       <p>
-        When the game starts 12 cards are dealt from the deck. When a player finds a set, they take those 4 cards from the screen,
-        and three new cards are dealt to replace the ones that were taken. The game ends when the deck is empty and no more sets are available.
+        When the game starts 9 cards are dealt from the deck. When a player takes a set, it is replaced on screen by
+        3 new cards from the deck. The game ends when the deck is empty and no more sets are available.
       </p>
 
       <p>
@@ -322,6 +338,7 @@
       </p>
 
       <sets-card
+        interactive
         hint
         color="2"
         quantity="2"
