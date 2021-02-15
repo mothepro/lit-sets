@@ -282,21 +282,21 @@
       
       <div class="set">
         <sets-card
-          color="1"
+          color="2"
           quantity="0"
-          shape="0"
+          shape="1"
           opacity="0"
         ></sets-card>
         <sets-card
-          color="2"
+          color="1"
           quantity="1"
-          shape="0"
+          shape="1"
           opacity="1"
         ></sets-card>
         <sets-card
           color="1"
           quantity="2"
-          shape="0"
+          shape="1"
           opacity="2"
         ></sets-card>
       </div>
@@ -310,6 +310,24 @@
         Sometimes, there will not be any sets among the 12 cards on screen. In these cases, the game
         will automatically deal out 3 extra cards until a set can be taken.
       </p>
+
+      <p>
+        If you ever get stuck and need a hint, click on
+        <mwc-fab
+          mini
+          icon="lightbulb"
+          label="Get Hint"
+        ></mwc-fab>
+        and one card will be marked like this one.
+      </p>
+
+      <sets-card
+        hint
+        color="2"
+        quantity="2"
+        shape="0"
+        opacity="1"
+      ></sets-card>
 
       <p><em>Accessibility</em> is important, so you can also play entirely using your keyboard!</p>
       <ul>

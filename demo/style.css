@@ -183,21 +183,24 @@ h1 span, h2 span { font-size: 1rem; }
 /* How To */
 mwc-dialog { text-align: start; }
 mwc-dialog:not([open]) { display: none; } /* Find a way for this to be analyzed by bots */
-mwc-dialog sets-card { min-height: 5em; }
+
+mwc-dialog mwc-icon-button {
+  vertical-align: middle;
+}
+
+mwc-dialog sets-card { 
+  display: flex;
+  height: 7.5em;
+}
+
 
 mwc-dialog .card-table {
   display: grid;
   grid-template-columns: var(--how-to-table-template-columns);
+  align-items: center;
   grid-column-gap: 1.5em;
   grid-row-gap: 1.5em;
   padding: 1.5em;
-}
-
-mwc-dialog .card-table sets-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 5em;
 }
 
 mwc-dialog table { 
