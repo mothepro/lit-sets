@@ -53,17 +53,17 @@
       Sets
       <span class="subtitle">by Mo</span>
     </h1>
-    <div class="loading p2p-default-state">
+    <div class="loading centered p2p-default-state">
       <div></div>
       <div></div>
     </div>
 
-    <div slot="p2p-offline" class="loading p2p-offline">
+    <div slot="p2p-offline" class="loading centered p2p-offline">
       <div></div>
       <div></div>
     </div>
 
-    <div slot="p2p-loading" class="loading p2p-loading">
+    <div slot="p2p-loading" class="loading centered p2p-loading">
       <div></div>
       <div></div>
     </div>
@@ -143,9 +143,14 @@
     <br slot="p2p-lobby" class="p2p-lobby" />
 
     <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
-    <span slot="p2p-ready">
-      <!-- Leave empty since `<lit-p2p>` puts something by default. -->
-    </span>
+    
+    <mwc-list-item noninteractive slot="p2p-alone" class="p2p-lobby">
+      Waiting for players to join
+      <div class="loading">
+        <div></div>
+        <div></div>
+      </div>
+    </mwc-list-item>
 
     <mwc-dialog heading="How to Play">
       <h2>
