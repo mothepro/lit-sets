@@ -69,33 +69,34 @@
     </div>
 
     <div class="top-icons">
+      <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
-        toggle-online-btn
-        class="first-visit p2p-disconnected mt6px"
+        toggle-online
+        class="p2p-disconnected mt6px"
         trailingIcon
         icon="groups"
         label="Play with friends"
       ></mwc-button>
       <mwc-icon-button
-        toggle-online-btn
+        toggle-online
         icon="groups"
-        class="not-first-visit p2p-disconnected"
+        class="not-p2p-disconnected"
         title="Play with friends"
         label="Play with friends"
       ></mwc-icon-button>
       <mwc-button
         raised
-        toggle-online-btn
-        class="first-visit p2p-lobby mt6px"
+        toggle-online
+        class="p2p-lobby mt6px"
         trailingIcon
         icon="person"
         label="Play solo"
       ></mwc-button>
       <mwc-icon-button
-        toggle-online-btn
+        toggle-online
         icon="person"
-        class="not-first-visit p2p-lobby"
+        class="p2p-lobby"
         title="Play solo"
         label="Play solo"
       ></mwc-icon-button>
@@ -105,7 +106,6 @@
         title="How to Play"
       ></mwc-icon-button>
       <a
-        class="not-first-visit"
         title="See how it works"
         target="_blank"
         href="//github.com/mothepro/lit-p2p">
@@ -143,6 +143,9 @@
     <br slot="p2p-lobby" class="p2p-lobby" />
 
     <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
+    <span slot="p2p-ready">
+      <!-- Leave empty since `<lit-p2p>` puts something by default. -->
+    </span>
 
     <mwc-dialog heading="How to Play">
       <h2>

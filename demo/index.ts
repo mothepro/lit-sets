@@ -3,7 +3,7 @@ import '@mothepro/theme-toggle'
 import '@material/mwc-dialog'
   
 const
-  toggleOnlineBtns = document.querySelectorAll('[toggle-online-btn]')!,
+  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
   litP2pElement = document.querySelector('lit-p2p')!,
   helpBtn = document.querySelector('mwc-icon-button[icon=help]')!,
   dialogElement = document.querySelector('mwc-dialog')!

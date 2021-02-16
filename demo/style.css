@@ -39,25 +39,41 @@
   --mdc-dialog-max-width: 768px;
 }
 
-@media (min-width: 576px) { /* bootstrap "sm" */
+/* Too big for mobile (must be before media queries) */
+mwc-button[toggle-online] {
+  display: none;
+}
+
+@media (min-width: 576px) {
+  /* bootstrap "sm" */
   :root {
     --how-to-table-template-columns: 50% 50%;
     --how-to-sets-template-columns: 30% 30% 30%;
     --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --sets-shape-size: 3.5em;
   }
+
+  mwc-button[toggle-online] {
+    display: inline-flex;
+  }
+  mwc-icon-button[toggle-online] {
+    display: none;
+  }
 }
-@media (min-width: 768px) { /* bootstrap "md" */
+@media (min-width: 768px) {
+  /* bootstrap "md" */
   :root {
     --sets-shape-spacing: 12px;
   }
 }
-@media (min-width: 992px) { /* bootstrap "lg" */
+@media (min-width: 992px) {
+  /* bootstrap "lg" */
   :root {
     --sets-shape-spacing: 18px 12px;
   }
 }
-@media (min-width: 1200px) { /* bootstrap "xl" */
+@media (min-width: 1200px) {
+  /* bootstrap "xl" */
   :root {
     --sets-shape-size: 4em;
   }
@@ -76,8 +92,13 @@ h1, h2, h3, h4, h5, h6, ::part(title) {
   line-height: 1;
   letter-spacing: -0.00833em;
 }
-h1.title { font-size: 3rem; }
-h1 span, h2 span { font-size: 1rem; }
+h1.title {
+  font-size: 3rem;
+}
+h1 span,
+h2 span {
+  font-size: 1rem;
+}
 
 /* Icons */
 .top-icons {
@@ -86,7 +107,8 @@ h1 span, h2 span { font-size: 1rem; }
   right: 0;
   z-index: 1;
 }
-.top-icons, .top-icons a {
+.top-icons,
+.top-icons a {
   color: var(--color-fg);
   text-decoration: none;
 }
@@ -96,7 +118,8 @@ h1 span, h2 span { font-size: 1rem; }
   margin: 0 auto;
 }
 
-::part(client-list), ::part(leaderboard-full) {
+::part(client-list),
+::part(leaderboard-full) {
   display: block;
   max-width: 400px;
   border: 1px solid #d3d3d3;
@@ -182,9 +205,11 @@ mwc-button:not([raised]), /* Weird */
 }
 
 /* How To */
-mwc-dialog:not([open]) { display: none; } /* Find a way for this to be analyzed by bots */
+mwc-dialog:not([open]) {
+  display: none;
+} /* Find a way for this to be analyzed by bots */
 
-p, ul { 
+p, ul {
   text-align: start;
 }
 
@@ -201,11 +226,10 @@ mwc-dialog mwc-icon-button {
   vertical-align: middle;
 }
 
-mwc-dialog sets-card { 
+mwc-dialog sets-card {
   display: flex;
   height: 7.5em;
 }
-
 
 mwc-dialog .card-table {
   display: grid;
@@ -216,12 +240,16 @@ mwc-dialog .card-table {
   padding: 1.5em;
 }
 
-mwc-dialog table { 
+mwc-dialog table {
   display: table;
   padding: 0 1.5em;
 }
-mwc-dialog table .key { text-align: start; }
-mwc-dialog table .value { text-align: end; }
+mwc-dialog table .key {
+  text-align: start;
+}
+mwc-dialog table .value {
+  text-align: end;
+}
 
 mwc-dialog .set {
   --sets-shape-size: 2.4em;
@@ -234,7 +262,9 @@ mwc-dialog .set {
 }
 
 /*** Helpers ***/
-.mt6px { margin-top: 6px }
+.mt6px {
+  margin-top: 6px;
+}
 
 body:not([first-visit]) .first-visit,
 body[first-visit] .not-first-visit {
