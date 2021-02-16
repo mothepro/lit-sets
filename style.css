@@ -99,6 +99,9 @@ h1 span,
 h2 span {
   font-size: 1rem;
 }
+a {
+  text-decoration: none;
+}
 
 /* Icons */
 .top-icons {
@@ -205,9 +208,10 @@ mwc-button:not([raised]), /* Weird */
 }
 
 /* How To */
+/* Find a way for this to be analyzed by bots */
 mwc-dialog:not([open]) {
   display: none;
-} /* Find a way for this to be analyzed by bots */
+}
 
 p, ul {
   text-align: start;
@@ -217,11 +221,7 @@ mwc-dialog h2 {
   margin-top: 0;
 }
 
-mwc-dialog mwc-button {
-  text-decoration: none;
-  vertical-align: middle;
-}
-
+mwc-dialog mwc-button,
 mwc-dialog mwc-icon-button {
   vertical-align: middle;
 }
