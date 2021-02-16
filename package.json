@@ -61,7 +61,7 @@
     "@mothepro/theme-toggle": "^0.0.2",
     "lit-confetti": "^0.1.5",
     "lit-element": "^2.4.0",
-    "lit-p2p": "^0.4.3",
+    "lit-p2p": "^0.4.5",
     "sets-game-engine": "^1.0.5"
   }
 }

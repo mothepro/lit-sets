@@ -530,6 +530,14 @@
     fancy-emitter "^2.0.0"
     simple-peer "^9.9.3"
 
+"@mothepro/fancy-p2p@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.21.tgz#ba5c2f3bbe852342af5c60fdcf41c011a4b59ed0"
+  integrity sha512-tvlnfRjMLImciRbiwzSz+A1jmcKyCO9Y09PRHcJ5hJjDGq/Bf1NwFbFShYqcQeIwiiXBTT438+oFTPpWlhYTBA==
+  dependencies:
+    fancy-emitter "^2.0.0"
+    simple-peer "^9.9.3"
+
 "@mothepro/lit-chart@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@mothepro/lit-chart/-/lit-chart-0.0.2.tgz#cfb6869399c3a8fea1129810ba69670d93b25634"
@@ -2466,10 +2474,10 @@ lit-html@^1.1.1, lit-html@^1.1.2:
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
   integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
 
-lit-p2p@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.4.3.tgz#ed5f0d30c4cebf9096a7f4653f9f5efccf41420e"
-  integrity sha512-M6UcUdrOVhwUvQH8Su2kSCRHzoMGU6DonxXzqK6jeN9VhrjTdSb07rR88eTBRp0QJaFnU9KtdFKRXaLzOSajiA==
+lit-p2p@^0.4.5:
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.4.5.tgz#9e6531cad29e161589683bec0fe07f239211f6b0"
+  integrity sha512-GDqKTMVCFBbvxwGPIi6mO9+yls2oXX3NCIvwUOdkZ5SrDfwZhLVQKdbsmYie0UDu/ceTlnNFixjr4MqqH3XDyA==
   dependencies:
     "@material/fab" "^10.0.0"
     "@material/mwc-button" "^0.20.0"
@@ -2478,7 +2486,7 @@ lit-p2p@^0.4.3:
     "@material/mwc-list" "^0.20.0"
     "@material/mwc-snackbar" "^0.20.0"
     "@material/textfield" "^10.0.0"
-    "@mothepro/fancy-p2p" "^0.0.20"
+    "@mothepro/fancy-p2p" "^0.0.21"
     lit-element "^2.4.0"
 
 locate-path@^3.0.0:
