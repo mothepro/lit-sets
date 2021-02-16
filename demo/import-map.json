@@ -1,7 +1,7 @@
 {
   "imports": {
-    "@mothepro/fancy-p2p/": "//unpkg.com/@mothepro/fancy-p2p@0.0.20/",
-    "@mothepro/fancy-p2p": "//unpkg.com/@mothepro/fancy-p2p@0.0.20/dist/esm/index.js",
+    "@mothepro/fancy-p2p/": "//unpkg.com/@mothepro/fancy-p2p@0.0.21/",
+    "@mothepro/fancy-p2p": "//unpkg.com/@mothepro/fancy-p2p@0.0.21/dist/esm/index.js",
     "@mothepro/lit-clock/": "//unpkg.com/@mothepro/lit-clock@0.0.4/dist/esm/",
     "@mothepro/lit-clock": "//unpkg.com/@mothepro/lit-clock@0.0.4/dist/esm/index.js",
     "@mothepro/lit-chart/": "//unpkg.com/@mothepro/lit-chart@0.0.2/dist/esm/",
