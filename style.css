@@ -262,6 +262,9 @@ mwc-dialog .set {
 }
 
 /*** Helpers ***/
+[hidden] {
+  display: none;
+}
 .mt6px {
   margin-top: 6px;
 }
