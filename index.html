@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="light dark">
   <title>Mo's Sets</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-<meta name="msapplication-TileColor" content="#da532c">
-<meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
   <script type="importmap-shim" src="import-map.json"></script>
   <link rel="stylesheet" href="light.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
   <link rel="stylesheet" href="dark.css" media="(prefers-color-scheme: dark)">
@@ -25,7 +25,7 @@
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
   <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
   <script prod-only type=application/javascript async
-    src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-1"></script>
+    src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
   <!-- Development -->
   <script dev-only type=dev-only-application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
   <script dev-only type=dev-only-module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
@@ -33,11 +33,6 @@
 </head>
 
 <body first-visit theme-toggle-key="theme" first-visit-help-delay="10000">
-  <h1 class="title">
-    Sets
-    <span class="subtitle">by Mo</span>
-  </h1>
-
   <lit-p2p
     fallback
     local-storage
@@ -54,6 +49,10 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
+    <h1 class="title">
+      Sets
+      <span class="subtitle">by Mo</span>
+    </h1>
     <div class="loading p2p-default-state">
       <div></div>
       <div></div>
@@ -70,33 +69,34 @@
     </div>
 
     <div class="top-icons">
+      <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
-        toggle-online-btn
-        class="first-visit p2p-disconnected mt6px"
+        toggle-online
+        class="p2p-disconnected mt6px"
         trailingIcon
         icon="groups"
         label="Play with friends"
       ></mwc-button>
       <mwc-icon-button
-        toggle-online-btn
+        toggle-online
         icon="groups"
-        class="not-first-visit p2p-disconnected"
+        class="not-p2p-disconnected"
         title="Play with friends"
         label="Play with friends"
       ></mwc-icon-button>
       <mwc-button
         raised
-        toggle-online-btn
-        class="first-visit p2p-lobby mt6px"
+        toggle-online
+        class="p2p-lobby mt6px"
         trailingIcon
         icon="person"
         label="Play solo"
       ></mwc-button>
       <mwc-icon-button
-        toggle-online-btn
+        toggle-online
         icon="person"
-        class="not-first-visit p2p-lobby"
+        class="p2p-lobby"
         title="Play solo"
         label="Play solo"
       ></mwc-icon-button>
@@ -106,9 +106,18 @@
         title="How to Play"
       ></mwc-icon-button>
       <a
+        title="See how it works"
+        target="_blank"
+        href="//github.com/mothepro/lit-p2p">
+        <mwc-icon-button
+          icon="code"
+          label="View code"
+        ></mwc-icon-button>
+      </a>
+      <a
         title="Improve this game"
         target="_blank"
-        href="https://docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
+        href="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
         <mwc-icon-button
           icon="feedback"
           label="Send feedback"
@@ -133,8 +142,10 @@
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
     <br slot="p2p-lobby" class="p2p-lobby" />
 
-    <p2p-sets slot="p2p-disconnected"></p2p-sets>
-    <p2p-sets slot="p2p-ready"></p2p-sets>
+    <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
+    <span slot="p2p-ready">
+      <!-- Leave empty since `<lit-p2p>` puts something by default. -->
+    </span>
 
     <mwc-dialog heading="How to Play">
       <h2>
@@ -142,11 +153,14 @@
       </h2>
 
       <p>
-        An online version of the reflex card game <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">Set</a>,
+        An online version of the reflex card game
+        <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">
+          <mwc-button dense>Set</mwc-button>
+        </a>
         designed by Marsha Falco in 1974.
       </p>
 
-      <p>The goal is to take all cards on the screen in groups known as sets.</p>
+      <p>The goal is to take all cards on the screen in groups of 3 known as sets.</p>
 
       <p>
         The deck contains 81 cards each one with 4 unique features. These are the color, shape, opacity, and count.
@@ -255,18 +269,21 @@
 
       <div class="set">
         <sets-card
+          interactive
           color="0"
           quantity="0"
           shape="2"
           opacity="0"
         ></sets-card>
         <sets-card
+          interactive
           color="0"
           quantity="1"
           shape="1"
           opacity="0"
         ></sets-card>
         <sets-card
+          interactive
           color="0"
           quantity="2"
           shape="0"
@@ -282,18 +299,21 @@
       
       <div class="set">
         <sets-card
+          interactive
           color="2"
           quantity="0"
           shape="1"
           opacity="0"
         ></sets-card>
         <sets-card
+          interactive
           color="1"
           quantity="1"
           shape="1"
           opacity="1"
         ></sets-card>
         <sets-card
+          interactive
           color="1"
           quantity="2"
           shape="1"
@@ -302,8 +322,8 @@
       </div>
 
       <p>
-        When the game starts 12 cards are dealt from the deck. When a player finds a set, they take those 4 cards from the screen,
-        and three new cards are dealt to replace the ones that were taken. The game ends when the deck is empty and no more sets are available.
+        When the game starts 9 cards are dealt from the deck. When a player takes a set, it is replaced on screen by
+        3 new cards from the deck. The game ends when the deck is empty and no more sets are available.
       </p>
 
       <p>
@@ -322,6 +342,7 @@
       </p>
 
       <sets-card
+        interactive
         hint
         color="2"
         quantity="2"
@@ -345,7 +366,7 @@
 <script>
   window.dataLayer = window.dataLayer || []
   function gtag() { dataLayer.push(arguments) }
-  gtag('js', new Date())
+  gtag('js', new Date)
   gtag('config', 'UA-172429940-2')
 
   document.body.firstElementChild.addEventListener('p2p-error', error => {
