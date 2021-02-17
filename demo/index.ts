@@ -16,14 +16,12 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
       ? '' // try to connect
       : '-1')) // not trying to connect
 
-// Check for 1st time visit
-if (localStorage.getItem(document.body.getAttribute('toggle-theme-key') ?? 'theme'))
-  document.body.removeAttribute('first-visit')
-else // add [open] to <mwc-dialog> after some time
+// Add [open] to <mwc-dialog> after some time if first visit
+if (!localStorage.length)
   setTimeout(
     () => dialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
 // Show help
-helpBtn.addEventListener('click', () => dialogElement.setAttribute('open', ''))
-addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && dialogElement.setAttribute('open', ''))
+helpBtn.addEventListener('click', () => dialogElement.toggleAttribute('open'))
+addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && dialogElement.toggleAttribute('open'))

@@ -287,11 +287,6 @@ mwc-dialog .set {
   margin-top: 6px;
 }
 
-body:not([first-visit]) .first-visit,
-body[first-visit] .not-first-visit {
-  display: none;
-}
-
 lit-p2p {
   display: block;
   text-align: center;
