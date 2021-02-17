@@ -176,12 +176,19 @@ mwc-button:not([raised]), /* Weird */
 .loading {
   width: var(--loading-size);
   height: var(--loading-size);
+
+  /* Only useful if text is added */
+  padding-top: var(--loading-size);
+  white-space: nowrap;
 }
 
-[slot="p2p-alone"] .loading {
-  position: absolute;
-  top: 0;
-  right: var(--mdc-list-side-padding, 16px);
+[slot="p2p-alone"].centered-text {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  margin-top: calc(var(--loading-size) / 2);
+  padding-top: 1em;
 }
 
 .loading.centered {
@@ -203,8 +210,8 @@ mwc-button:not([raised]), /* Weird */
 }
 @keyframes loading {
   0% {
-    top: 40px;
-    left: 40px;
+    top: calc(var(--loading-size) / 2);
+    left: calc(var(--loading-size) / 2);
     width: 0;
     height: 0;
     opacity: 1;
@@ -212,8 +219,8 @@ mwc-button:not([raised]), /* Weird */
   100% {
     top: 0px;
     left: 0px;
-    width: 80px;
-    height: 80px;
+    width: var(--loading-size);
+    height: var(--loading-size);
     opacity: 0;
   }
 }

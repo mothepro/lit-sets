@@ -53,21 +53,9 @@
       Sets
       <span class="subtitle">by Mo</span>
     </h1>
-    <div class="loading centered p2p-default-state">
-      <div></div>
-      <div></div>
-    </div>
-
-    <div slot="p2p-offline" class="loading centered p2p-offline">
-      <div></div>
-      <div></div>
-    </div>
-
-    <div slot="p2p-loading" class="loading centered p2p-loading">
-      <div></div>
-      <div></div>
-    </div>
-
+    <div class="loading centered p2p-default-state"><div></div><div></div></div>
+    <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
+    <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
     <div class="top-icons">
       <!-- TODO only show big button on first visit? -->
       <mwc-button
@@ -144,13 +132,8 @@
 
     <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
     
-    <mwc-list-item noninteractive slot="p2p-alone" class="p2p-lobby">
-      Waiting for players to join
-      <div class="loading">
-        <div></div>
-        <div></div>
-      </div>
-    </mwc-list-item>
+    <span slot="p2p-alone" class="p2p-lobby centered-text">Waiting for players to join</span>
+    <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
 
     <mwc-dialog heading="How to Play">
       <h2>
