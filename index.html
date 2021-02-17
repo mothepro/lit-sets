@@ -53,21 +53,9 @@
       Sets
       <span class="subtitle">by Mo</span>
     </h1>
-    <div class="loading p2p-default-state">
-      <div></div>
-      <div></div>
-    </div>
-
-    <div slot="p2p-offline" class="loading p2p-offline">
-      <div></div>
-      <div></div>
-    </div>
-
-    <div slot="p2p-loading" class="loading p2p-loading">
-      <div></div>
-      <div></div>
-    </div>
-
+    <div class="loading centered p2p-default-state"><div></div><div></div></div>
+    <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
+    <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
     <div class="top-icons">
       <!-- TODO only show big button on first visit? -->
       <mwc-button
@@ -143,15 +131,28 @@
     <br slot="p2p-lobby" class="p2p-lobby" />
 
     <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
-    <span slot="p2p-ready">
-      <!-- Leave empty since `<lit-p2p>` puts something by default. -->
-    </span>
+    
+    <span slot="p2p-alone" class="p2p-lobby centered-text">Waiting for players to join</span>
+    <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
 
     <mwc-dialog heading="How to Play">
       <h2>
          Welcome to Sets by Mo!
       </h2>
 
+      <details>
+        <summary><em>Accessibility is important!</em> click here to find the keyboad shortcuts.</summary>
+
+        <ul>
+          <li>Press <code>Tab</code> to hightlight the next card</li>
+          <li>Press <code>Shift</code> + <code>Tab</code> to hightlight the previous card</li>
+          <li>Press <code>Space</code> to select the hightlighted card</li>
+          <li>Press <code>Enter</code> to take the selected cards as a set</li>
+          <li>Press <code>H</code> to get a hint</li>
+          <li>Press <code>?</code> to show this guide</li>
+        </ul>
+      </details>
+        
       <p>
         An online version of the reflex card game
         <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">
@@ -349,14 +350,6 @@
         shape="0"
         opacity="1"
       ></sets-card>
-
-      <p><em>Accessibility</em> is important, so you can also play entirely using your keyboard!</p>
-      <ul>
-        <li>Press <code>Tab</code> to hightlight the next card.</li>
-        <li>Press <code>Shift</code> + <code>Tab</code> to hightlight the previous card.</li>
-        <li>Press <code>Space</code> to select the hightlighted card.</li>
-        <li>Press <code>Enter</code> to take the selected cards as a set.</li>
-      </ul>
     
       <mwc-button raised slot="primaryAction" dialogAction="close">Got it!</mwc-button>
     </mwc-dialog>

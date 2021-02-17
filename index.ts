@@ -24,4 +24,6 @@ else // add [open] to <mwc-dialog> after some time
     () => dialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
+// Show help
 helpBtn.addEventListener('click', () => dialogElement.setAttribute('open', ''))
+addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && dialogElement.setAttribute('open', ''))

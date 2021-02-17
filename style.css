@@ -1,5 +1,6 @@
 /* Shared vars for light and dark theme */
 :root {
+  --loading-size: 80px;
   --how-to-table-template-columns: 100%;
   --how-to-sets-template-columns: 100%;
 
@@ -167,18 +168,35 @@ mwc-button:not([raised]), /* Weird */
   --mdc-typography-button-text-transform: none;
 }
 
+[slot="p2p-alone"] {
+  min-height: var(--loading-size);
+}
+
 /* Loading */
 .loading {
-  text-align: center;
+  width: var(--loading-size);
+  height: var(--loading-size);
+
+  /* Only useful if text is added */
+  padding-top: var(--loading-size);
+  white-space: nowrap;
+}
+
+[slot="p2p-alone"].centered-text {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  margin-top: calc(var(--loading-size) / 2);
+  padding-top: 1em;
+}
+
+.loading.centered {
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-left: -40px;
-  margin-top: -40px;
-  width: 80px;
-  height: 80px;
-  padding-top: 100px;
-  text-transform: uppercase;
+  margin-left: calc(-0.5 * var(--loading-size));
+  margin-top: calc(-0.5 * var(--loading-size));
 }
 .loading div {
   position: absolute;
@@ -192,8 +210,8 @@ mwc-button:not([raised]), /* Weird */
 }
 @keyframes loading {
   0% {
-    top: 40px;
-    left: 40px;
+    top: calc(var(--loading-size) / 2);
+    left: calc(var(--loading-size) / 2);
     width: 0;
     height: 0;
     opacity: 1;
@@ -201,8 +219,8 @@ mwc-button:not([raised]), /* Weird */
   100% {
     top: 0px;
     left: 0px;
-    width: 80px;
-    height: 80px;
+    width: var(--loading-size);
+    height: var(--loading-size);
     opacity: 0;
   }
 }
