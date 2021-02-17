@@ -36,6 +36,10 @@ export default class extends LitElement {
   @property({ type: String, attribute: 'take-on-key' })
   takeOnKey = ''
 
+  /** Key to press to take a hint. */
+  @property({ type: String, attribute: 'hint-on-key' })
+  hintOnKey = ''
+
   /** Cards in the market */
   @property({ type: Array, hasChanged: hasArrayChanged })
   cards: Card[] = []
@@ -64,6 +68,10 @@ export default class extends LitElement {
       if (this.takeOnKey && event.code == this.takeOnKey) {
         event.preventDefault()
         this.takeSet()
+      }
+      else if (this.hintOnKey && event.code == this.hintOnKey && this.hintAvailable) {
+        event.preventDefault()
+        this.dispatchEvent(new CustomEvent('hint'))
       }
     })
   }

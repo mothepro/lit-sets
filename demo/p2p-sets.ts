@@ -159,6 +159,7 @@ export default class extends LitElement {
         ?can-take=${!this.mainPlayer.isBanned}
         show-label
         take-on-key="Enter"
+        hint-on-key="h"
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
