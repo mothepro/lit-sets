@@ -522,18 +522,10 @@
   resolved "https://registry.yarnpkg.com/@mothepro/emojis/-/emojis-1.2.2.tgz#dbc34c7f8a5d1d8a7f6f49872fb658489ee92903"
   integrity sha512-btKcXwReWimPOUKUUXTFwwPAP7/aZ5tzsrgZdZSIylHQ2tHtbHs2jMES5dQmWBI/kCu2o6oslQVupTNE0dR0pA==
 
-"@mothepro/fancy-p2p@^0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.20.tgz#2c4d0dc70461656cf4596047fbbe155cb1efd434"
-  integrity sha512-4A+pB0Nwc8anvnv3wsyvFKjNZaRMMW07nb96BYbD4pfcDG0hWue6A6i7AaUOG6EanqJ8Cylz0Z/EINYPERGzYA==
-  dependencies:
-    fancy-emitter "^2.0.0"
-    simple-peer "^9.9.3"
-
-"@mothepro/fancy-p2p@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.21.tgz#ba5c2f3bbe852342af5c60fdcf41c011a4b59ed0"
-  integrity sha512-tvlnfRjMLImciRbiwzSz+A1jmcKyCO9Y09PRHcJ5hJjDGq/Bf1NwFbFShYqcQeIwiiXBTT438+oFTPpWlhYTBA==
+"@mothepro/fancy-p2p@^0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.22.tgz#34c187722e8491ff7c1be1108cb4d1843a6c9918"
+  integrity sha512-fdMTW7059OYIeVuye1Joii4dci+6W26WeUwmgc2xaWr3+QT1MZVxClPH0SHsxuWb7yKv4njY3YXcLUDuRZWW1g==
   dependencies:
     fancy-emitter "^2.0.0"
     simple-peer "^9.9.3"
@@ -2474,10 +2466,10 @@ lit-html@^1.1.1, lit-html@^1.1.2:
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
   integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
 
-lit-p2p@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.4.5.tgz#9e6531cad29e161589683bec0fe07f239211f6b0"
-  integrity sha512-GDqKTMVCFBbvxwGPIi6mO9+yls2oXX3NCIvwUOdkZ5SrDfwZhLVQKdbsmYie0UDu/ceTlnNFixjr4MqqH3XDyA==
+lit-p2p@^0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/lit-p2p/-/lit-p2p-0.4.6.tgz#b5dfd839fb8b7cd5fa4e23614562ae779328315f"
+  integrity sha512-vVQEb99tehfBFvADt4iFSK5BBmxxHw9ROq5Qllx1LiKww8YSg4TI6p6DgvD1ysZJ/4bVzFJCDfavbOOEjiQiQQ==
   dependencies:
     "@material/fab" "^10.0.0"
     "@material/mwc-button" "^0.20.0"
@@ -2486,7 +2478,7 @@ lit-p2p@^0.4.5:
     "@material/mwc-list" "^0.20.0"
     "@material/mwc-snackbar" "^0.20.0"
     "@material/textfield" "^10.0.0"
-    "@mothepro/fancy-p2p" "^0.0.21"
+    "@mothepro/fancy-p2p" "^0.0.22"
     lit-element "^2.4.0"
 
 locate-path@^3.0.0:

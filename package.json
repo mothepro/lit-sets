@@ -36,7 +36,7 @@
   "devDependencies": {
     "@material/icon-button": "^10.0.0",
     "@material/mwc-dialog": "^0.20.0",
-    "@mothepro/fancy-p2p": "^0.0.20",
+    "@mothepro/fancy-p2p": "^0.0.22",
     "@mothepro/signaling-lobby": "^0.3.3",
     "@types/mocha": "^8.2.0",
     "@types/should-sinon": "^0.0.8",
@@ -61,7 +61,7 @@
     "@mothepro/theme-toggle": "^0.0.2",
     "lit-confetti": "^0.1.5",
     "lit-element": "^2.4.0",
-    "lit-p2p": "^0.4.5",
+    "lit-p2p": "^0.4.6",
     "sets-game-engine": "^1.0.5"
   }
 }
