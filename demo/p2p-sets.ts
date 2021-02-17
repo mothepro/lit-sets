@@ -11,7 +11,7 @@ import '../index.js'
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
- * Must live inside a `<p2p-switch>` with the `slot="p2p"` attribute.
+ * Should live inside a `<lit-p2p>`.
  */
 @customElement('p2p-sets')
 export default class extends LitElement {
@@ -71,6 +71,8 @@ export default class extends LitElement {
 
   protected async firstUpdated() {
     addEventListener('p2p-update', this.go)
+    // Update the final chart when when the screen resizes
+    addEventListener('resize', () => p2p && this.engine && this.mainPlayer && !this.engine.filled.isAlive && this.requestUpdate())
     this.go()
   }
 
@@ -80,13 +82,15 @@ export default class extends LitElement {
   }
 
   private go = async () => {
-    // Shuffle all cards using given RNG
+    // Shuffle all cards using shared p2p RNG
     const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
     for (let i = cards.length - 1; i > 0; i--) {
-      const j = Math.abs(p2p.random(true)) % i
-        ;[cards[j], cards[i]] = [cards[i], cards[j]]
+      const j = Math.abs(p2p.random(true)) % i;
+      [cards[j], cards[i]] = [cards[i], cards[j]]
     }
 
+    // Make the game engine! And bind each peer to a player
+    // TODO add parameters to the Player to change how timeouts, bans, hints and taking sets affect the score.
     this.engine = new Game([...Array(p2p.peers.length)].map(() => new Player), cards)
     p2p.peers.map(this.bindPeer)
 
@@ -110,7 +114,7 @@ export default class extends LitElement {
   }
 
   /** Works on the engine on behalf of a peer & sets main player */
-  private bindPeer = async ({ message, close, isYou }: typeof p2p.peers[0], index: number) => {
+  private bindPeer = async ({ message, close, isYou, name }: typeof p2p.peers[0], index: number) => {
     if (isYou)
       this.mainPlayer = this.engine.players[index]
 
@@ -124,7 +128,8 @@ export default class extends LitElement {
 
             case 3: // Take
               const indexs = new Set(new Uint8Array(data))
-              //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+              // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+              // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
               this.engine.takeSet(
                 this.engine.players[index],
                 this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
@@ -176,8 +181,8 @@ export default class extends LitElement {
         .ticks=${this.restartClock ? 0 : null}
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
-        @tick=${() => this.engine.players.map(({ score }, index) => this.engine.filled.isAlive
-          && this.runningScores[index].push(score))}
+        @tick=${() => this.engine.players
+          .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(score))}
       ></lit-clock>
       <mwc-fab
         part="clock-toggle"
