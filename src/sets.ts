@@ -65,11 +65,11 @@ export default class extends LitElement {
   firstUpdated() {
     // TODO do not select a card
     addEventListener('keypress', (event: KeyboardEvent) => {
-      if (this.takeOnKey && event.code == this.takeOnKey) {
+      if (this.takeOnKey && event.key == this.takeOnKey) {
         event.preventDefault()
         this.takeSet()
       }
-      else if (this.hintOnKey && event.code == this.hintOnKey && this.hintAvailable) {
+      else if (this.hintOnKey && event.key == this.hintOnKey && this.hintAvailable) {
         event.preventDefault()
         this.dispatchEvent(new CustomEvent('hint'))
       }
