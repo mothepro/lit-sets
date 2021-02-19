@@ -2,8 +2,8 @@ import { LitElement, customElement, property, html, css } from 'lit-element'
 import type { Details } from 'sets-game-engine'
 import { injectStyle } from './helper.js'
 
-import '@material/mwc-button'
-import './shape.js'
+import '@material/mwc-button' // <mwc-button>
+import './shape.js'           // <sets-shape>
 
 /** Number of milliseconds to complete animation/transition */
 export const animationDuration = 1000

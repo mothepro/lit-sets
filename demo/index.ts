@@ -1,7 +1,8 @@
-import './p2p-sets.js'
-import '@mothepro/theme-toggle'
-import '@material/mwc-dialog'
-  
+import 'lit-p2p'                // <lit-p2p>
+import './p2p-sets.js'          // <p2p-sets>
+import '@mothepro/theme-toggle' // <theme-toggle>
+import '@material/mwc-dialog'   // <mwc-dialog>
+
 const
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
   litP2pElement = document.querySelector('lit-p2p')!,

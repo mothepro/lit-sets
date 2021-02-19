@@ -3,9 +3,9 @@ import type { Card } from 'sets-game-engine'
 import { hasArrayChanged, milliseconds } from './helper.js'
 import { animationDuration } from './card.js'
 
-import '@material/mwc-fab'
-import './card.js'
-import './leaderboard.js'
+import '@material/mwc-fab' // <mwc-fab>
+import './card.js'         // <sets-card>
+import './leaderboard.js'  // <sets-leaderboard>
 
 export type TakeEvent = CustomEvent<[number, number, number]>
 export type HintEvent = CustomEvent<void>

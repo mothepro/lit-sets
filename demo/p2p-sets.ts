@@ -3,11 +3,10 @@ import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import type { TakeEvent } from '../index.js'
 import { milliseconds } from '../src/helper.js'
 
-import 'lit-p2p'
-import 'lit-confetti'
-import '@mothepro/lit-chart'
-import '@mothepro/lit-clock'
-import '../index.js'
+import 'lit-confetti'         // <lit-confetti>
+import '@mothepro/lit-chart'  // <lit-chart>
+import '@mothepro/lit-clock'  // <lit-chart>
+import '../index.js'          // <lit-sets>
 
 /**
  * Peer to Peer (and offline) version of the game of sets.

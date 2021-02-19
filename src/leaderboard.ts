@@ -1,7 +1,7 @@
 import { LitElement, customElement, property, html, css, PropertyValues } from 'lit-element'
 import { hasArrayChanged } from './helper.js'
 
-import '@material/mwc-list'
+import '@material/mwc-list' // <mwc-list>
 
 @customElement('sets-leaderboard')
 export default class extends LitElement {
