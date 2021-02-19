@@ -39,11 +39,9 @@ export default class extends LitElement {
       opacity: 0;
     }
   }
-
   :host, [slot="meta"] {
     position: relative;
   }
-    
   [part~="diff"] {
     position: absolute;
     z-index: 2;

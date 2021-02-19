@@ -26,6 +26,7 @@
   --chart-color-4: yellow;
   --chart-color-5: cyan;
 
+  --leaderboard-diff-font: bold 15px monospace;
   --leaderboard-diff-duration: 2s;
   --leaderboard-diff-positive-color-fg: limegreen;
   --leaderboard-diff-negative-color-fg: red;
@@ -53,18 +54,18 @@ mwc-button[toggle-online] {
     --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --sets-shape-size: 3.5em;
   }
+}
+@media (min-width: 768px) {
+  /* bootstrap "md" */
+  :root {
+    --sets-shape-spacing: 12px;
+  }
 
   mwc-button[toggle-online] {
     display: inline-flex;
   }
   mwc-icon-button[toggle-online] {
     display: none;
-  }
-}
-@media (min-width: 768px) {
-  /* bootstrap "md" */
-  :root {
-    --sets-shape-spacing: 12px;
   }
 }
 @media (min-width: 992px) {
@@ -86,7 +87,6 @@ html {
   color: var(--color-fg);
   font-family: var(--mdc-typography-font-family);
 }
-
 h1, h2, h3, h4, h5, h6, ::part(title) {
   text-align: center;
   font-weight: 300;
@@ -102,6 +102,9 @@ h2 span {
 }
 a {
   text-decoration: none;
+}
+p2p-sets { /* Leave space for fixed buttons at bottom */
+  margin-bottom: 3em;
 }
 
 /* Icons */
@@ -121,7 +124,6 @@ a {
 ::part(client-list) {
   margin: 0 auto;
 }
-
 ::part(client-list),
 ::part(leaderboard-full) {
   display: block;
@@ -130,16 +132,6 @@ a {
   border-radius: 0.5em;
   color: var(--color-fg);
 }
-
-::part(leaderboard-simple) {
-  display: block;
-  text-align: center;
-}
-
-::part(leaderboard) {
-  margin: 3em auto;
-}
-
 ::part(clock) {
   position: fixed;
   bottom: 2em;
@@ -148,26 +140,22 @@ a {
   font-size: 2.5em;
   user-select: none;
 }
-
 ::part(clock-toggle) {
   position: fixed;
   bottom: 1em;
   left: 1em;
 }
-
 ::part(make-group) {
   position: fixed;
   bottom: 1em;
   right: 1em;
 }
-
 mwc-button:not([raised]), /* Weird */
 ::part(name-input),
 ::part(can-edit) {
   --mdc-theme-primary: var(--color-fg);
   --mdc-typography-button-text-transform: none;
 }
-
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
 }
@@ -181,7 +169,6 @@ mwc-button:not([raised]), /* Weird */
   padding-top: var(--loading-size);
   white-space: nowrap;
 }
-
 [slot="p2p-alone"].centered-text {
   position: fixed;
   top: 50%;
@@ -190,7 +177,6 @@ mwc-button:not([raised]), /* Weird */
   margin-top: calc(var(--loading-size) / 2);
   padding-top: 1em;
 }
-
 .loading.centered {
   position: fixed;
   top: 50%;
@@ -230,25 +216,20 @@ mwc-button:not([raised]), /* Weird */
 mwc-dialog:not([open]) {
   display: none;
 }
-
 p, ul {
   text-align: start;
 }
-
 mwc-dialog h2 {
   margin-top: 0;
 }
-
 mwc-dialog mwc-button,
 mwc-dialog mwc-icon-button {
   vertical-align: middle;
 }
-
 mwc-dialog sets-card {
   display: flex;
   height: 7.5em;
 }
-
 mwc-dialog .card-table {
   display: grid;
   grid-template-columns: var(--how-to-table-template-columns);
@@ -257,7 +238,6 @@ mwc-dialog .card-table {
   grid-row-gap: 1.5em;
   padding: 1.5em;
 }
-
 mwc-dialog table {
   display: table;
   padding: 0 1.5em;
@@ -268,7 +248,6 @@ mwc-dialog table .key {
 mwc-dialog table .value {
   text-align: end;
 }
-
 mwc-dialog .set {
   --sets-shape-size: 2.4em;
 
@@ -280,18 +259,13 @@ mwc-dialog .set {
 }
 
 /*** Helpers ***/
-[hidden] {
-  display: none;
-}
 .mt6px {
   margin-top: 6px;
 }
-
 lit-p2p {
   display: block;
   text-align: center;
 }
-
 .next-to-lobby {
   display: inline-block;
   line-height: 36px;

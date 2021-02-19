@@ -171,6 +171,7 @@ export default class extends LitElement {
       ></lit-sets>
       <sets-leaderboard
         part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
+        ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
         .scores=${this.engine.players.map(({score}) => score)}
         .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
         .names=${p2p.peers?.map(peer => peer.name) ?? []}
