@@ -1,6 +1,7 @@
 {
     "name": "Mo's Sets",
     "short_name": "Sets",
+    "start_url": "/",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

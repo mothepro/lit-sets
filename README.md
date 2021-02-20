@@ -1,4 +1,4 @@
-# Lit Sets
+# <lit-sets>
 
 > Sets as a lit app
 
@@ -14,7 +14,6 @@ TODO...
 + animations on card exit
 + animations do not delay
 + Include axis on congrats screen
-+ better generator for points
 + Better win screen
 + Rematch button on win screen
 

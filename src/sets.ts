@@ -78,6 +78,7 @@ export default class extends LitElement {
 
   update(changed: PropertyValues) {
     if (changed.has('cards')) {
+      this.selected = []
       if ((changed.get('cards') as Card[])?.length) { // Remove cards no longer in the deck
         this.display = this.display.map(({ card }) => ({
           card,

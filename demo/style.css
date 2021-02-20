@@ -40,12 +40,9 @@
   --mdc-dialog-scroll-divider-color: transparent;
   --mdc-dialog-max-width: 768px;
 }
-
-/* Too big for mobile (must be before media queries) */
-mwc-button[toggle-online] {
+mwc-button[toggle-online] { /* Too big for mobile (must be before media queries) */
   display: none;
 }
-
 @media (min-width: 576px) {
   /* bootstrap "sm" */
   :root {
@@ -82,12 +79,14 @@ mwc-button[toggle-online] {
 }
 
 /* Main page */
-html {
+html, body {
   background-color: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--mdc-typography-font-family);
+  margin: 0;
+  padding: 0;
 }
-h1, h2, h3, h4, h5, h6, ::part(title) {
+h1, h2, h3, h4, h5, h6 {
   text-align: center;
   font-weight: 300;
   line-height: 1;
@@ -102,9 +101,6 @@ h2 span {
 }
 a {
   text-decoration: none;
-}
-p2p-sets { /* Leave space for fixed buttons at bottom */
-  margin-bottom: 3em;
 }
 
 /* Icons */
@@ -121,6 +117,9 @@ p2p-sets { /* Leave space for fixed buttons at bottom */
 }
 
 /* Parts */
+::part(leaderboard) { /* Leave space for fixed buttons at bottom */
+  margin: 3em auto;
+}
 ::part(client-list) {
   margin: 0 auto;
 }

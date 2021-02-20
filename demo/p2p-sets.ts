@@ -107,6 +107,8 @@ export default class extends LitElement {
       
     for await (const _ of this.engine.filled)
       this.requestUpdate()
+    // push the final scores
+    this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))
     this.confetti = 100
     await milliseconds(10 * 1000)
     this.confetti = 0
