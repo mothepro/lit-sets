@@ -48,7 +48,6 @@ mwc-button[toggle-online] { /* Too big for mobile (must be before media queries)
   :root {
     --how-to-table-template-columns: 50% 50%;
     --how-to-sets-template-columns: 30% 30% 30%;
-    --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --sets-shape-size: 3.5em;
   }
 }
@@ -56,6 +55,7 @@ mwc-button[toggle-online] { /* Too big for mobile (must be before media queries)
   /* bootstrap "md" */
   :root {
     --sets-shape-spacing: 12px;
+    --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
   }
 
   mwc-button[toggle-online] {
