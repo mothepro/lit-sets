@@ -94,6 +94,12 @@
         label="How to Play"
         title="How to Play"
       ></mwc-icon-button>
+      <!-- <mwc-icon-button
+        hidden
+        icon="download"
+        label="Install"
+        title="Install"
+      ></mwc-icon-button> -->
       <a
         title="See how it works"
         target="_blank"
@@ -356,20 +362,4 @@
     </mwc-dialog>
   </lit-p2p>
 </body>
-
-<script>
-  window.dataLayer = window.dataLayer || []
-  function gtag() { dataLayer.push(arguments) }
-  gtag('js', new Date)
-  gtag('config', 'UA-172429940-2')
-
-  document.body.firstElementChild.addEventListener('p2p-error', error => {
-    console.error('Lost connection', error)
-    ga('send', 'exception', {
-      exDescription: `${error.message} -- ${error.stack}`,
-      exFatal: false, // idk...
-    })
-  })
-</script>
-
 </html>

@@ -117,9 +117,9 @@ a {
 }
 
 /* Parts */
-::part(leaderboard) { /* Leave space for fixed buttons at bottom */
+::part(sets) { /* Leave space for fixed buttons at bottom */
   display: block;
-  margin: 3em auto 5em;
+  margin-bottom: 3em;
 }
 ::part(client-list) {
   margin: 0 auto;
@@ -265,6 +265,7 @@ mwc-dialog .set {
 lit-p2p {
   display: block;
   text-align: center;
+  margin-bottom: 5em;
 }
 .next-to-lobby {
   display: inline-block;
