@@ -118,7 +118,8 @@ a {
 
 /* Parts */
 ::part(leaderboard) { /* Leave space for fixed buttons at bottom */
-  margin: 3em auto;
+  display: block;
+  margin: 3em auto 5em;
 }
 ::part(client-list) {
   margin: 0 auto;

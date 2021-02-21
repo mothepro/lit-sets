@@ -171,13 +171,6 @@ export default class extends LitElement {
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
         @hint=${() => p2p.broadcast(new Uint8Array([0]))}
       ></lit-sets>
-      <sets-leaderboard
-        part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
-        ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
-        .scores=${this.engine.players.map(({score}) => score)}
-        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
-        .names=${p2p.peers?.map(peer => peer.name) ?? []}
-      ></sets-leaderboard>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -194,7 +187,14 @@ export default class extends LitElement {
         icon=${this.showClock ? 'timer_off' : 'timer'}
         label=${this.showClock ? 'Hide time' : 'Show time'}
         title=${this.showClock ? 'Hide time' : 'Show time'}
-      ></mwc-fab>`
+      ></mwc-fab>
+      <sets-leaderboard
+        part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
+        ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
+        .scores=${this.engine.players.map(({score}) => score)}
+        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
+        .names=${p2p.peers?.map(peer => peer.name) ?? []}
+      ></sets-leaderboard>`
 
     // Game over
     : html`
