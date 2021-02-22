@@ -6,7 +6,7 @@ import '@material/mwc-button' // <mwc-button>
 import './shape.js'           // <sets-shape>
 
 /** Number of milliseconds to complete animation/transition */
-export const animationDuration = 1000
+export const animationDuration = 650
 
 @customElement('sets-card')
 export default class extends LitElement {
