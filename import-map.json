@@ -17,11 +17,6 @@
     "sets-game-engine/": "//unpkg.com/sets-game-engine@1.0.5/dist/esm/",
     "sets-game-engine": "//unpkg.com/sets-game-engine@1.0.5/dist/esm/index.js",
 
-    "lit-element/": "//unpkg.com/lit-element@2.3.1/",
-    "lit-element": "//unpkg.com/lit-element@2.3.1/lit-element.js",
-    "lit-html/": "//unpkg.com/lit-html@1.2.1/",
-    "lit-html": "//unpkg.com/lit-html@1.2.1/lit-html.js",
-
     "@material/ripple": "//unpkg.com/@material/ripple@10.0.0/dist/mdc.ripple.js",
     "@material/ripple/": "//unpkg.com/@material/ripple@10.0.0/",
     "@material/base": "//unpkg.com/@material/base@10.0.0/dist/mdc.base.js",
@@ -73,6 +68,11 @@
     "@material/mwc-base/": "//unpkg.com/@material/mwc-base@0.20.0/",
     "@material/mwc-dialog": "//unpkg.com/@material/mwc-dialog@0.20.0/mwc-dialog.js",
     "@material/mwc-dialog/": "//unpkg.com/@material/mwc-dialog@0.20.0/",
+
+    "lit-element/": "//unpkg.com/lit-element@2.3.1/",
+    "lit-element": "//unpkg.com/lit-element@2.3.1/lit-element.js",
+    "lit-html/": "//unpkg.com/lit-html@1.2.1/",
+    "lit-html": "//unpkg.com/lit-html@1.2.1/lit-html.js",
     "blocking-elements": "//unpkg.com/blocking-elements@0.1.1/dist/blocking-elements.min.js",
     "blocking-elements/": "//unpkg.com/blocking-elements@0.1.1/",
     "wicg-inert": "//unpkg.com/wicg-inert@3.1.0/dist/inert.js",

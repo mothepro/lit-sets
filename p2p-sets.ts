@@ -3,15 +3,39 @@ import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import type { TakeEvent } from '../index.js'
 import { milliseconds } from '../src/helper.js'
 
-import 'lit-p2p'
-import 'lit-confetti'
-import '@mothepro/lit-chart'
-import '@mothepro/lit-clock'
-import '../index.js'
+import 'lit-confetti'         // <lit-confetti>
+import '@mothepro/lit-chart'  // <lit-chart>
+import '@mothepro/lit-clock'  // <lit-chart>
+import '../index.js'          // <lit-sets>
+
+/** One bit of data to send over the wire. */
+const enum Status {
+  HINT,
+  REMATCH,
+}
+
+/** 25 then +5 from there... */
+function* hintCosts(): Generator<number, never, Player> {
+  let times = 0
+  while (true)
+    yield 25 + (5 * times++)
+}
+
+/** Always 50 */
+function* banCosts(): Generator<number, never, Player> {
+  while (true)
+    yield 50
+}
+
+/** Always 100 */
+function* scoreIncrementer(): Generator<number, never, Player> {
+  while (true)
+    yield 100
+}
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
- * Must live inside a `<p2p-switch>` with the `slot="p2p"` attribute.
+ * Should live inside a `<lit-p2p>`.
  */
 @customElement('p2p-sets')
 export default class extends LitElement {
@@ -23,6 +47,10 @@ export default class extends LitElement {
 
   @internalProperty()
   protected restartClock = false
+
+  /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
+  @internalProperty()
+  protected wantRematch: number[] = []
 
   /** The sets game engine */
   private engine!: Game
@@ -71,28 +99,51 @@ export default class extends LitElement {
 
   protected async firstUpdated() {
     addEventListener('p2p-update', this.go)
+    // Update the final chart when when the screen resizes
+    addEventListener('resize', () => p2p && this.engine && this.mainPlayer && !this.engine.filled.isAlive && this.requestUpdate())
     this.go()
   }
 
-  updated(changed: PropertyValues) {
+  protected updated(changed: PropertyValues) {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
   }
 
+  /**
+   * Makes the players, with special rules for multiplayer.
+   * 
+   * More advanced form of default rules: `[...Array(p2p.peers.length)].map(() => new Player)`
+   */
+  private makeRules(): Player[] {
+    if (p2p.peers.length == 1)
+      return [new Player]
+    
+    return [...Array(p2p.peers.length)]
+      .map(() => new Player(
+        undefined,
+        hintCosts(),
+        banCosts(),
+        scoreIncrementer()))
+  }
+
   private go = async () => {
-    // Shuffle all cards using given RNG
+    // Shuffle all cards using shared p2p RNG
     const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
     for (let i = cards.length - 1; i > 0; i--) {
-      const j = Math.abs(p2p.random(true)) % i
-        ;[cards[j], cards[i]] = [cards[i], cards[j]]
+      const j = Math.abs(p2p.random(true)) % i;
+      [cards[j], cards[i]] = [cards[i], cards[j]]
     }
 
-    this.engine = new Game([...Array(p2p.peers.length)].map(() => new Player), cards)
+    // Make the game engine! And bind each peer to a player
+    // TODO add parameters to the Player to change how timeouts, bans, hints and taking sets affect the score.
+    this.engine = new Game(this.makeRules(), cards)
     p2p.peers.map(this.bindPeer)
 
     // Reset running scores
     this.runningScores = this.engine.players.map(() => [])
     this.restartClock = true
+    this.wantRematch = []
+    this.confetti = 0
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
     for (const player of this.engine.players) {
@@ -104,13 +155,16 @@ export default class extends LitElement {
       
     for await (const _ of this.engine.filled)
       this.requestUpdate()
+    
+    // push the final scores and drop confetti
+    this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))
     this.confetti = 100
     await milliseconds(10 * 1000)
     this.confetti = 0
   }
 
   /** Works on the engine on behalf of a peer & sets main player */
-  private bindPeer = async ({ message, close, isYou }: typeof p2p.peers[0], index: number) => {
+  private bindPeer = async ({ message, close, isYou, name }: typeof p2p.peers[0], index: number) => {
     if (isYou)
       this.mainPlayer = this.engine.players[index]
 
@@ -118,13 +172,31 @@ export default class extends LitElement {
       for await (const data of message)
         if (data instanceof ArrayBuffer)
           switch (data.byteLength) {
-            case 1: // Hint
-              this.engine.takeHint(this.engine.players[index])
+            case 1: // Status Bit
+              switch (new DataView(data).getInt8(0)) {
+                case Status.HINT:
+                  this.engine.takeHint(this.engine.players[index])
+                  break
+                
+                case Status.REMATCH:
+                  this.wantRematch = [...new Set(this.wantRematch).add(index)]
+                  if (this.wantRematch.length == p2p.peers.length) {
+                    this.go()
+                    // This entire listener is no longer needed.
+                    // We want to keep the connection open, but restart everything.
+                    return
+                  }
+                  break
+                
+                default:
+                  throw Error(`Unexpected data from ${name}: ${data}`)
+              }
               break
 
             case 3: // Take
               const indexs = new Set(new Uint8Array(data))
-              //TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+              // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+              // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
               this.engine.takeSet(
                 this.engine.players[index],
                 this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
@@ -138,6 +210,14 @@ export default class extends LitElement {
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
     }
     close()
+  }
+
+  /** The index of you in the peer list. */
+  private get mainIndex() {
+    for (const [index, { isYou }] of p2p.peers.entries())
+      if (isYou)
+        return index
+    throw Error('You should be in the peer list')
   }
 
   private get winnerText() {
@@ -155,6 +235,7 @@ export default class extends LitElement {
     ? html`
       <lit-sets
         part="sets"
+        exportparts="takable-false"
         ?hint-available=${this.mainPlayer.hintCards.length < 3}
         ?can-take=${!this.mainPlayer.isBanned}
         show-label
@@ -163,21 +244,15 @@ export default class extends LitElement {
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @hint=${() => p2p.broadcast(new Uint8Array([0]))}
+        @hint=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
       ></lit-sets>
-      <sets-leaderboard
-        part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
-        .scores=${this.engine.players.map(({score}) => score)}
-        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
-        .names=${p2p.peers?.map(peer => peer.name) ?? []}
-      ></sets-leaderboard>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
-        @tick=${() => this.engine.players.map(({ score }, index) => this.engine.filled.isAlive
-          && this.runningScores[index].push(score))}
+        @tick=${() => this.engine.players
+          .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(Math.max(0, score)))}
       ></lit-clock>
       <mwc-fab
         part="clock-toggle"
@@ -187,13 +262,30 @@ export default class extends LitElement {
         icon=${this.showClock ? 'timer_off' : 'timer'}
         label=${this.showClock ? 'Hide time' : 'Show time'}
         title=${this.showClock ? 'Hide time' : 'Show time'}
-      ></mwc-fab>`
+      ></mwc-fab>
+      <sets-leaderboard
+        part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
+        ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
+        .scores=${this.engine.players.map(({score}) => score)}
+        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
+        .names=${p2p.peers?.map(peer => peer.name) ?? []}
+      ></sets-leaderboard>`
 
     // Game over
+    // TODO show chart Axis with time
     : html`
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
-      ${this.engine.players.length > 1 ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}
-      Finished ${this.runningScores[0].length} seconds!<br/>
+      <h2 part="title">
+        ${this.winnerText} after ${this.runningScores[0].length} seconds
+      </h2>
+      <mwc-fab
+        part=${`rematch rematchable-${!this.wantRematch.includes(this.mainIndex)}`}
+        extended
+        ?disabled=${this.wantRematch.includes(this.mainIndex)}
+        icon="replay"
+        label="Rematch"
+        @click=${() => p2p.broadcast(new Uint8Array([Status.REMATCH]))}
+      ></mwc-fab>
       <lit-chart
         part="chart"
         width=${document.body.clientWidth}

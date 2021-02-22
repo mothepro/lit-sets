@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Mo's take on the classic card game with multiplayer">
   <title>Mo's Sets</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -23,7 +24,7 @@
   <!-- Production -->
   <script prod-only type=module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets/dist/esm/demo/index.js"></script>
+  <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.6/dist/esm/demo/index.js"></script>
   <script prod-only type=application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
   <!-- Development -->
@@ -32,7 +33,7 @@
   <script dev-only type=dev-only-module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit theme-toggle-key="theme" first-visit-help-delay="10000">
+<body first-visit-help-delay="10000">
   <lit-p2p
     fallback
     local-storage
@@ -40,7 +41,7 @@
     signaling="wss://ws.parkshade.com:443"
     version="0.3.2"
     timeout="25000"
-    lobby="lit-sets@0.0.2"
+    lobby="lit-sets@0.0.6"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -56,7 +57,7 @@
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
-    <div class="top-icons">
+    <header class="top-icons">
       <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
@@ -93,6 +94,12 @@
         label="How to Play"
         title="How to Play"
       ></mwc-icon-button>
+      <!-- <mwc-icon-button
+        hidden
+        icon="download"
+        label="Install"
+        title="Install"
+      ></mwc-icon-button> -->
       <a
         title="See how it works"
         target="_blank"
@@ -125,10 +132,9 @@
           title="Switch to dark theme"
         ></mwc-icon-button>
       </theme-toggle>
-    </div>
+    </header>
 
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
-    <br slot="p2p-lobby" class="p2p-lobby" />
 
     <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
     
@@ -141,16 +147,34 @@
       </h2>
 
       <details>
-        <summary><em>Accessibility is important!</em> click here to find the keyboad shortcuts.</summary>
+        <summary>Show keyboard shortcuts</summary>
 
-        <ul>
-          <li>Press <code>Tab</code> to hightlight the next card</li>
-          <li>Press <code>Shift</code> + <code>Tab</code> to hightlight the previous card</li>
-          <li>Press <code>Space</code> to select the hightlighted card</li>
-          <li>Press <code>Enter</code> to take the selected cards as a set</li>
-          <li>Press <code>H</code> to get a hint</li>
-          <li>Press <code>?</code> to show this guide</li>
-        </ul>
+        <mwc-list noninteractive>
+          <mwc-list-item hasMeta>
+            Hightlight the next card
+            <span slot="meta">Tab</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Hightlight the previous card
+            <span slot="meta">⬆️Tab</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Select the hightlighted card
+            <span slot="meta">Space</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Take the selected cards as a set
+            <span slot="meta">Enter</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Get a hint
+            <span slot="meta">H</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Show this guide
+            <span slot="meta">?</span>
+          </mwc-list-item>
+        </mwc-list>
       </details>
         
       <p>
@@ -355,20 +379,4 @@
     </mwc-dialog>
   </lit-p2p>
 </body>
-
-<script>
-  window.dataLayer = window.dataLayer || []
-  function gtag() { dataLayer.push(arguments) }
-  gtag('js', new Date)
-  gtag('config', 'UA-172429940-2')
-
-  document.body.firstElementChild.addEventListener('p2p-error', error => {
-    console.error('Lost connection', error)
-    ga('send', 'exception', {
-      exDescription: `${error.message} -- ${error.stack}`,
-      exFatal: false, // idk...
-    })
-  })
-</script>
-
 </html>
