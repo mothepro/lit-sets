@@ -15,9 +15,10 @@ TODO...
 + animations do not delay
 + Include axis on congrats screen
 + Better win screen
-+ Rematch button on win screen
++ PWA!
 
 No release needed
 
 + nicer shapes
 + better color scheme
++ add key shortcuts and change log to their own dialogs
