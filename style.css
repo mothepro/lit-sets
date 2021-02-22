@@ -9,7 +9,7 @@
   --sets-grid-template-columns: repeat(2, minmax(150px, 45vw));
   --sets-gap: 2em;
   --sets-cards-per-row: 2;
-  --sets-card-animation-delay: 500ms;
+  --sets-card-animation-delay: 250ms;
 
   --sets-shape-blue-hsl: 207, 90%, 58%;
   --sets-shape-red-hsl: 45, 100%, 50%;
