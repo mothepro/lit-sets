@@ -144,7 +144,7 @@ export default class extends LitElement {
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     // push the final scores
-    this.engine.players.map(({ score }, index) => this.runningScores[index].push(score))
+    this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.abs(score)))
     this.confetti = 100
     await milliseconds(10 * 1000)
     this.confetti = 0
@@ -213,7 +213,7 @@ export default class extends LitElement {
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
         @tick=${() => this.engine.players
-          .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(score))}
+          .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(Math.abs(score)))}
       ></lit-clock>
       <mwc-fab
         part="clock-toggle"
