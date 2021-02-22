@@ -1,4 +1,4 @@
-# <lit-sets>
+# `<lit-sets>`
 
 > Sets as a lit app
 
