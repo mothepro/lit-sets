@@ -131,6 +131,7 @@ a {
   border: 1px solid #d3d3d3;
   border-radius: 0.5em;
   color: var(--color-fg);
+  margin: 0 auto;
 }
 ::part(clock) {
   position: fixed;

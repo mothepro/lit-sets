@@ -8,6 +8,25 @@ import '@mothepro/lit-chart'  // <lit-chart>
 import '@mothepro/lit-clock'  // <lit-chart>
 import '../index.js'          // <lit-sets>
 
+/** 25 then +5 from there... */
+function* hintCosts(): Generator<number, never, Player> {
+  let times = 0
+  while (true)
+    yield 25 + 5 * times++
+}
+
+/** Always 50 */
+function* banCosts(): Generator<number, never, Player> {
+  while (true)
+    yield 50
+}
+
+/** Always 100 */
+function* scoreIncrementer(): Generator<number, never, Player> {
+  while (true)
+    yield 100
+}
+
 /**
  * Peer to Peer (and offline) version of the game of sets.
  * Should live inside a `<lit-p2p>`.
@@ -75,9 +94,26 @@ export default class extends LitElement {
     this.go()
   }
 
-  updated(changed: PropertyValues) {
+  protected updated(changed: PropertyValues) {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
+  }
+
+  /**
+   * Makes the players, with special rules for multiplayer.
+   * 
+   * More advanced form of default rules: `[...Array(p2p.peers.length)].map(() => new Player)`
+   */
+  private makeRules(): Player[] {
+    if (p2p.peers.length == 1)
+      return [new Player]
+    
+    return [...Array(p2p.peers.length)]
+      .map(() => new Player(
+        undefined,
+        hintCosts(),
+        banCosts(),
+        scoreIncrementer()))
   }
 
   private go = async () => {
@@ -90,7 +126,7 @@ export default class extends LitElement {
 
     // Make the game engine! And bind each peer to a player
     // TODO add parameters to the Player to change how timeouts, bans, hints and taking sets affect the score.
-    this.engine = new Game([...Array(p2p.peers.length)].map(() => new Player), cards)
+    this.engine = new Game(this.makeRules(), cards)
     p2p.peers.map(this.bindPeer)
 
     // Reset running scores
