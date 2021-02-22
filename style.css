@@ -94,6 +94,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 h1.title {
   font-size: 3rem;
+  margin: .5em 0;
 }
 h1 span,
 h2 span {
@@ -102,6 +103,8 @@ h2 span {
 a {
   text-decoration: none;
 }
+/* Discord Blurple */
+/* #discord path { fill: #7289DA; } */
 
 /* Icons */
 .top-icons {

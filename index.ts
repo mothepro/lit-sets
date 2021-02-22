@@ -8,18 +8,10 @@ declare global {
   }
 }
 
-function gtag(...args: any[]) {
-  window.dataLayer.push(arguments)
-}
-
-
-// Initialize deferredPrompt for use later to show browser install prompt.
-let deferredPrompt: Event | void
-window.dataLayer = window.dataLayer || []
-
 // Google Analytics
-gtag('js', new Date)
-gtag('config', 'UA-172429940-2')
+window.dataLayer = window.dataLayer || []
+window.dataLayer.push('js', new Date)
+window.dataLayer.push('config', 'UA-172429940-2')
 
 const
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
@@ -27,6 +19,9 @@ const
   helpBtn = document.querySelector('mwc-icon-button[icon=help]')!,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogElement = document.querySelector('mwc-dialog')!
+
+// Initialize deferredPrompt for use later to show browser install prompt.
+let deferredPrompt: Event | void
 
 // Make the toggle button actually do something
 // @ts-ignore TODO find this hidden type exported from the module directly...
