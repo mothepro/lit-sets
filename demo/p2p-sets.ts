@@ -8,11 +8,17 @@ import '@mothepro/lit-chart'  // <lit-chart>
 import '@mothepro/lit-clock'  // <lit-chart>
 import '../index.js'          // <lit-sets>
 
+/** One bit of data to send over the wire. */
+const enum Status {
+  HINT,
+  REMATCH,
+}
+
 /** 25 then +5 from there... */
 function* hintCosts(): Generator<number, never, Player> {
   let times = 0
   while (true)
-    yield 25 + 5 * times++
+    yield 25 + (5 * times++)
 }
 
 /** Always 50 */
@@ -41,6 +47,10 @@ export default class extends LitElement {
 
   @internalProperty()
   protected restartClock = false
+
+  /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
+  @internalProperty()
+  protected wantRematch: number[] = []
 
   /** The sets game engine */
   private engine!: Game
@@ -132,6 +142,8 @@ export default class extends LitElement {
     // Reset running scores
     this.runningScores = this.engine.players.map(() => [])
     this.restartClock = true
+    this.wantRematch = []
+    this.confetti = 0
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
     for (const player of this.engine.players) {
@@ -143,8 +155,9 @@ export default class extends LitElement {
       
     for await (const _ of this.engine.filled)
       this.requestUpdate()
-    // push the final scores
-    this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.abs(score)))
+    
+    // push the final scores and drop confetti
+    this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))
     this.confetti = 100
     await milliseconds(10 * 1000)
     this.confetti = 0
@@ -159,8 +172,25 @@ export default class extends LitElement {
       for await (const data of message)
         if (data instanceof ArrayBuffer)
           switch (data.byteLength) {
-            case 1: // Hint
-              this.engine.takeHint(this.engine.players[index])
+            case 1: // Status Bit
+              switch (new DataView(data).getInt8(0)) {
+                case Status.HINT:
+                  this.engine.takeHint(this.engine.players[index])
+                  break
+                
+                case Status.REMATCH:
+                  this.wantRematch = [...new Set(this.wantRematch).add(index)]
+                  if (this.wantRematch.length == p2p.peers.length) {
+                    this.go()
+                    // This entire listener is no longer needed.
+                    // We want to keep the connection open, but restart everything.
+                    return
+                  }
+                  break
+                
+                default:
+                  throw Error(`Unexpected data from ${name}: ${data}`)
+              }
               break
 
             case 3: // Take
@@ -182,6 +212,14 @@ export default class extends LitElement {
     close()
   }
 
+  /** The index of you in the peer list. */
+  private get mainIndex() {
+    for (const [index, { isYou }] of p2p.peers.entries())
+      if (isYou)
+        return index
+    throw Error('You should be in the peer list')
+  }
+
   private get winnerText() {
     const winners: string[] = []
     for (const [index, { score }] of this.engine.players.entries())
@@ -197,6 +235,7 @@ export default class extends LitElement {
     ? html`
       <lit-sets
         part="sets"
+        exportparts="takable-false"
         ?hint-available=${this.mainPlayer.hintCards.length < 3}
         ?can-take=${!this.mainPlayer.isBanned}
         show-label
@@ -205,7 +244,7 @@ export default class extends LitElement {
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @hint=${() => p2p.broadcast(new Uint8Array([0]))}
+        @hint=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
       ></lit-sets>
       <lit-clock
         part="clock"
@@ -213,7 +252,7 @@ export default class extends LitElement {
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
         @tick=${() => this.engine.players
-          .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(Math.abs(score)))}
+          .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(Math.max(0, score)))}
       ></lit-clock>
       <mwc-fab
         part="clock-toggle"
@@ -233,10 +272,20 @@ export default class extends LitElement {
       ></sets-leaderboard>`
 
     // Game over
+    // TODO show chart Axis with time
     : html`
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
-      ${this.engine.players.length > 1 ? html`<h2 part="title">${this.winnerText}!</h2>` : ''}
-      Finished ${this.runningScores[0].length} seconds!<br/>
+      <h2 part="title">
+        ${this.winnerText} after ${this.runningScores[0].length} seconds
+      </h2>
+      <mwc-fab
+        part=${`rematch rematchable-${!this.wantRematch.includes(this.mainIndex)}`}
+        extended
+        ?disabled=${this.wantRematch.includes(this.mainIndex)}
+        icon="replay"
+        label="Rematch"
+        @click=${() => p2p.broadcast(new Uint8Array([Status.REMATCH]))}
+      ></mwc-fab>
       <lit-chart
         part="chart"
         width=${document.body.clientWidth}

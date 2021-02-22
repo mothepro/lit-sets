@@ -126,18 +126,6 @@ export default class extends LitElement {
   }
   mwc-fab.hint {
     left: 4rem;
-  }
-
-  /* Should be built in tbh... */
-  mwc-fab[disabled] {
-    pointer-events: none;
-    cursor: default !important;
-    --mdc-theme-on-secondary:  white;
-    --mdc-theme-secondary:  lightgrey;
-    --mdc-fab-box-shadow:  none;
-    --mdc-fab-box-shadow-hover:  none;
-    --mdc-fab-box-shadow-active:  none;
-    --mdc-ripple-fg-opacity:  0;
   }`
 
   private selectCard(index: number) {
@@ -187,7 +175,7 @@ export default class extends LitElement {
       title="Get a hint"
     ></mwc-fab>
     <mwc-fab
-      part="take"
+      part=${`take takable-${this.canTake && this.selected.length == 3}`}
       class="take"
       ?extended=${this.showLabel}
       ?disabled=${!this.canTake || this.selected.length != 3}

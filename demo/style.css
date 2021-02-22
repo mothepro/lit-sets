@@ -121,8 +121,9 @@ a {
   display: block;
   margin-bottom: 3em;
 }
-::part(client-list) {
-  margin: 0 auto;
+::part(rematch) {
+  position: absolute;
+  left: 2em;
 }
 ::part(client-list),
 ::part(leaderboard-full) {
@@ -156,6 +157,19 @@ mwc-button:not([raised]), /* Weird */
 ::part(can-edit) {
   --mdc-theme-primary: var(--color-fg);
   --mdc-typography-button-text-transform: none;
+}
+/* Since mwc-fab[disabled] is not supported... SMH */
+mwc-fab[disabled],
+::part(takable-false),
+::part(rematchable-false) {
+  pointer-events: none;
+  cursor: default !important;
+  --mdc-theme-on-secondary:  white;
+  --mdc-theme-secondary:  lightgrey;
+  --mdc-fab-box-shadow:  none;
+  --mdc-fab-box-shadow-hover:  none;
+  --mdc-fab-box-shadow-active:  none;
+  --mdc-ripple-fg-opacity:  0;
 }
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
