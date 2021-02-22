@@ -165,6 +165,15 @@ export default class extends LitElement {
       ></sets-card>`)}
     </div>
     <mwc-fab
+      part=${`take takable-${this.canTake && this.selected.length == 3}`}
+      class="take"
+      ?extended=${this.showLabel}
+      ?disabled=${!this.canTake || this.selected.length != 3}
+      @click=${this.takeSet}
+      icon="done_outline"
+      label="Take Set"
+    ></mwc-fab>
+    <mwc-fab
       part="hint"
       class="hint"
       mini
@@ -173,14 +182,5 @@ export default class extends LitElement {
       icon="lightbulb"
       label="Get Hint"
       title="Get a hint"
-    ></mwc-fab>
-    <mwc-fab
-      part=${`take takable-${this.canTake && this.selected.length == 3}`}
-      class="take"
-      ?extended=${this.showLabel}
-      ?disabled=${!this.canTake || this.selected.length != 3}
-      @click=${this.takeSet}
-      icon="done_outline"
-      label="Take Set"
     ></mwc-fab>`
 }

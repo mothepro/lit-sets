@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="color-scheme" content="light dark">
+  <!-- <meta name="color-scheme" content="light dark"> Not supported yet, causes feedback form to break... WTF -->
   <meta name="description" content="Mo's take on the classic card game with multiplayer">
   <title>Mo's Sets</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -89,6 +89,7 @@
         label="Singleplayer"
       ></mwc-icon-button>
       <mwc-icon-button
+        open-dialog="help"
         icon="help"
         label="How to Play"
         title="How to Play"
@@ -111,15 +112,12 @@
           </svg>
       </mwc-icon-button>
       </a>
-      <a
+      <mwc-icon-button
+        open-dialog="feedback"
         title="Improve this game"
-        target="_blank"
-        href="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
-        <mwc-icon-button
-          icon="feedback"
-          label="Send feedback"
-        ></mwc-icon-button>
-      </a>
+        icon="feedback"
+        label="Send feedback"
+      ></mwc-icon-button>
       <theme-toggle persistent>
         <mwc-icon-button
           slot="dark"
@@ -143,7 +141,33 @@
     <span slot="p2p-alone" class="p2p-lobby centered-text">Waiting for players to join&hellip; Share this game with friends!</span>
     <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
 
-    <mwc-dialog heading="Welcome to Sets by Mo!">
+    <mwc-dialog id="feedback" hideActions>
+      <iframe
+        src="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform?embedded=true"
+        allowtransparency
+        scrolling="no"
+        width="640"
+        height="750"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+      >Loading…</iframe>
+      <br />
+      Feel free to
+      <a
+        href="//github.com/mothepro/lit-sets"
+        target="_blank"
+      >
+        <mwc-button
+          dense
+          trailingIcon
+          icon="open_in_new"
+        >submit a pull request</mwc-button>
+      </a>
+      yourself!
+    </mwc-dialog>
+
+    <mwc-dialog id="help" heading="Welcome to Sets by Mo!">
       <details>
         <summary>Keyboard Shortcuts</summary>
 

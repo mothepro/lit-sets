@@ -2,6 +2,7 @@ import 'lit-p2p'                // <lit-p2p>
 import './p2p-sets.js'          // <p2p-sets>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
+
 declare global {
   interface Window {
     dataLayer: unknown[]
@@ -14,14 +15,20 @@ window.dataLayer.push('js', new Date)
 window.dataLayer.push('config', 'UA-172429940-2')
 
 const
-  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
   litP2pElement = document.querySelector('lit-p2p')!,
-  helpBtn = document.querySelector('mwc-icon-button[icon=help]')!,
+  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
+  helpDialogElement = document.getElementById('help')!,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
-  dialogElement = document.querySelector('mwc-dialog')!
+  dialogOpenerElements = document.querySelectorAll('[open-dialog]')!
 
 // Initialize deferredPrompt for use later to show browser install prompt.
 let deferredPrompt: Event | void
+
+// Dialog openers
+dialogOpenerElements.forEach(opener => 
+  opener.addEventListener('click', () => document
+    .getElementById(opener.getAttribute('open-dialog') ?? '')
+    ?.toggleAttribute('open')))
 
 // Make the toggle button actually do something
 // @ts-ignore TODO find this hidden type exported from the module directly...
@@ -34,12 +41,11 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
 // Add [open] to <mwc-dialog> after some time if first visit
 if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay'))
   setTimeout(
-    () => dialogElement.setAttribute('open', ''),
+    () => helpDialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
 // Show help
-helpBtn.addEventListener('click', () => dialogElement.toggleAttribute('open'))
-addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && dialogElement.toggleAttribute('open'))
+addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && helpDialogElement.toggleAttribute('open'))
 
 // addEventListener('beforeinstallprompt', event => {
 //   event.preventDefault()
