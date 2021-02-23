@@ -20,6 +20,7 @@ TODO...
 + easy mode & standard
 + Extend signaling fallback duration
 + Jiggle animation when taking bad set
++ censor bad words for viewer
 + Better win screen
   + Include axis (time vs. points) on congrats screen
 + Add tracking for metrics

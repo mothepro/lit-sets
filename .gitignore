@@ -2,6 +2,7 @@ node_modules
 build
 dist
 *DO_NOT_COMMIT*
+doNotStage.ts
 
 .vscode
 .DS_Store
