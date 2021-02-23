@@ -169,15 +169,12 @@ a {
   user-select: none;
   z-index: 1;
 }
-::part(shuffle),
-::part(take),
-::part(hint),
-::part(clock-toggle) {
+::part(bottom-btn), ::part(make-group) {
   position: fixed;
   bottom: 1em;
   z-index: 1;
 }
-::part(take) {
+::part(take), ::part(make-group) {
   right: 1em;
 }
 ::part(clock-toggle) {
@@ -189,30 +186,11 @@ a {
 ::part(shuffle) {
   left: 7em;
 }
-::part(make-group) {
-  position: fixed;
-  bottom: 1em;
-  right: 1em;
-}
 mwc-button:not([raised]), /* Weird */
 ::part(name-input),
 ::part(can-edit) {
   --mdc-theme-primary: var(--mdc-theme-on-primary);
   --mdc-typography-button-text-transform: none;
-}
-/* Since mwc-fab[disabled] is not supported... SMH */
-mwc-fab[disabled],
-::part(takable-false),
-::part(hintable-false),
-::part(rematchable-false) {
-  pointer-events: none;
-  cursor: default !important;
-  --mdc-theme-on-secondary: white;
-  --mdc-theme-secondary: lightgrey;
-  --mdc-fab-box-shadow: none;
-  --mdc-fab-box-shadow-hover: none;
-  --mdc-fab-box-shadow-active: none;
-  --mdc-ripple-fg-opacity: 0;
 }
 [slot="p2p-alone"] {
   min-height: var(--loading-size);

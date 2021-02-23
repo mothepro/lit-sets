@@ -20,17 +20,17 @@ declare global {
 @customElement('lit-sets')
 export default class extends LitElement {
 
+  /** Whether enough cards are selected to take */
+  @property({ type: Boolean, attribute: 'can-take', reflect: true })
+  protected canTake = false
+
   /** Whether can request a hint */
-  @property({ type: Boolean, attribute: 'hint-available' })
-  hintAvailable = false
+  @property({ type: Boolean, attribute: 'hint-allowed' })
+  hintAllowed = false
 
   /** Whether can take a set */
-  @property({ type: Boolean, attribute: 'can-take' })
-  canTake = false
-
-  /** Whether to show labels on fabs */
-  @property({ type: Boolean, attribute: 'show-label' })
-  showLabel = false
+  @property({ type: Boolean, attribute: 'take-allowed' })
+  takeAllowed = false
 
   /** Key to press to take a set. */
   @property({ type: String, attribute: 'take-on-key' })
@@ -45,7 +45,7 @@ export default class extends LitElement {
   cards: Card[] = []
 
   /** The cards that are labeled as hints */
-  @property({ type: Array, reflect: true })
+  @property({ type: Array, hasChanged: hasArrayChanged, reflect: true })
   hint: number[] = []
 
   /** Indexes of the selected cards */
@@ -62,6 +62,16 @@ export default class extends LitElement {
     card: Card
   }[] = []
 
+  static readonly styles = css`
+    .grid {
+      display: grid;
+      grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
+      gap: var(--sets-gap, 2em);
+      justify-content: center;
+      justify-items: stretch;
+      align-items: stretch;
+    }`
+
   firstUpdated() {
     // TODO do not select a card
     addEventListener('keypress', (event: KeyboardEvent) => {
@@ -69,7 +79,7 @@ export default class extends LitElement {
         event.preventDefault()
         this.takeSet()
       }
-      else if (this.hintOnKey && event.key == this.hintOnKey && this.hintAvailable) {
+      else if (this.hintOnKey && event.key == this.hintOnKey && this.hintAllowed) {
         event.preventDefault()
         this.dispatchEvent(new CustomEvent('hint'))
       }
@@ -77,6 +87,9 @@ export default class extends LitElement {
   }
 
   update(changed: PropertyValues) {
+    if (changed.has('selected'))
+      this.canTake = this.selected.length == 3
+    
     if (changed.has('cards')) {
       this.selected = []
       if ((changed.get('cards') as Card[])?.length) { // Remove cards no longer in the deck
@@ -106,17 +119,6 @@ export default class extends LitElement {
     }))
   }
 
-  static readonly styles = css`
-  .grid {
-    display: grid;
-    grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
-    gap: var(--sets-gap, 2em);
-    
-    justify-content: center;
-    justify-items: stretch;
-    align-items: stretch;
-  }`
-
   private selectCard(index: number) {
     return () => {
       const selected = new Set(this.selected)
@@ -129,7 +131,7 @@ export default class extends LitElement {
   }
 
   private takeSet() {
-    if (this.canTake && this.selected.length == 3) {
+    if (this.takeAllowed && this.canTake) {
       this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
       this.selected = []
     }
@@ -153,21 +155,6 @@ export default class extends LitElement {
         @click=${!remove && this.selectCard(index)}
       ></sets-card>`)}
     </div>
-    <mwc-fab
-      part=${`take takable-${this.canTake && this.selected.length == 3}`}
-      ?extended=${this.showLabel}
-      ?disabled=${!this.canTake || this.selected.length != 3}
-      @click=${this.takeSet}
-      icon="done_outline"
-      label="Take Set"
-    ></mwc-fab>
-    <mwc-fab
-      part=${`hint hintable-${this.hintAvailable}`}
-      mini
-      ?disabled=${!this.hintAvailable}
-      @click=${() => this.dispatchEvent(new CustomEvent('hint'))}
-      icon="lightbulb"
-      label="Get Hint"
-      title="Get a hint"
-    ></mwc-fab>`
+    <slot name="take" @click=${this.takeSet}></slot>
+    <slot name="hint" @click=${() => this.dispatchEvent(new CustomEvent('hint'))}></slot>`
 }

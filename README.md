@@ -15,12 +15,13 @@ TODO...
 + animations on card exit
 + animations do not delay
 + Hide disabled fabs (hint and take button)
-+ Better win screen
-  + Include axis on congrats screen
 + PWA!
 + Astroturfing (instead of `alone` slot)
 + easy mode & standard
 + Extend signaling fallback duration
++ Jiggle animation when taking bad set
++ Better win screen
+  + Include axis (time vs. points) on congrats screen
 + Add tracking for metrics
   + P2P success / failure rate
   + Name changes

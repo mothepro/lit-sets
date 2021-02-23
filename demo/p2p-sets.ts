@@ -62,6 +62,18 @@ export default class extends LitElement {
   private runningScores: number[][] = []
 
   static readonly styles = [css`
+    mwc-fab[disabled], /* Since mwc-fab[disabled] is not supported... SMH */
+    lit-sets:not([can-take]) [slot="take"] {/* Easiest way to verify set is takable? */
+      pointer-events: none;
+      cursor: default !important;
+      --mdc-theme-on-secondary: white;
+      --mdc-theme-secondary: lightgrey;
+      --mdc-fab-box-shadow: none;
+      --mdc-fab-box-shadow-hover: none;
+      --mdc-fab-box-shadow-active: none;
+      --mdc-ripple-fg-opacity: 0;
+    }
+
     lit-confetti {
       position: fixed;
     }
@@ -244,17 +256,33 @@ export default class extends LitElement {
     ? html`
       <lit-sets
         part="sets"
-        exportparts="take , hint , shuffle , takable-false"
-        ?hint-available=${this.mainPlayer.hintCards.length < 3}
-        ?can-take=${!this.mainPlayer.isBanned}
-        show-label
+        ?hint-allowed=${this.mainPlayer.hintCards.length < 3}
+        ?take-allowed=${!this.mainPlayer.isBanned}
         take-on-key="Enter"
         hint-on-key="h"
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
         @hint=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
-      ></lit-sets>
+      >
+        <mwc-fab
+          part="bottom-btn take"
+          slot="take"
+          extended
+          ?disabled=${this.mainPlayer.isBanned}
+          icon="done_outline"
+          label="Take Set"
+        ></mwc-fab>
+        <mwc-fab
+          part="bottom-btn hint"
+          slot="hint"
+          mini
+          ?disabled=${this.mainPlayer.hintCards.length >= 3}
+          icon="lightbulb"
+          label="Get Hint"
+          title="Get a hint"
+        ></mwc-fab>
+      </lit-sets>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -264,7 +292,7 @@ export default class extends LitElement {
           .map(({ score }, index) => this.engine.filled.isAlive && this.runningScores[index].push(Math.max(0, score)))}
       ></lit-clock>
       <mwc-fab
-        part="clock-toggle"
+        part="bottom-btn clock-toggle"
         class="clock-toggle"
         mini
         @click=${() => this.showClock = !this.showClock}
@@ -273,7 +301,7 @@ export default class extends LitElement {
         title=${this.showClock ? 'Hide time' : 'Show time'}
       ></mwc-fab>
       <sets-leaderboard
-        part="leaderboard ${`leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}`}"
+        part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
         ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
         .scores=${this.engine.players.map(({score}) => score)}
         .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
@@ -281,18 +309,17 @@ export default class extends LitElement {
       ></sets-leaderboard>`
 
     // Game over
-    // TODO show chart Axis with time
     : html`
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
       <h2 part="title">
         ${this.winnerText} after ${this.runningScores[0].length} seconds
       </h2>
       <mwc-fab
-        part=${`rematch rematchable-${!this.wantRematch.includes(this.mainIndex)}`}
+        part="rematch"
         extended
         ?disabled=${this.wantRematch.includes(this.mainIndex)}
         icon="replay"
-        label="Rematch"
+        label=${p2p.peers.length == 1 ? 'Play again' : 'Rematch'}
         @click=${() => p2p.broadcast(new Uint8Array([Status.REMATCH]))}
       ></mwc-fab>
       <lit-chart
