@@ -47,6 +47,9 @@ if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay')
 // Show help
 addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && helpDialogElement.toggleAttribute('open'))
 
+// Go back offline
+// document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
+
 // addEventListener('beforeinstallprompt', event => {
 //   event.preventDefault()
 //   deferredPrompt = event

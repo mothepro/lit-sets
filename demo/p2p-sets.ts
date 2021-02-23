@@ -209,7 +209,15 @@ export default class extends LitElement {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
     }
-    close()
+    close() // Dont care if this throws :)
+
+    // These can't stack anymore... wtf
+    // https://github.com/angular/components/issues/9860
+    const notification = document.createElement('mwc-snackbar')
+    notification.setAttribute('open', '')
+    notification.setAttribute('leading', '')
+    notification.setAttribute('labelText', `${name} disconnected.`)
+    document.body.appendChild(notification)
   }
 
   /** The index of you in the peer list. */
