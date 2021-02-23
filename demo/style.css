@@ -183,7 +183,7 @@ a {
 ::part(hint) {
   left: 4em;
 }
-::part(shuffle) {
+::part(rearrange) {
   left: 7em;
 }
 mwc-button:not([raised]), /* Weird */

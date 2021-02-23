@@ -73,10 +73,10 @@ export default class extends LitElement {
     }`
 
   firstUpdated() {
-    // TODO do not select a card
+    // TODO move to global keybinds
     addEventListener('keypress', (event: KeyboardEvent) => {
       if (this.takeOnKey && event.key == this.takeOnKey) {
-        event.preventDefault()
+        event.preventDefault() // Don't select card
         this.takeSet()
       }
       else if (this.hintOnKey && event.key == this.hintOnKey && this.hintAllowed) {

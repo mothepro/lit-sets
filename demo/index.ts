@@ -1,28 +1,17 @@
 import 'lit-p2p'                // <lit-p2p>
-import './p2p-sets.js'          // <p2p-sets>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
+import './p2p-sets.js'          // <p2p-sets>
 
-declare global {
-  interface Window {
-    dataLayer: unknown[]
-  }
-}
-
-// Google Analytics
-window.dataLayer = window.dataLayer || []
-window.dataLayer.push('js', new Date)
-window.dataLayer.push('config', 'UA-172429940-2')
-
+// Elements in index.html
 const
   litP2pElement = document.querySelector('lit-p2p')!,
+  setsElement = document.querySelector('p2p-sets')!,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
   helpDialogElement = document.getElementById('help')!,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')!
 
-// Initialize deferredPrompt for use later to show browser install prompt.
-let deferredPrompt: Event | void
 
 // Dialog openers
 dialogOpenerElements.forEach(opener => 
@@ -31,12 +20,11 @@ dialogOpenerElements.forEach(opener =>
     ?.toggleAttribute('open')))
 
 // Make the toggle button actually do something
-// @ts-ignore TODO find this hidden type exported from the module directly...
-for (const toggleOnlineBtn of toggleOnlineBtns)
+toggleOnlineBtns.forEach(toggleOnlineBtn =>
   toggleOnlineBtn.addEventListener('click', () => 
     litP2pElement.setAttribute('state', (litP2pElement.getAttribute('state') ?? '-1') == '-1' // is disconnected
       ? '' // try to connect
-      : '-1')) // not trying to connect
+      : '-1'))) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
 if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay'))
@@ -44,8 +32,21 @@ if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay')
     () => helpDialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
-// Show help
-addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && helpDialogElement.toggleAttribute('open'))
+// Global keybinds
+addEventListener('keypress', ({ key }: KeyboardEvent) => {
+  switch (key) {
+    case '?': // Show help
+      helpDialogElement.toggleAttribute('open')
+      break
+      
+    case 'c': // Show clock
+      setsElement.toggleAttribute('show-clock')
+      break
+  }
+})
+
+// Initialize deferredPrompt for use later to show browser install prompt.
+// let deferredPrompt: Event | void
 
 // Go back offline
 // document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
@@ -75,12 +76,26 @@ addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && helpDialo
 //   console.log('PWA was installed')
 // })
 
-// Error logging
-// @ts-ignore Event listerner types are garbage
-document.body.firstElementChild!.addEventListener('p2p-error', (error: ErrorEvent) => {
-  console.error('Lost connection', error)
-  ga('send', 'exception', {
-    exDescription: `${error.message} -- ${(error as unknown as Error).stack}`,
-    exFatal: false, // idk...
-  })
-})
+declare global {
+  interface Window {
+    dataLayer: unknown[]
+  }
+}
+
+// Event logging
+if ('ga' in window) {
+  // Google Analytics
+  window.dataLayer = window.dataLayer || []
+  window.dataLayer.push('js', new Date)
+  window.dataLayer.push('config', 'UA-172429940-2')
+  
+  // @ts-ignore Event listerner types are garbage
+  addEventListener('p2p-error', ({ error }: ErrorEvent) =>
+    ga('send', 'event', {
+      eventCategory: 'error',
+      eventAction: error.message,
+      eventLabel: error.stack,
+      // eventValue,
+      nonInteraction: true,
+    }))
+}
