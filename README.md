@@ -10,16 +10,23 @@
 
 TODO...
 
++ Material is so annoying...
 + Arrow key to choose card
 + animations on card exit
 + animations do not delay
-+ Include axis on congrats screen
++ Hide disabled fabs (hint and take button)
 + Better win screen
+  + Include axis on congrats screen
 + PWA!
-+ Material is so annoying...
-
-No release needed
-
-+ nicer shapes
-+ better color scheme
-+ add key shortcuts and change log to their own dialogs
++ Astroturfing (instead of `alone` slot)
++ easy mode & standard
++ Extend signaling fallback duration
++ Add tracking for metrics
+  + P2P success / failure rate
+  + Name changes
+  + Groups made
++ *No release needed*
+  + nicer shapes
+  + better color scheme
+  + add key shortcuts and change log to their own dialogs
+  + hamburger menu?
