@@ -144,7 +144,7 @@ a {
 ::part(sets) {
   /* Leave space for fixed buttons at bottom */
   display: block;
-  margin-bottom: 3em;
+  margin: 0 1em 3em;
 }
 ::part(rematch) {
   position: absolute;
@@ -168,11 +168,25 @@ a {
   user-select: none;
   z-index: 1;
 }
+::part(shuffle),
+::part(take),
+::part(hint),
 ::part(clock-toggle) {
   position: fixed;
   bottom: 1em;
-  left: 1em;
   z-index: 1;
+}
+::part(take) {
+  right: 1em;
+}
+::part(clock-toggle) {
+  left: 1em;
+}
+::part(hint) {
+  left: 4em;
+}
+::part(shuffle) {
+  left: 7em;
 }
 ::part(make-group) {
   position: fixed;

@@ -217,6 +217,7 @@ export default class extends LitElement {
     notification.setAttribute('open', '')
     notification.setAttribute('leading', '')
     notification.setAttribute('labelText', `${name} disconnected.`)
+    notification.addEventListener('MDCSnackbar:closed', () => document.body.removeChild(notification))
     document.body.appendChild(notification)
   }
 
@@ -243,7 +244,7 @@ export default class extends LitElement {
     ? html`
       <lit-sets
         part="sets"
-        exportparts="takable-false"
+        exportparts="take , hint , shuffle , takable-false"
         ?hint-available=${this.mainPlayer.hintCards.length < 3}
         ?can-take=${!this.mainPlayer.isBanned}
         show-label
