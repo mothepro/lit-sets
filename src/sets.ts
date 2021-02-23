@@ -115,18 +115,6 @@ export default class extends LitElement {
     justify-content: center;
     justify-items: stretch;
     align-items: stretch;
-  }
-
-  mwc-fab {
-    position: var(--sets-fab-position, fixed);
-    bottom: 1rem;
-    z-index: 1;
-  }
-  mwc-fab.take {
-    right: 1rem;
-  }
-  mwc-fab.hint {
-    left: 4rem;
   }`
 
   private selectCard(index: number) {
@@ -167,7 +155,6 @@ export default class extends LitElement {
     </div>
     <mwc-fab
       part=${`take takable-${this.canTake && this.selected.length == 3}`}
-      class="take"
       ?extended=${this.showLabel}
       ?disabled=${!this.canTake || this.selected.length != 3}
       @click=${this.takeSet}
@@ -175,8 +162,7 @@ export default class extends LitElement {
       label="Take Set"
     ></mwc-fab>
     <mwc-fab
-      part="hint"
-      class="hint"
+      part=${`hint hintable-${this.hintAvailable}`}
       mini
       ?disabled=${!this.hintAvailable}
       @click=${() => this.dispatchEvent(new CustomEvent('hint'))}

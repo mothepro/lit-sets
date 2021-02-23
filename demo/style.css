@@ -203,6 +203,7 @@ mwc-button:not([raised]), /* Weird */
 /* Since mwc-fab[disabled] is not supported... SMH */
 mwc-fab[disabled],
 ::part(takable-false),
+::part(hintable-false),
 ::part(rematchable-false) {
   pointer-events: none;
   cursor: default !important;
