@@ -258,8 +258,6 @@ export default class extends LitElement {
         part="sets"
         ?hint-allowed=${this.mainPlayer.hintCards.length < 3}
         ?take-allowed=${!this.mainPlayer.isBanned}
-        take-on-key="Enter"
-        hint-on-key="h"
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}

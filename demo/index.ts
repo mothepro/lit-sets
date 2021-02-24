@@ -1,30 +1,35 @@
+import type { Dialog } from '@material/mwc-dialog'
+import type { IconButton } from '@material/mwc-icon-button'
+import type LitP2P from 'lit-p2p'
+import type P2PSets from './p2p-sets.js'
+import type LitSetsGame from '../src/sets.js'
+
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
-// Elements in index.html
-const
-  litP2pElement = document.querySelector('lit-p2p')!,
-  setsElement = document.querySelector('p2p-sets')!,
-  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
-  helpDialogElement = document.getElementById('help')!,
+const // Elements in index.html
+  litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
+  p2pSetsElement = document.querySelector('p2p-sets')! as P2PSets,
+  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
+  helpDialogElement = document.getElementById('help')! as Dialog,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
-  dialogOpenerElements = document.querySelectorAll('[open-dialog]')!
+  dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
 
 // Dialog openers
-dialogOpenerElements.forEach(opener => 
+for (const opener of dialogOpenerElements)
   opener.addEventListener('click', () => document
     .getElementById(opener.getAttribute('open-dialog') ?? '')
-    ?.toggleAttribute('open')))
+    ?.toggleAttribute('open'))
 
 // Make the toggle button actually do something
-toggleOnlineBtns.forEach(toggleOnlineBtn =>
+for (const toggleOnlineBtn of toggleOnlineBtns)
   toggleOnlineBtn.addEventListener('click', () => 
     litP2pElement.setAttribute('state', (litP2pElement.getAttribute('state') ?? '-1') == '-1' // is disconnected
       ? '' // try to connect
-      : '-1'))) // not trying to connect
+      : '-1')) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
 if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay'))
@@ -33,14 +38,30 @@ if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay')
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
 // Global keybinds
-addEventListener('keypress', ({ key }: KeyboardEvent) => {
-  switch (key) {
+addEventListener('keypress', (event: KeyboardEvent) => {
+  // Get at runtime since it may not always exist
+  const setsGameElement = p2pSetsElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void
+  switch (event.key) {
     case '?': // Show help
       helpDialogElement.toggleAttribute('open')
       break
       
     case 'c': // Show clock
-      setsElement.toggleAttribute('show-clock')
+      p2pSetsElement.toggleAttribute('show-clock')
+      break
+    
+    case 'Enter': // Take set
+      if (setsGameElement) {
+        event.preventDefault() // Don't select card that is currently focuesed
+        setsGameElement.takeSet()
+      }
+      break
+    
+    case 'h': // Take Hint
+      if (setsGameElement) {
+        event.preventDefault()
+        setsGameElement.takeHint()
+      }
       break
   }
 })

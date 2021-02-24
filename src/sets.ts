@@ -37,14 +37,6 @@ export default class extends LitElement {
   @property({ type: Boolean, attribute: 'take-allowed' })
   takeAllowed = false
 
-  /** Key to press to take a set. */
-  @property({ type: String, attribute: 'take-on-key' })
-  takeOnKey = ''
-
-  /** Key to press to take a hint. */
-  @property({ type: String, attribute: 'hint-on-key' })
-  hintOnKey = ''
-
   /** Cards in the market */
   @property({ type: Array, hasChanged: hasArrayChanged })
   cards: Card[] = []
@@ -80,21 +72,41 @@ export default class extends LitElement {
     align-items: stretch;
   }`
 
-  firstUpdated() {
-    // TODO move to global keybinds
-    addEventListener('keypress', (event: KeyboardEvent) => {
-      if (this.takeOnKey && event.key == this.takeOnKey) {
-        event.preventDefault() // Don't select card
-        this.takeSet()
-      }
-      else if (this.hintOnKey && event.key == this.hintOnKey && this.hintAllowed) {
-        event.preventDefault()
-        this.takeHint()
-      }
-    })
+  takeSet() {
+    if (this.takeAllowed && this.canTake) {
+      this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
+      this.selected = []
+    }
   }
 
-  update(changed: PropertyValues) {
+  takeHint() {
+    this.dispatchEvent(new CustomEvent('hint'))
+  }
+
+  async rearrange() {
+    // Hide Cards (Don't use updateDisplay, since it will reorder before hide)
+    this.display = this.display.map(({ delay, card }) => ({ card, delay, remove: true }))
+    await this.updateComplete
+    await milliseconds(ANIMATION_DURATION)
+
+    // Shuffle order indexs
+    for (let i = this.cardOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.cardOrder[i], this.cardOrder[j]] = [this.cardOrder[j], this.cardOrder[i]];
+    }
+
+    // Show again
+    this.display = this.cards.map(card => ({
+      card,
+      remove: false,
+      delay: -1, // show instantly (maybe just update display?)
+      // delay: index, // Randomly spots
+      // delay: this.cardOrder[index], // Random duration
+    }))
+    this.dispatchEvent(new CustomEvent('rearrange'))
+  }
+
+  protected update(changed: PropertyValues) {
     if (changed.has('selected'))
       this.canTake = this.selected.length == 3
     
@@ -135,40 +147,6 @@ export default class extends LitElement {
     else
       selected.add(index)
     this.selected = [...selected]
-  }
-
-  private takeSet() {
-    if (this.takeAllowed && this.canTake) {
-      this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
-      this.selected = []
-    }
-  }
-
-  private takeHint() {
-    this.dispatchEvent(new CustomEvent('hint'))
-  }
-
-  private async rearrange() {
-    // Hide Cards (Don't use updateDisplay, since it will reorder before hide)
-    this.display = this.display.map(({ delay, card }) => ({ card, delay, remove: true }))
-    await this.updateComplete
-    await milliseconds(ANIMATION_DURATION)
-
-    // Shuffle order indexs
-    for (let i = this.cardOrder.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.cardOrder[i], this.cardOrder[j]] = [this.cardOrder[j], this.cardOrder[i]];
-    }
-
-    // Show again
-    this.display = this.cards.map(card => ({
-      card,
-      remove: false,
-      delay: -1, // show instantly (maybe just update display?)
-      // delay: index, // Randomly spots
-      // delay: this.cardOrder[index], // Random duration
-    }))
-    this.dispatchEvent(new CustomEvent('rearrange'))
   }
 
   protected readonly render = () => html`
