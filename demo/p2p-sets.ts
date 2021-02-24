@@ -243,14 +243,16 @@ export default class extends LitElement {
     }
     close() // Dont care if this throws :)
 
-    // These can't stack anymore... wtf
-    // https://github.com/angular/components/issues/9860
-    const notification = document.createElement('mwc-snackbar')
-    notification.setAttribute('open', '')
-    notification.setAttribute('leading', '')
-    notification.setAttribute('labelText', `${name} disconnected.`)
-    notification.addEventListener('MDCSnackbar:closed', () => document.body.removeChild(notification))
-    document.body.appendChild(notification)
+    if (!isYou) {
+      // These can't stack anymore... wtf
+      // https://github.com/angular/components/issues/9860
+      const notification = document.createElement('mwc-snackbar')
+      notification.setAttribute('open', '')
+      notification.setAttribute('leading', '')
+      notification.setAttribute('labelText', `${name} disconnected.`)
+      notification.addEventListener('MDCSnackbar:closed', () => document.body.removeChild(notification))
+      document.body.appendChild(notification)
+    }
   }
 
   /** The index of you in the peer list. */

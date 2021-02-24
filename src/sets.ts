@@ -60,7 +60,7 @@ export default class extends LitElement {
   }[] = []
 
   /** The order the cards should be shown in, handled by CSS. */
-  private cardOrder = [...Array(MAX_CARDS_COUNT).keys()]
+  private cardOrder = [...Array(MAX_CARDS_COUNT).keys()] // not reset on difficulty change lol
 
   static readonly styles = css`
   .grid {
