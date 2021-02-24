@@ -17,6 +17,9 @@ const // Elements in index.html
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
+// first-visit attribute
+if (localStorage.length)
+  document.body.removeAttribute('first-visit')
 
 // Dialog openers
 for (const opener of dialogOpenerElements)
@@ -32,7 +35,7 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
       : '-1')) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
-if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay'))
+if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('first-visit-help-delay'))
   setTimeout(
     () => helpDialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))

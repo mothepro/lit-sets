@@ -301,6 +301,10 @@ mwc-dialog .set {
 }
 
 /*** Helpers ***/
+body:not([first-visit]) .first-visit,
+body[first-visit] .not-first-visit {
+  display: none;
+}
 .mt6px {
   margin-top: 6px;
 }
