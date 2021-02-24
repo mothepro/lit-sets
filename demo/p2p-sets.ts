@@ -282,6 +282,14 @@ export default class extends LitElement {
           label="Get Hint"
           title="Get a hint"
         ></mwc-fab>
+        <mwc-fab
+          part="bottom-btn rearrange"
+          slot="rearrange"
+          mini
+          icon="shuffle"
+          label="Rearrange cards"
+          title="Rearrange cards on screen"
+        ></mwc-fab>
       </lit-sets>
       <lit-clock
         part="clock"

@@ -1,7 +1,7 @@
 import { LitElement, customElement, property, html, css, PropertyValues, internalProperty } from 'lit-element'
 import type { Card } from 'sets-game-engine'
 import { hasArrayChanged, milliseconds } from './helper.js'
-import { animationDuration } from './card.js'
+import { ANIMATION_DURATION } from './card.js'
 
 import '@material/mwc-fab' // <mwc-fab>
 import './card.js'         // <sets-card>
@@ -9,13 +9,18 @@ import './leaderboard.js'  // <sets-leaderboard>
 
 export type TakeEvent = CustomEvent<[number, number, number]>
 export type HintEvent = CustomEvent<void>
+export type RearrangeEvent = CustomEvent<void>
 
 declare global {
   interface HTMLElementEventMap {
     take: TakeEvent
     hint: HintEvent
+    rearrange: RearrangeEvent
   }
 }
+
+/** Max cards we would show on screen. */
+export const MAX_CARDS_COUNT = 21
 
 @customElement('lit-sets')
 export default class extends LitElement {
@@ -62,15 +67,18 @@ export default class extends LitElement {
     card: Card
   }[] = []
 
+  /** The order the cards should be shown in, handled by CSS. */
+  private cardOrder = [...Array(MAX_CARDS_COUNT).keys()]
+
   static readonly styles = css`
-    .grid {
-      display: grid;
-      grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
-      gap: var(--sets-gap, 2em);
-      justify-content: center;
-      justify-items: stretch;
-      align-items: stretch;
-    }`
+  .grid {
+    display: grid;
+    grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
+    gap: var(--sets-gap, 2em);
+    justify-content: center;
+    justify-items: stretch;
+    align-items: stretch;
+  }`
 
   firstUpdated() {
     // TODO move to global keybinds
@@ -81,7 +89,7 @@ export default class extends LitElement {
       }
       else if (this.hintOnKey && event.key == this.hintOnKey && this.hintAllowed) {
         event.preventDefault()
-        this.dispatchEvent(new CustomEvent('hint'))
+        this.takeHint()
       }
     })
   }
@@ -110,24 +118,23 @@ export default class extends LitElement {
   // TODO move to `updated`
   private async updateDisplay() {
     await this.updateComplete
-    await milliseconds(animationDuration)
+    await milliseconds(ANIMATION_DURATION)
+    const cardsInDisplay = this.display.map(({ card: c }) => c)
     let next = 0
     this.display = this.cards.map(card => ({
       card,
       remove: false,
-      delay: this.display.map(({ card: c }) => c).includes(card) ? -1 : next++,
+      delay: cardsInDisplay.includes(card) ? -1 : next++,
     }))
   }
 
-  private selectCard(index: number) {
-    return () => {
-      const selected = new Set(this.selected)
-      if (selected.has(index))
-        selected.delete(index)
-      else
-        selected.add(index)
-      this.selected = [...selected]
-    }
+  private toggleCard(index: number) {
+    const selected = new Set(this.selected)
+    if (selected.has(index))
+      selected.delete(index)
+    else
+      selected.add(index)
+    this.selected = [...selected]
   }
 
   private takeSet() {
@@ -137,12 +144,39 @@ export default class extends LitElement {
     }
   }
 
+  private takeHint() {
+    this.dispatchEvent(new CustomEvent('hint'))
+  }
+
+  private async rearrange() {
+    // Hide Cards (Don't use updateDisplay, since it will reorder before hide)
+    this.display = this.display.map(({ delay, card }) => ({ card, delay, remove: true }))
+    await this.updateComplete
+    await milliseconds(ANIMATION_DURATION)
+
+    // Shuffle order indexs
+    for (let i = this.cardOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.cardOrder[i], this.cardOrder[j]] = [this.cardOrder[j], this.cardOrder[i]];
+    }
+
+    // Show again
+    this.display = this.cards.map(card => ({
+      card,
+      remove: false,
+      delay: -1, // show instantly (maybe just update display?)
+      // delay: index, // Randomly spots
+      // delay: this.cardOrder[index], // Random duration
+    }))
+    this.dispatchEvent(new CustomEvent('rearrange'))
+  }
+
   protected readonly render = () => html`
     <div class="grid">${this.display.map(({ remove, delay, card }, index) => html`
       <sets-card
         part="card card-${remove ? 'removal' : 'entrance'}"
         zoom
-        index=${index}
+        index=${this.cardOrder[index]}
         delay=${delay}
         ?out=${remove}
         ?interactive=${!remove}
@@ -152,9 +186,10 @@ export default class extends LitElement {
         color=${card.color}
         shape=${card.shape}
         quantity=${card.quantity}
-        @click=${!remove && this.selectCard(index)}
+        @click=${() => !remove && this.toggleCard(index)}
       ></sets-card>`)}
     </div>
     <slot name="take" @click=${this.takeSet}></slot>
-    <slot name="hint" @click=${() => this.dispatchEvent(new CustomEvent('hint'))}></slot>`
+    <slot name="hint" @click=${this.takeHint}></slot>
+    <slot name="rearrange" @click=${this.rearrange}></slot>`
 }

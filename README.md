@@ -18,6 +18,7 @@ TODO...
 + PWA!
 + Astroturfing (instead of `alone` slot)
 + easy mode & standard
+  + Add mini guide while score is 0
 + Extend signaling fallback duration
 + Jiggle animation when taking bad set
 + censor bad words for viewer

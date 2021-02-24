@@ -1,12 +1,13 @@
 import { LitElement, customElement, property, html, css } from 'lit-element'
 import type { Details } from 'sets-game-engine'
 import { injectStyle } from './helper.js'
+import { MAX_CARDS_COUNT } from './sets.js'
 
 import '@material/mwc-button' // <mwc-button>
 import './shape.js'           // <sets-shape>
 
 /** Number of milliseconds to complete animation/transition */
-export const animationDuration = 650
+export const ANIMATION_DURATION = 650
 
 @customElement('sets-card')
 export default class extends LitElement {
@@ -45,8 +46,8 @@ export default class extends LitElement {
     }
     /* Animations are used to bring cards into view, since these must happen ASAP. */
     :host([zoom]) {
-      animation: ${animationDuration}ms ease zoom both;
-      transition: opacity ${animationDuration}ms ease;
+      animation: ${ANIMATION_DURATION}ms ease zoom both;
+      transition: opacity ${ANIMATION_DURATION}ms ease;
     }
     /* Transitions are easier to use, so they are to remove elements. */
     :host([zoom][out]) {
@@ -78,7 +79,10 @@ export default class extends LitElement {
     }`,
 
   // The animation delays
-  ...[...Array(21).keys()].map(i => css`
+  ...[...Array(MAX_CARDS_COUNT).keys()].map(i => css`
+    :host([index="${i}"]) {
+      order: ${i};
+    }
     :host([zoom][delay="${i}"]) {
       animation-delay: calc(var(--sets-card-animation-delay, 100ms) * ${i});
     }`)]
