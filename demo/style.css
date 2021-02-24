@@ -74,6 +74,7 @@ mwc-button[toggle-online] {
   /* bootstrap "md" */
   :root {
     --sets-shape-spacing: 12px;
+    --sets-gap: 1.5em;
     --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
   }
 
@@ -87,6 +88,7 @@ mwc-button[toggle-online] {
 @media (min-width: 992px) {
   /* bootstrap "lg" */
   :root {
+    --sets-gap: 2.5em;
     --sets-shape-spacing: 18px 12px;
   }
 }

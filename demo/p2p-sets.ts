@@ -66,8 +66,11 @@ export default class extends LitElement {
   /** The sets game engine */
   private engine!: Game
 
-  /** The instance my player in the game engine */
+  /** Cached `instance` my player in the game engine */
   private mainPlayer!: Player
+
+  /** Cached `index` my player in the game engine */
+  private mainIndex!: number
 
   /** Scores of all the players every tick */
   private runningScores: number[][] = []
@@ -120,56 +123,58 @@ export default class extends LitElement {
         background-color:  var(--chart-color-${i});
       }`)]
 
-  protected async firstUpdated() {
-    addEventListener('p2p-update', this.go)
+  protected firstUpdated() {
+    // Update peers and restart the game
+    addEventListener('p2p-update', () => p2p?.peers.map(this.bindPeer) && this.restartGame())
+    
     // Update the final chart when when the screen resizes
-    addEventListener('resize', () => p2p && this.engine && this.mainPlayer && !this.engine.filled.isAlive && this.requestUpdate())
+    addEventListener('resize', () => p2p && this.engine && !this.engine.filled.isAlive && this.requestUpdate())
+
+    // Start game and bind peers (order shouldn't matter)
+    p2p?.peers.map(this.bindPeer)
+    this.restartGame()
   }
 
   protected updated(changed: PropertyValues) {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
     
-    if (changed.has('easyMode') && p2p.peers.length == 1) {
+    // Not first time
+    if (changed.has('easyMode') && typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1) {
       this.dispatchEvent(new CustomEvent('difficulty'))
-      this.go()
+      this.restartGame()
     }
   }
 
-  /**
-   * Makes the players, with special rules for multiplayer.
-   * 
-   * In multiplayer generators defined at the top will be used.
-   */
-  private makePlayers(): Player[] {
-    if (p2p.peers.length == 1)
-      return [new Player]
+  private async restartGame() {
+    // Make the players
+    // For singleplayer use the default rules.
+    // For multiplayer uses generators defined at the top will be used.
+    const players = p2p.peers.length == 1
+      ? [new Player]
+      : [...Array(p2p.peers.length)]
+          .map(() => new Player(
+            undefined,
+            hintCosts(),
+            banCosts(),
+            scoreIncrementer()))
     
-    return [...Array(p2p.peers.length)]
-      .map(() => new Player(
-        undefined,
-        hintCosts(),
-        banCosts(),
-        scoreIncrementer()))
-  }
-
-  /**
-   * Makes all possible (81) cards in random order (using shared p2p RNG)
-   * 
-   * Removes opacity if single player & `easy-mode` attribute is set.
-   */
-  private makeDeck(): Card[] | Iterable<Card> {
-    return [...Array(Details.COMBINATIONS)].map(() =>
+    // Makes all possible (81) cards in random order (using shared p2p RNG)
+    // For singleplayer easy mode remove opacity from the cards
+    const deck = [...Array(Details.COMBINATIONS)].map(() =>
       Card.make(Math.abs(p2p.random(true)) %
         (this.easyMode && p2p.peers.length == 1
-          ? Details.SIZE ** 3 // Removes opacity
-          : Number.MAX_SAFE_INTEGER))) // Standard; No change
-  }
+          ? Details.SIZE ** 3 // Make opacity always 0
+          : Number.MAX_SAFE_INTEGER))) // Noop
+    
+    this.engine = new Game(players, deck)
 
-  private go = async () => {    
-    // Make the game engine! And bind each peer to a player.
-    this.engine = new Game(this.makePlayers(), this.makeDeck())
-    p2p.peers.map(this.bindPeer)
+    // Cache these for the render method
+    for (const [index, { isYou }] of p2p.peers.entries())
+      if (isYou) {
+        this.mainPlayer = this.engine.players[index]
+        this.mainIndex = index
+      }
 
     // Reset running scores
     this.runningScores = this.engine.players.map(() => [])
@@ -197,9 +202,6 @@ export default class extends LitElement {
 
   /** Works on the engine on behalf of a peer & sets main player */
   private bindPeer = async ({ message, close, isYou, name }: typeof p2p.peers[0], index: number) => {
-    if (isYou)
-      this.mainPlayer = this.engine.players[index]
-
     try {
       for await (const data of message)
         if (data instanceof ArrayBuffer)
@@ -212,12 +214,8 @@ export default class extends LitElement {
                 
                 case Status.REMATCH:
                   this.wantRematch = [...new Set(this.wantRematch).add(index)]
-                  if (this.wantRematch.length == p2p.peers.length) {
-                    this.go()
-                    // This entire listener is no longer needed.
-                    // We want to keep the connection open, but restart everything.
-                    return
-                  }
+                  if (this.wantRematch.length == p2p.peers.length)
+                    this.restartGame()
                   break
                 
                 default:
@@ -241,7 +239,10 @@ export default class extends LitElement {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
     }
-    close() // Dont care if this throws :)
+    // doubly close the connection. Dont care if this throws :)
+    try {
+      close()
+    } catch { } 
 
     if (!isYou) {
       // These can't stack anymore... wtf
@@ -255,14 +256,6 @@ export default class extends LitElement {
     }
   }
 
-  /** The index of you in the peer list. */
-  private get mainIndex() {
-    for (const [index, { isYou }] of p2p.peers.entries())
-      if (isYou)
-        return index
-    throw Error('You should be in the peer list')
-  }
-
   private get winnerText() {
     const winners: string[] = []
     for (const [index, { score }] of this.engine.players.entries())
@@ -273,7 +266,7 @@ export default class extends LitElement {
     return `${winners.join(' & ')} Win${winners.length == 1 && winners[0] != 'You' ? 's' : ''}`
   }
 
-  protected readonly render = () => p2p && this.engine && this.mainPlayer && (this.engine.filled.isAlive
+  protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
     // In game
     ? html`
       <lit-sets
@@ -336,13 +329,16 @@ export default class extends LitElement {
           title=${this.easyMode ? 'Switch to standard mode' : 'Switch to easy mode'}
           @click=${() => this.easyMode = !this.easyMode}
         ></mwc-fab>` : ''}
-      <sets-leaderboard
-        part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
-        ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
-        .scores=${this.engine.players.map(({score}) => score)}
-        .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
-        .names=${p2p.peers?.map(peer => peer.name) ?? []}
-      ></sets-leaderboard>`
+      ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
+        <sets-leaderboard
+          part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
+          .scores=${this.engine.players.map(({score}) => score)}
+          .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
+          .names=${p2p.peers?.map(peer => peer.name) ?? []}
+        ></sets-leaderboard>`
+      
+      // TODO show leaderboard as default (child of this slot)
+      : html`<slot name="no-singleplayer-points"></slot>`}`
 
     // Game over
     : html`
@@ -371,5 +367,6 @@ export default class extends LitElement {
             <div class="block"></div>
             ${name}
           </div>`)}
-        </legend>` : ''}`)
+        </legend>` : ''}
+      <slot name="game-over"></slot>`)
 }

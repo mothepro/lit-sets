@@ -72,7 +72,7 @@ addEventListener('keypress', (event: KeyboardEvent) => {
       }
       break
     
-    case 'r': // Take Hint
+    case 'r': // Rearrange
       if (setsGameElement) {
         event.preventDefault()
         setsGameElement.rearrange()
