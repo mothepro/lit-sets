@@ -71,6 +71,13 @@ addEventListener('keypress', (event: KeyboardEvent) => {
         setsGameElement.takeHint()
       }
       break
+    
+    case 'r': // Take Hint
+      if (setsGameElement) {
+        event.preventDefault()
+        setsGameElement.rearrange()
+      }
+      break
   }
 })
 

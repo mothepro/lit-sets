@@ -86,7 +86,7 @@ export default class extends LitElement {
         ${this.diff[0] > 0 ? '+' : ''}${this.diff[0]}
       </span>
       ${this.scores[0]}
-      ${this.scores[0] == 1 ? 'set' : 'sets'}.`
+      ${this.scores[0] == 1 ? 'set' : 'sets'}`
     : html`<mwc-list roottabble>${this.scores.map((score, index) => html`
       ${index != 0 ? html`<li divider padded role="separator"></li>` : ''}
       <mwc-list-item
