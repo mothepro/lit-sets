@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="color-scheme" content="light dark">
+  <!-- <meta name="color-scheme" content="light dark"> Not supported yet, causes feedback form to break... WTF -->
   <meta name="description" content="Mo's take on the classic card game with multiplayer">
   <title>Mo's Sets</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -16,11 +16,10 @@
   <meta name="msapplication-TileColor" content="#da532c">
   <meta name="theme-color" content="#ffffff">
   <script type="importmap-shim" src="import-map.json"></script>
-  <link rel="stylesheet" href="light.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
-  <link rel="stylesheet" href="dark.css" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dark.css" media="(prefers-color-scheme: dark)">
   <!-- Production -->
   <script prod-only type=module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
@@ -33,7 +32,7 @@
   <script dev-only type=dev-only-module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit-help-delay="10000">
+<body first-visit first-visit-help-delay="10000">
   <lit-p2p
     fallback
     local-storage
@@ -57,12 +56,12 @@
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
-    <header class="top-icons">
+    <header>
       <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
         toggle-online
-        class="p2p-disconnected mt6px"
+        class="p2p-disconnected"
         trailingIcon
         icon="groups"
         label="Multiplayer"
@@ -77,7 +76,7 @@
       <mwc-button
         raised
         toggle-online
-        class="p2p-lobby mt6px"
+        class="p2p-lobby"
         trailingIcon
         icon="person"
         label="Singleplayer"
@@ -90,18 +89,18 @@
         label="Singleplayer"
       ></mwc-icon-button>
       <mwc-icon-button
+        open-dialog="help"
         icon="help"
         label="How to Play"
         title="How to Play"
       ></mwc-icon-button>
-      <!-- <mwc-icon-button
+      <mwc-icon-button
         hidden
         icon="download"
         label="Install"
         title="Install"
-      ></mwc-icon-button> -->
+      ></mwc-icon-button>
       <a
-        id="discord"
         title="Join the community"
         target="_blank"
         href="//discord.gg/ZBequ8RZE9">
@@ -112,15 +111,12 @@
           </svg>
       </mwc-icon-button>
       </a>
-      <a
+      <mwc-icon-button
+        open-dialog="feedback"
         title="Improve this game"
-        target="_blank"
-        href="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform">
-        <mwc-icon-button
-          icon="feedback"
-          label="Send feedback"
-        ></mwc-icon-button>
-      </a>
+        icon="feedback"
+        label="Send feedback"
+      ></mwc-icon-button>
       <theme-toggle persistent>
         <mwc-icon-button
           slot="dark"
@@ -138,13 +134,39 @@
     </header>
 
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
+    <!-- <span slot="p2p-lobby" class="p2p-lobby">in <mwc-fab extended icon="speed" label="Novice difficulty"></mwc-fab></span> -->
 
-    <p2p-sets class="p2p-disconnected-or-ready"></p2p-sets>
+    <p2p-sets class="p2p-disconnected-or-ready" easy-mode></p2p-sets>
     
-    <span slot="p2p-alone" class="p2p-lobby centered-text">Waiting for players to join&hellip; Share this game with friends!</span>
+    <span slot="p2p-alone" class="p2p-lobby centered-text">
+      Waiting for players to join&hellip;
+      <br />
+      Share this game with friends!
+    </span>
     <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
 
-    <mwc-dialog heading="Welcome to Sets by Mo!">
+    <mwc-dialog id="feedback" hideActions>
+      <iframe
+        src="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform?embedded=true"
+        allowtransparency
+        scrolling="no"
+        width="640"
+        height="750"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+      >Loading…</iframe>
+      <br />
+      Feel free to
+      <a href="//github.com/mothepro/lit-sets" target="_blank">
+        <mwc-button dense trailingIcon icon="open_in_new">
+          see how Sets works
+        </mwc-button>
+      </a>
+      &amp; improve it yourself!
+    </mwc-dialog>
+
+    <mwc-dialog id="help" heading="Welcome to Mo's Sets">
       <details>
         <summary>Keyboard Shortcuts</summary>
 
@@ -168,6 +190,14 @@
           <mwc-list-item hasMeta>
             Get a hint
             <span slot="meta">H</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Show / Hide the elapsed time
+            <span slot="meta">C</span>
+          </mwc-list-item>
+          <mwc-list-item hasMeta>
+            Rearrange cards on screen
+            <span slot="meta">R</span>
           </mwc-list-item>
           <mwc-list-item hasMeta>
             Show this guide

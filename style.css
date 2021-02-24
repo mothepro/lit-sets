@@ -1,4 +1,4 @@
-/* Shared vars for light and dark theme */
+/*** Shared vars for light and dark theme ***/
 :root {
   --loading-size: 80px;
   --how-to-table-template-columns: 100%;
@@ -32,15 +32,34 @@
   --leaderboard-diff-negative-color-fg: red;
 
   --mdc-typography-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  --mdc-text-field-ink-color: var(--color-fg);
-  --mdc-text-field-label-ink-color: var(--color-fg);
-  --mdc-theme-surface: var(--color-bg);
-  --mdc-dialog-heading-ink-color: var(--color-fg);
-  --mdc-dialog-content-ink-color: var(--color-fg);
   --mdc-dialog-scroll-divider-color: transparent;
   --mdc-dialog-max-width: 768px;
+  --mdc-theme-secondary: rgb(114, 0, 128);
+  --mdc-theme-on-secondary: white;
+
+  /* Make these match general color set previously */
+  --mdc-theme-surface: var(--mdc-theme-background);
+  --mdc-text-field-ink-color: var(--mdc-theme-on-primary);
+  --mdc-text-field-label-ink-color: var(--mdc-theme-on-primary);
+  --mdc-dialog-heading-ink-color: var(--mdc-theme-on-primary);
+  --mdc-dialog-content-ink-color: var(--mdc-theme-on-primary);
+  --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
+  --mdc-theme-text-hint-on-background: var(--mdc-theme-on-primary);
+  --mdc-snackbar-action-color: white;
 }
-mwc-button[toggle-online] { /* Too big for mobile (must be before media queries) */
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+/* Light theme (default) */
+:root {
+  --mdc-theme-background: #fafafa;
+  --mdc-theme-primary: #fff;
+  --mdc-theme-on-primary: #050505;
+}
+
+/*** Media Queries ***/
+mwc-button[toggle-online] {
+  /* Too big for mobile (must be before media queries) */
   display: none;
 }
 @media (min-width: 576px) {
@@ -55,6 +74,7 @@ mwc-button[toggle-online] { /* Too big for mobile (must be before media queries)
   /* bootstrap "md" */
   :root {
     --sets-shape-spacing: 12px;
+    --sets-gap: 1.5em;
     --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
   }
 
@@ -68,6 +88,7 @@ mwc-button[toggle-online] { /* Too big for mobile (must be before media queries)
 @media (min-width: 992px) {
   /* bootstrap "lg" */
   :root {
+    --sets-gap: 2.5em;
     --sets-shape-spacing: 18px 12px;
   }
 }
@@ -78,13 +99,16 @@ mwc-button[toggle-online] { /* Too big for mobile (must be before media queries)
   }
 }
 
-/* Main page */
-html, body {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
+/*** Main page ***/
+html,
+body {
+  background-color: var(--mdc-theme-background);
+  color: var(--mdc-theme-on-primary);
   font-family: var(--mdc-typography-font-family);
   margin: 0;
   padding: 0;
+  overscroll-behavior-y: contain;
+  /* -webkit-tap-highlight-color: transparent; */
 }
 h1, h2, h3, h4, h5, h6 {
   text-align: center;
@@ -94,7 +118,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 h1.title {
   font-size: 3rem;
-  margin: .5em 0;
+  margin: 1em 0;
 }
 h1 span,
 h2 span {
@@ -103,30 +127,34 @@ h2 span {
 a {
   text-decoration: none;
 }
-/* Discord Blurple */
-/* #discord path { fill: #7289DA; } */
 
-/* Icons */
-.top-icons {
+/*** Icons ***/
+header {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 1;
 }
-.top-icons,
-.top-icons a {
-  color: var(--color-fg);
+header,
+header a {
+  color: var(--mdc-theme-on-primary);
   text-decoration: none;
 }
-
-/* Parts */
-::part(sets) { /* Leave space for fixed buttons at bottom */
-  display: block;
-  margin-bottom: 3em;
+header mwc-button {
+  margin-top: .5em;
 }
-::part(rematch) {
-  position: absolute;
-  left: 2em;
+/* Discord "Blurple" */
+/* #discord path { fill: #7289DA; } */
+header svg {
+  max-width: 24px;
+  max-height: 24px;
+}
+
+/*** Parts ***/
+::part(sets) {
+  /* Leave space for fixed buttons at bottom */
+  display: block;
+  margin: 0 1em 3em;
 }
 ::part(client-list),
 ::part(leaderboard-full) {
@@ -134,7 +162,7 @@ a {
   max-width: 400px;
   border: 1px solid #d3d3d3;
   border-radius: 0.5em;
-  color: var(--color-fg);
+  color: var(--mdc-theme-on-primary);
   margin: 0 auto;
 }
 ::part(clock) {
@@ -144,41 +172,42 @@ a {
   font-family: monospace;
   font-size: 2.5em;
   user-select: none;
+  z-index: 1;
 }
-::part(clock-toggle) {
+::part(bottom-btn), ::part(make-group), ::part(rematch) {
   position: fixed;
   bottom: 1em;
+  z-index: 1;
+}
+::part(clock-toggle), ::part(rematch) {
   left: 1em;
 }
-::part(make-group) {
-  position: fixed;
-  bottom: 1em;
+::part(hint) {
+  left: 4em;
+}
+::part(rearrange) {
+  left: 7em;
+}
+::part(difficulty) {
+  left: 10em;
+}
+::part(take), ::part(make-group) {
   right: 1em;
+}
+::part(mwc-fab-disabled) {
+  display: none;
 }
 mwc-button:not([raised]), /* Weird */
 ::part(name-input),
 ::part(can-edit) {
-  --mdc-theme-primary: var(--color-fg);
+  --mdc-theme-primary: var(--mdc-theme-on-primary);
   --mdc-typography-button-text-transform: none;
-}
-/* Since mwc-fab[disabled] is not supported... SMH */
-mwc-fab[disabled],
-::part(takable-false),
-::part(rematchable-false) {
-  pointer-events: none;
-  cursor: default !important;
-  --mdc-theme-on-secondary:  white;
-  --mdc-theme-secondary:  lightgrey;
-  --mdc-fab-box-shadow:  none;
-  --mdc-fab-box-shadow-hover:  none;
-  --mdc-fab-box-shadow-active:  none;
-  --mdc-ripple-fg-opacity:  0;
 }
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
 }
 
-/* Loading */
+/*** Loading ***/
 .loading {
   width: var(--loading-size);
   height: var(--loading-size);
@@ -229,12 +258,13 @@ mwc-fab[disabled],
   }
 }
 
-/* How To */
+/*** How To ***/
 /* Find a way for this to be analyzed by bots */
 mwc-dialog:not([open]) {
   display: none;
 }
-p, ul {
+p,
+ul {
   text-align: start;
 }
 mwc-dialog h2 {
@@ -277,8 +307,10 @@ mwc-dialog .set {
 }
 
 /*** Helpers ***/
-.mt6px {
-  margin-top: 6px;
+[hidden],
+body:not([first-visit]) .first-visit,
+body[first-visit] .not-first-visit {
+  display: none;
 }
 lit-p2p {
   display: block;
@@ -294,12 +326,20 @@ lit-p2p {
 }
 
 /* Only show slots when state matches. */
-lit-p2p[state]       .p2p-default-state,
-lit-p2p[state="-1"]  .p2p-trying-to-connect, lit-p2p:not([state]) .p2p-trying-to-connect,
-lit-p2p[state=""]    .p2p-trying-to-connect,
-lit-p2p[state="0"]   .p2p-disconnected, lit-p2p:not([state="0"]) .p2p-offline, lit-p2p[state="0"] .p2p-disconnected-or-ready,
-lit-p2p[state="1"]   .p2p-disconnected, lit-p2p:not([state="1"]) .p2p-lobby,   lit-p2p[state="1"] .p2p-disconnected-or-ready,
-lit-p2p[state="2"]   .p2p-disconnected, lit-p2p:not([state="2"]) .p2p-loading, lit-p2p[state="2"] .p2p-disconnected-or-ready,
-lit-p2p[state="3"]   .p2p-disconnected, lit-p2p:not([state="3"]) .p2p-ready {
+lit-p2p[state] .p2p-default-state,
+lit-p2p[state="-1"] .p2p-trying-to-connect,
+lit-p2p:not([state]) .p2p-trying-to-connect,
+lit-p2p[state=""] .p2p-trying-to-connect,
+lit-p2p[state="0"] .p2p-disconnected,
+lit-p2p:not([state="0"]) .p2p-offline,
+lit-p2p[state="0"] .p2p-disconnected-or-ready,
+lit-p2p[state="1"] .p2p-disconnected,
+lit-p2p:not([state="1"]) .p2p-lobby,
+lit-p2p[state="1"] .p2p-disconnected-or-ready,
+lit-p2p[state="2"] .p2p-disconnected,
+lit-p2p:not([state="2"]) .p2p-loading,
+lit-p2p[state="2"] .p2p-disconnected-or-ready,
+lit-p2p[state="3"] .p2p-disconnected,
+lit-p2p:not([state="3"]) .p2p-ready {
   display: none;
 }

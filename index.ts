@@ -1,30 +1,33 @@
+import type { Dialog } from '@material/mwc-dialog'
+import type { IconButton } from '@material/mwc-icon-button'
+import type LitP2P from 'lit-p2p'
+import type P2PSets from './p2p-sets.js'
+import type LitSetsGame from '../src/sets.js'
+
 import 'lit-p2p'                // <lit-p2p>
-import './p2p-sets.js'          // <p2p-sets>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
-declare global {
-  interface Window {
-    dataLayer: unknown[]
-  }
-}
+import './p2p-sets.js'          // <p2p-sets>
 
-// Google Analytics
-window.dataLayer = window.dataLayer || []
-window.dataLayer.push('js', new Date)
-window.dataLayer.push('config', 'UA-172429940-2')
-
-const
-  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')!,
-  litP2pElement = document.querySelector('lit-p2p')!,
-  helpBtn = document.querySelector('mwc-icon-button[icon=help]')!,
+const // Elements in index.html
+  litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
+  p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
+  toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
+  helpDialogElement = document.getElementById('help')! as Dialog,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
-  dialogElement = document.querySelector('mwc-dialog')!
+  dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
-// Initialize deferredPrompt for use later to show browser install prompt.
-let deferredPrompt: Event | void
+// first-visit attribute
+if (localStorage.length)
+  document.body.removeAttribute('first-visit')
+
+// Dialog openers
+for (const opener of dialogOpenerElements)
+  opener.addEventListener('click', () => document
+    .getElementById(opener.getAttribute('open-dialog') ?? '')
+    ?.toggleAttribute('open'))
 
 // Make the toggle button actually do something
-// @ts-ignore TODO find this hidden type exported from the module directly...
 for (const toggleOnlineBtn of toggleOnlineBtns)
   toggleOnlineBtn.addEventListener('click', () => 
     litP2pElement.setAttribute('state', (litP2pElement.getAttribute('state') ?? '-1') == '-1' // is disconnected
@@ -32,14 +35,60 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
       : '-1')) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
-if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay'))
+if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('first-visit-help-delay'))
   setTimeout(
-    () => dialogElement.setAttribute('open', ''),
+    () => helpDialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
-// Show help
-helpBtn.addEventListener('click', () => dialogElement.toggleAttribute('open'))
-addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && dialogElement.toggleAttribute('open'))
+// Difficulty Change switches online lobbies
+// const lobbyPrefix = litP2pElement.getAttribute('lobby') ?? '',
+//   standardDifficultySuffix = '-standard-'
+// p2pDemoElement.addEventListener('difficulty', () => 
+//   litP2pElement.setAttribute('lobby', p2pDemoElement.hasAttribute('easy-mode')
+//     ? lobbyPrefix
+//     : lobbyPrefix + standardDifficultySuffix))
+
+// Global keybinds
+addEventListener('keypress', (event: KeyboardEvent) => {
+  // Get at runtime since it may not always exist
+  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void
+  switch (event.key) {
+    case '?': // Show help
+      helpDialogElement.toggleAttribute('open')
+      break
+      
+    case 'c': // Show clock
+      p2pDemoElement.toggleAttribute('show-clock')
+      break
+    
+    case 'Enter': // Take set
+      if (setsGameElement) {
+        event.preventDefault() // Don't select card that is currently focuesed
+        setsGameElement.takeSet()
+      }
+      break
+    
+    case 'h': // Take Hint
+      if (setsGameElement) {
+        event.preventDefault()
+        setsGameElement.takeHint()
+      }
+      break
+    
+    case 'r': // Rearrange
+      if (setsGameElement) {
+        event.preventDefault()
+        setsGameElement.rearrange()
+      }
+      break
+  }
+})
+
+// Initialize deferredPrompt for use later to show browser install prompt.
+// let deferredPrompt: Event | void
+
+// Go back offline
+// document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
 
 // addEventListener('beforeinstallprompt', event => {
 //   event.preventDefault()
@@ -66,12 +115,26 @@ addEventListener('keypress', ({ key }: KeyboardEvent) => key == '?' && dialogEle
 //   console.log('PWA was installed')
 // })
 
-// Error logging
-// @ts-ignore Event listerner types are garbage
-document.body.firstElementChild!.addEventListener('p2p-error', (error: ErrorEvent) => {
-  console.error('Lost connection', error)
-  ga('send', 'exception', {
-    exDescription: `${error.message} -- ${(error as unknown as Error).stack}`,
-    exFatal: false, // idk...
-  })
-})
+declare global {
+  interface Window {
+    dataLayer: unknown[]
+  }
+}
+
+// Event logging
+if ('ga' in window) {
+  // Google Analytics
+  window.dataLayer = window.dataLayer || []
+  window.dataLayer.push('js', new Date)
+  window.dataLayer.push('config', 'UA-172429940-2')
+  
+  // @ts-ignore Event listerner types are garbage
+  addEventListener('p2p-error', ({ error }: ErrorEvent) =>
+    ga('send', 'event', {
+      eventCategory: 'error',
+      eventAction: error.message,
+      eventLabel: error.stack,
+      // eventValue,
+      nonInteraction: true,
+    }))
+}
