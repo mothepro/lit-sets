@@ -21,6 +21,10 @@ const // Elements in index.html
 if (localStorage.length)
   document.body.removeAttribute('first-visit')
 
+// Auto connect
+if (location.hash.includes('multiplayer'))
+  litP2pElement.setAttribute('state', '')
+
 // Dialog openers
 for (const opener of dialogOpenerElements)
   opener.addEventListener('click', () => document
