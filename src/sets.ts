@@ -96,11 +96,11 @@ export default class extends LitElement {
     }
 
     // Show again
-    this.display = this.cards.map(card => ({
+    this.display = this.cards.map((card, index) => ({
       card,
       remove: false,
-      delay: -1, // show instantly (maybe just update display?)
-      // delay: index, // Randomly spots
+      // delay: -1, // show instantly (maybe just update display?)
+      delay: index, // Randomly spots
       // delay: this.cardOrder[index], // Random duration
     }))
     this.dispatchEvent(new CustomEvent('rearrange'))
