@@ -92,7 +92,7 @@ export default class extends LitElement {
     // Shuffle order indexs
     for (let i = this.cardOrder.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.cardOrder[i], this.cardOrder[j]] = [this.cardOrder[j], this.cardOrder[i]];
+      [this.cardOrder[i], this.cardOrder[j]] = [this.cardOrder[j], this.cardOrder[i]]
     }
 
     // Show again

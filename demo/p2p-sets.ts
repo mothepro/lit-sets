@@ -166,14 +166,20 @@ export default class extends LitElement {
             banCosts(),
             scoreIncrementer()))
     
-    // Makes all possible (81) cards in random order (using shared p2p RNG)
-    // For singleplayer easy mode remove opacity from the cards
-    const deck = [...Array(Details.COMBINATIONS)].map(() =>
-      Card.make(Math.abs(p2p.random(true)) %
-        (this.easyMode && p2p.peers.length == 1
-          ? Details.SIZE ** 3 // Make opacity always 0
-          : Number.MAX_SAFE_INTEGER))) // Noop
+    // Makes all possible (81) cards
+    // For singleplayer, easy mode remove opacity from the cards
+    const deck = [...Array(Details.COMBINATIONS)].map((_, i) =>
+      Card.make(this.easyMode && p2p.peers.length == 1
+        ? i % Details.SIZE ** 3
+        : i))
     
+    // Shuffle deck using shared RNG
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.abs(p2p.random(true)) % i;
+      [deck[i], deck[j]] = [deck[j], deck[i]]
+    }
+    
+    // Make the game :)
     this.engine = new Game(players, deck)
 
     // Cache these for the render method

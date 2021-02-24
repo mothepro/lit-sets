@@ -14,12 +14,12 @@ TODO...
 + Arrow key to choose card
 + animations on card exit
 + animations do not delay
++ Jiggle animation when taking bad set
 + Hide disabled fabs (hint and take button)
 + PWA!
 + Astroturfing (instead of `alone` slot)
 + easy mode in multiplayer
 + Extend signaling fallback duration
-+ Jiggle animation when taking bad set
 + censor bad words for viewer
 + Better win screen
   + Include axis (time vs. points) on congrats screen
