@@ -186,6 +186,9 @@ a {
 ::part(rearrange) {
   left: 7em;
 }
+::part(difficulty) {
+  left: 10em;
+}
 mwc-button:not([raised]), /* Weird */
 ::part(name-input),
 ::part(can-edit) {

@@ -17,8 +17,7 @@ TODO...
 + Hide disabled fabs (hint and take button)
 + PWA!
 + Astroturfing (instead of `alone` slot)
-+ easy mode & standard
-  + Add mini guide while score is 0
++ easy mode in multiplayer
 + Extend signaling fallback duration
 + Jiggle animation when taking bad set
 + censor bad words for viewer

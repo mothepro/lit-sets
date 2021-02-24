@@ -11,7 +11,7 @@ import './p2p-sets.js'          // <p2p-sets>
 
 const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
-  p2pSetsElement = document.querySelector('p2p-sets')! as P2PSets,
+  p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
   helpDialogElement = document.getElementById('help')! as Dialog,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
@@ -37,17 +37,25 @@ if (!localStorage.length && document.body.hasAttribute('first-visit-help-delay')
     () => helpDialogElement.setAttribute('open', ''),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
 
+// Difficulty Change switches online lobbies
+// const lobbyPrefix = litP2pElement.getAttribute('lobby') ?? '',
+//   standardDifficultySuffix = '-standard-'
+// p2pDemoElement.addEventListener('difficulty', () => 
+//   litP2pElement.setAttribute('lobby', p2pDemoElement.hasAttribute('easy-mode')
+//     ? lobbyPrefix
+//     : lobbyPrefix + standardDifficultySuffix))
+
 // Global keybinds
 addEventListener('keypress', (event: KeyboardEvent) => {
   // Get at runtime since it may not always exist
-  const setsGameElement = p2pSetsElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void
+  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void
   switch (event.key) {
     case '?': // Show help
       helpDialogElement.toggleAttribute('open')
       break
       
     case 'c': // Show clock
-      p2pSetsElement.toggleAttribute('show-clock')
+      p2pDemoElement.toggleAttribute('show-clock')
       break
     
     case 'Enter': // Take set

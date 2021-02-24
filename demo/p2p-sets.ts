@@ -14,6 +14,14 @@ const enum Status {
   REMATCH,
 }
 
+export type DifficultyChangeEvent = CustomEvent<void>
+
+declare global {
+  interface HTMLElementEventMap {
+    difficulty: DifficultyChangeEvent
+  }
+}
+
 /** 25 then +5 from there... */
 function* hintCosts(): Generator<number, never, Player> {
   let times = 0
@@ -41,6 +49,9 @@ function* scoreIncrementer(): Generator<number, never, Player> {
 export default class extends LitElement {
   @property({ type: Boolean, reflect: true, attribute: 'show-clock'})
   showClock = false
+
+  @property({ type: Boolean, reflect: true, attribute: 'easy-mode' })
+  easyMode = false
 
   @internalProperty()
   protected confetti = 0
@@ -113,20 +124,24 @@ export default class extends LitElement {
     addEventListener('p2p-update', this.go)
     // Update the final chart when when the screen resizes
     addEventListener('resize', () => p2p && this.engine && this.mainPlayer && !this.engine.filled.isAlive && this.requestUpdate())
-    this.go()
   }
 
   protected updated(changed: PropertyValues) {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
+    
+    if (changed.has('easyMode') && p2p.peers.length == 1) {
+      this.dispatchEvent(new CustomEvent('difficulty'))
+      this.go()
+    }
   }
 
   /**
    * Makes the players, with special rules for multiplayer.
    * 
-   * More advanced form of default rules: `[...Array(p2p.peers.length)].map(() => new Player)`
+   * In multiplayer generators defined at the top will be used.
    */
-  private makeRules(): Player[] {
+  private makePlayers(): Player[] {
     if (p2p.peers.length == 1)
       return [new Player]
     
@@ -138,17 +153,22 @@ export default class extends LitElement {
         scoreIncrementer()))
   }
 
-  private go = async () => {
-    // Shuffle all cards using shared p2p RNG
-    const cards: Card[] = [...Array(Details.COMBINATIONS)].map((_, i) => Card.make(i))
-    for (let i = cards.length - 1; i > 0; i--) {
-      const j = Math.abs(p2p.random(true)) % i;
-      [cards[j], cards[i]] = [cards[i], cards[j]]
-    }
+  /**
+   * Makes all possible (81) cards in random order (using shared p2p RNG)
+   * 
+   * Removes opacity if single player & `easy-mode` attribute is set.
+   */
+  private makeDeck(): Card[] | Iterable<Card> {
+    return [...Array(Details.COMBINATIONS)].map(() =>
+      Card.make(Math.abs(p2p.random(true)) %
+        (this.easyMode && p2p.peers.length == 1
+          ? Details.SIZE ** 3 // Removes opacity
+          : Number.MAX_SAFE_INTEGER))) // Standard; No change
+  }
 
-    // Make the game engine! And bind each peer to a player
-    // TODO add parameters to the Player to change how timeouts, bans, hints and taking sets affect the score.
-    this.engine = new Game(this.makeRules(), cards)
+  private go = async () => {    
+    // Make the game engine! And bind each peer to a player.
+    this.engine = new Game(this.makePlayers(), this.makeDeck())
     p2p.peers.map(this.bindPeer)
 
     // Reset running scores
@@ -299,13 +319,21 @@ export default class extends LitElement {
       ></lit-clock>
       <mwc-fab
         part="bottom-btn clock-toggle"
-        class="clock-toggle"
         mini
-        @click=${() => this.showClock = !this.showClock}
         icon=${this.showClock ? 'timer_off' : 'timer'}
         label=${this.showClock ? 'Hide time' : 'Show time'}
         title=${this.showClock ? 'Hide time' : 'Show time'}
+        @click=${() => this.showClock = !this.showClock}
       ></mwc-fab>
+      ${p2p.peers.length == 1 ? html`
+        <mwc-fab
+          part="bottom-btn difficulty"
+          mini
+          icon="speed"
+          label=${this.easyMode ? 'Standard' : 'Easy'}
+          title=${this.easyMode ? 'Switch to standard mode' : 'Switch to easy mode'}
+          @click=${() => this.easyMode = !this.easyMode}
+        ></mwc-fab>` : ''}
       <sets-leaderboard
         part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
         ?hidden=${this.engine.players.length == 1 && this.engine.players[0].score == 0}
