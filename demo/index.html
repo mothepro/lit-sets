@@ -56,12 +56,12 @@
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
-    <header class="top-icons">
+    <header>
       <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
         toggle-online
-        class="p2p-disconnected mt6px"
+        class="p2p-disconnected"
         trailingIcon
         icon="groups"
         label="Multiplayer"
@@ -76,7 +76,7 @@
       <mwc-button
         raised
         toggle-online
-        class="p2p-lobby mt6px"
+        class="p2p-lobby"
         trailingIcon
         icon="person"
         label="Singleplayer"
@@ -94,14 +94,13 @@
         label="How to Play"
         title="How to Play"
       ></mwc-icon-button>
-      <!-- <mwc-icon-button
+      <mwc-icon-button
         hidden
         icon="download"
         label="Install"
         title="Install"
-      ></mwc-icon-button> -->
+      ></mwc-icon-button>
       <a
-        id="discord"
         title="Join the community"
         target="_blank"
         href="//discord.gg/ZBequ8RZE9">

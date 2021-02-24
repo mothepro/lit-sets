@@ -1,4 +1,4 @@
-/* Shared vars for light and dark theme */
+/*** Shared vars for light and dark theme ***/
 :root {
   --loading-size: 80px;
   --how-to-table-template-columns: 100%;
@@ -57,7 +57,7 @@
   --mdc-theme-on-primary: #050505;
 }
 
-/* Media Queries! */
+/*** Media Queries ***/
 mwc-button[toggle-online] {
   /* Too big for mobile (must be before media queries) */
   display: none;
@@ -99,7 +99,7 @@ mwc-button[toggle-online] {
   }
 }
 
-/* Main page */
+/*** Main page ***/
 html,
 body {
   background-color: var(--mdc-theme-background);
@@ -127,31 +127,34 @@ h2 span {
 a {
   text-decoration: none;
 }
-/* Discord Blurple */
-/* #discord path { fill: #7289DA; } */
 
-/* Icons */
-.top-icons {
+/*** Icons ***/
+header {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 1;
 }
-.top-icons,
-.top-icons a {
+header,
+header a {
   color: var(--mdc-theme-on-primary);
   text-decoration: none;
 }
+header mwc-button {
+  margin-top: .5em;
+}
+/* Discord "Blurple" */
+/* #discord path { fill: #7289DA; } */
+header svg {
+  max-width: 24px;
+  max-height: 24px;
+}
 
-/* Parts */
+/*** Parts ***/
 ::part(sets) {
   /* Leave space for fixed buttons at bottom */
   display: block;
   margin: 0 1em 3em;
-}
-::part(rematch) {
-  position: absolute;
-  left: 2em;
 }
 ::part(client-list),
 ::part(leaderboard-full) {
@@ -171,15 +174,12 @@ a {
   user-select: none;
   z-index: 1;
 }
-::part(bottom-btn), ::part(make-group) {
+::part(bottom-btn), ::part(make-group), ::part(rematch) {
   position: fixed;
   bottom: 1em;
   z-index: 1;
 }
-::part(take), ::part(make-group) {
-  right: 1em;
-}
-::part(clock-toggle) {
+::part(clock-toggle), ::part(rematch) {
   left: 1em;
 }
 ::part(hint) {
@@ -191,6 +191,12 @@ a {
 ::part(difficulty) {
   left: 10em;
 }
+::part(take), ::part(make-group) {
+  right: 1em;
+}
+::part(mwc-fab-disabled) {
+  display: none;
+}
 mwc-button:not([raised]), /* Weird */
 ::part(name-input),
 ::part(can-edit) {
@@ -201,7 +207,7 @@ mwc-button:not([raised]), /* Weird */
   min-height: var(--loading-size);
 }
 
-/* Loading */
+/*** Loading ***/
 .loading {
   width: var(--loading-size);
   height: var(--loading-size);
@@ -252,7 +258,7 @@ mwc-button:not([raised]), /* Weird */
   }
 }
 
-/* How To */
+/*** How To ***/
 /* Find a way for this to be analyzed by bots */
 mwc-dialog:not([open]) {
   display: none;
@@ -301,12 +307,10 @@ mwc-dialog .set {
 }
 
 /*** Helpers ***/
+[hidden],
 body:not([first-visit]) .first-visit,
 body[first-visit] .not-first-visit {
   display: none;
-}
-.mt6px {
-  margin-top: 6px;
 }
 lit-p2p {
   display: block;

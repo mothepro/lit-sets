@@ -41,6 +41,13 @@ function* scoreIncrementer(): Generator<number, never, Player> {
     yield 100
 }
 
+const compliments = [
+  'Good work',
+  'Wow',
+  'Nice Job',
+  'Fantastic',
+]
+
 /**
  * Peer to Peer (and offline) version of the game of sets.
  * Should live inside a `<lit-p2p>`.
@@ -256,14 +263,24 @@ export default class extends LitElement {
     }
   }
 
-  private get winnerText() {
+  private get winnerText() { // this is a mess lol
+    let ret = ''
     const winners: string[] = []
+
     for (const [index, { score }] of this.engine.players.entries())
       if (score == this.engine.maxScore)
         winners.push(p2p.peers[index].isYou
           ? 'You'
           : p2p.peers[index].name)
-    return `${winners.join(' & ')} Win${winners.length == 1 && winners[0] != 'You' ? 's' : ''}`
+    
+    if (winners[0] == 'You') // Compliment if you won
+      ret += compliments[Math.trunc(Math.random() * compliments.length)] + '!'
+    
+    if (this.engine.players.length > 1) // Multiplayer
+      ret += winners.join(' & ')
+        + 'Win'
+        + (winners.length == 1 && winners[0] != 'You' ? 's' : '')
+    return ret.trim()
   }
 
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
@@ -338,14 +355,12 @@ export default class extends LitElement {
         ></sets-leaderboard>`
       
       // TODO show leaderboard as default (child of this slot)
-      : html`<slot name="no-singleplayer-points"></slot>`}`
+      : html`<slot name="no-singleplayer-score"></slot>`}`
 
     // Game over
     : html`
       <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
-      <h2 part="title">
-        ${this.winnerText} after ${this.runningScores[0].length} seconds
-      </h2>
+      <h2 part="title">${this.winnerText}</h2>
       <mwc-fab
         part="rematch"
         extended
@@ -354,6 +369,11 @@ export default class extends LitElement {
         label=${p2p.peers.length == 1 ? 'Play again' : 'Rematch'}
         @click=${() => p2p.broadcast(new Uint8Array([Status.REMATCH]))}
       ></mwc-fab>
+      <lit-clock
+        part="clock"
+        pause
+        ticks=${this.runningScores[0].length}
+      ></lit-clock>
       <lit-chart
         part="chart"
         width=${document.body.clientWidth}
