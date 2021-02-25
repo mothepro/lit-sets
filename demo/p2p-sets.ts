@@ -291,7 +291,7 @@ export default class extends LitElement {
     
     if (this.engine.players.length > 1) // Multiplayer
       ret += winners.join(' & ')
-        + 'Win'
+        + ' Win'
         + (winners.length == 1 && winners[0] != 'You' ? 's' : '')
     return ret.trim()
   }
@@ -388,19 +388,22 @@ export default class extends LitElement {
         pause
         ticks=${this.runningScores[0].length}
       ></lit-clock>
-      <lit-chart
-        part="chart"
-        width=${document.body.clientWidth}
-        height=${Math.floor(document.body.clientWidth * 4 / 9)}
-        .data=${this.runningScores}
-      ></lit-chart>
-      ${this.engine.players.length > 1 // TODO legend should live inside the chart
-        ? html`
-        <legend part="legend">${p2p.peers.map(({ name }, index) => html`
-          <div part="legend-for legend-for-${index}" class="for for-${index}">
-            <div class="block"></div>
-            ${name}
-          </div>`)}
-        </legend>` : ''}
+      <div part="chart-holder">
+        <lit-chart
+          part="chart"
+          width=${Math.trunc(Math.min(1024, document.body.clientWidth - 16 - 16) - 20 - 20)}
+          height=${Math.trunc((4 / 9) * Math.min(1024, document.body.clientWidth - 16 - 16) - 20 - 20)}
+          .data=${this.runningScores}
+        ></lit-chart>
+        <div part="axis-x">Time</div>
+        <div part="axis-y">${p2p.peers.length > 1 ? 'Score' : 'Sets Taken'}</div>
+        ${this.engine.players.length > 1 ? /* TODO legend should live inside the chart */ html`
+          <legend part="legend">${p2p.peers.map(({ name }, index) => html`
+            <div part="legend-for legend-for-${index}" class="for for-${index}">
+              <div part="legend-block" class="block"></div>
+              ${name}
+            </div>`)}
+          </legend>` : ''}
+      </div>
       <slot name="game-over"></slot>`)
 }

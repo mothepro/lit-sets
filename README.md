@@ -8,21 +8,21 @@
 
 ## How to Use
 
-TODO...
+*Material is so annoying...*
 
-+ Material is so annoying...
-+ Arrow key to choose card (assume 3x3 grid)
-+ animations on card exit
-+ animations do not delay
-+ Jiggle animation when taking bad set
-+ Hide disabled fabs (hint and take button)
+## TODO
+
++ Arrow key to choose card (assume 3xN grid)
++ Hide disabled fabs instead (hint and take button)
 + PWA!
-+ Astroturfing (instead of `alone` slot)
++ Astroturfing?? (instead of `alone` slot)
 + easy mode in multiplayer
 + Extend signaling fallback duration
 + censor bad words for viewer
-+ Better win screen
-  + Include axis (time vs. points) on congrats screen
++ Show loading when waiting for rematch
++ Animations
+  + fix card animation order
+  + Jiggle animation when taking bad set
 + Add tracking for metrics
   + P2P success / failure rate
   + Name changes
