@@ -45,6 +45,7 @@
   --mdc-dialog-content-ink-color: var(--mdc-theme-on-primary);
   --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
   --mdc-theme-text-hint-on-background: var(--mdc-theme-on-primary);
+  --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
   --mdc-snackbar-action-color: white;
 }
 *, ::after, ::before {
@@ -145,10 +146,6 @@ header mwc-button {
 }
 /* Discord "Blurple" */
 /* #discord path { fill: #7289DA; } */
-header svg {
-  max-width: 24px;
-  max-height: 24px;
-}
 
 /*** Parts ***/
 ::part(sets) {
@@ -205,6 +202,9 @@ mwc-button:not([raised]), /* Weird */
 }
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
+}
+[slot="game-over"] {
+  margin-top: 3em;
 }
 
 /*** Loading ***/
@@ -305,13 +305,22 @@ mwc-dialog .set {
   grid-row-gap: 1.5em;
   padding: 1.5em;
 }
+/* Mini tutorial */
+[slot="no-singleplayer-score"] strong[hidden] {
+  display: inline;
+  opacity: 0;
+}
+[slot="no-singleplayer-score"] strong {
+  transition: opacity .5s ease-in;
+  opacity: 1;
+  position: absolute;
+  margin-left: 1ch;
+}
+[slot="no-singleplayer-score"] mwc-list {
+  display: inline-block;
+}
 
 /*** Helpers ***/
-[hidden],
-body:not([first-visit]) .first-visit,
-body[first-visit] .not-first-visit {
-  display: none;
-}
 lit-p2p {
   display: block;
   text-align: center;
@@ -325,11 +334,19 @@ lit-p2p {
   /* margin-right: 1ch; */
 }
 
+[hidden],
+/* First visit */
+body:not([first-visit]) .first-visit,
+body[first-visit] .not-first-visit,  
+/* Easy mode only  */
+p2p-sets:not([easy-mode]) .easy-mode,
+p2p-sets[easy-mode] .not-easy-mode, 
 /* Only show slots when state matches. */
 lit-p2p[state] .p2p-default-state,
 lit-p2p[state="-1"] .p2p-trying-to-connect,
 lit-p2p:not([state]) .p2p-trying-to-connect,
 lit-p2p[state=""] .p2p-trying-to-connect,
+lit-p2p:not([state]) .p2p-disconnected-or-ready,
 lit-p2p[state="0"] .p2p-disconnected,
 lit-p2p:not([state="0"]) .p2p-offline,
 lit-p2p[state="0"] .p2p-disconnected-or-ready,

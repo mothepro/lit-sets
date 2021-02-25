@@ -11,7 +11,7 @@
 TODO...
 
 + Material is so annoying...
-+ Arrow key to choose card
++ Arrow key to choose card (assume 3x3 grid)
 + animations on card exit
 + animations do not delay
 + Jiggle animation when taking bad set

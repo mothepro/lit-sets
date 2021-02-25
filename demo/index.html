@@ -32,7 +32,7 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit first-visit-help-delay="10000">
+<body first-visit first-visit-help-delay="10000" hidden-timer-interval="3000">
   <lit-p2p
     fallback
     local-storage
@@ -58,23 +58,21 @@
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
     <header>
       <!-- TODO only show big button on first visit? -->
-      <a href="#multiplayer">
-        <mwc-button
-          raised
-          toggle-online
-          class="p2p-disconnected"
-          trailingIcon
-          icon="groups"
-          label="Multiplayer"
-        ></mwc-button>
-        <mwc-icon-button
-          toggle-online
-          icon="groups"
-          class="p2p-disconnected"
-          title="Multiplayer"
-          label="Multiplayer"
-        ></mwc-icon-button>
-      </a>
+      <mwc-button
+        raised
+        toggle-online
+        class="p2p-disconnected"
+        trailingIcon
+        icon="groups"
+        label="Multiplayer"
+      ></mwc-button>
+      <mwc-icon-button
+        toggle-online
+        icon="groups"
+        class="p2p-disconnected"
+        title="Multiplayer"
+        label="Multiplayer"
+      ></mwc-icon-button>
       <mwc-button
         raised
         toggle-online
@@ -135,10 +133,51 @@
       </theme-toggle>
     </header>
 
+    <mwc-textfield
+      hidden
+      outlined
+      class="p2p-lobby"
+      readonly
+      label="Share"
+      placeholder="https://sets.momos.games#multiplayer"
+    ></mwc-textfield>
+
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
     <!-- <span slot="p2p-lobby" class="p2p-lobby">in <mwc-fab extended icon="speed" label="Novice difficulty"></mwc-fab></span> -->
 
-    <p2p-sets class="p2p-disconnected-or-ready" easy-mode></p2p-sets>
+    <p2p-sets class="p2p-disconnected-or-ready" easy-mode>
+      <div slot="no-singleplayer-score" class="first-visit easy-mode">
+        Choose 3 cards that all have the same, or all different
+        <strong hidden-timer="0">color</strong>
+        <strong hidden-timer="1" hidden>shape</strong>
+        <strong hidden-timer="2" hidden>count</strong>
+        <br>
+        <mwc-list noninteractive>
+          <mwc-list-item graphic="avatar">
+            Gives a hint if you're stuck
+            <mwc-icon slot="graphic">lightbulb</mwc-icon>
+          </mwc-list-item>
+          <mwc-list-item graphic="avatar">
+            Shows the complete guide
+            <mwc-icon slot="graphic">help</mwc-icon>
+          </mwc-list-item>
+          <mwc-list-item graphic="avatar">
+            Changes difficulty
+            <mwc-icon slot="graphic">speed</mwc-icon>
+          </mwc-list-item>
+        </mwc-list>
+      </div>
+      <div slot="game-over" class="easy-mode">
+        Ready for a challenge?
+        <br><br>
+        <mwc-fab
+          extended 
+          icon="speed" 
+          label="Hard difficulty" 
+          onclick="document.querySelector('p2p-sets').removeAttribute('easy-mode')"
+        ></mwc-fab>
+      </div>
+    </p2p-sets>
     
     <span slot="p2p-alone" class="p2p-lobby centered-text">
       Waiting for players to join&hellip;
