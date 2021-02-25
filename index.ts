@@ -155,3 +155,6 @@ if ('ga' in window) {
       nonInteraction: true,
     }))
 }
+
+// @ts-ignore Error logging - Event listerner types are garbage
+addEventListener('p2p-error', ({error}: ErrorEvent) => console.error('P2P connection failed', error))

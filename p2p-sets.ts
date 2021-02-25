@@ -42,11 +42,11 @@ function* scoreIncrementer(): Generator<number, never, Player> {
 }
 
 const compliments = [
-  'Good work',
-  'Wow',
-  'Nice Job',
-  'Fantastic',
-]
+    'Good work',
+    'Wow',
+    'Nice Job',
+    'Fantastic',
+  ]
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
@@ -82,13 +82,16 @@ export default class extends LitElement {
   /** Scores of all the players every tick */
   private runningScores: number[][] = []
 
+  /** The compliment to tell the user if they win */
+  private compliment = ''
+
   static readonly styles = [css`
     mwc-fab[disabled], /* Since mwc-fab[disabled] is not supported... SMH */
     lit-sets:not([can-take]) [slot="take"] {/* Easiest way to verify set is takable? */
       pointer-events: none;
       cursor: default !important;
-      --mdc-theme-on-secondary: white;
-      --mdc-theme-secondary: lightgrey;
+      --mdc-theme-on-secondary: var(--mdc-theme-on-secondary-disabled, white);
+      --mdc-theme-secondary: var(--mdc-theme-secondary-disabled, lightgrey);
       --mdc-fab-box-shadow: none;
       --mdc-fab-box-shadow-hover: none;
       --mdc-fab-box-shadow-active: none;
@@ -97,6 +100,11 @@ export default class extends LitElement {
 
     lit-confetti {
       position: fixed;
+    }
+
+    /* Easy mode icon should be a "slow" icon instead */
+    [flipX] {
+      transform: scaleX(-1);
     }
 
     /* Chart */
@@ -189,11 +197,12 @@ export default class extends LitElement {
         this.mainIndex = index
       }
 
-    // Reset running scores
+    // Reset things
     this.runningScores = this.engine.players.map(() => [])
     this.restartClock = true
     this.wantRematch = []
     this.confetti = 0
+    this.compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
     for (const player of this.engine.players) {
@@ -280,11 +289,11 @@ export default class extends LitElement {
           : p2p.peers[index].name)
     
     if (winners[0] == 'You') // Compliment if you won
-      ret += compliments[Math.trunc(Math.random() * compliments.length)] + '!'
+      ret += this.compliment + '! '
     
     if (this.engine.players.length > 1) // Multiplayer
       ret += winners.join(' & ')
-        + 'Win'
+        + ' Win'
         + (winners.length == 1 && winners[0] != 'You' ? 's' : '')
     return ret.trim()
   }
@@ -348,6 +357,7 @@ export default class extends LitElement {
           part="bottom-btn difficulty"
           mini
           icon="speed"
+          ?flipX=${!this.easyMode}
           label=${this.easyMode ? 'Standard' : 'Easy'}
           title=${this.easyMode ? 'Switch to standard mode' : 'Switch to easy mode'}
           @click=${() => this.easyMode = !this.easyMode}
@@ -380,19 +390,22 @@ export default class extends LitElement {
         pause
         ticks=${this.runningScores[0].length}
       ></lit-clock>
-      <lit-chart
-        part="chart"
-        width=${document.body.clientWidth}
-        height=${Math.floor(document.body.clientWidth * 4 / 9)}
-        .data=${this.runningScores}
-      ></lit-chart>
-      ${this.engine.players.length > 1 // TODO legend should live inside the chart
-        ? html`
-        <legend part="legend">${p2p.peers.map(({ name }, index) => html`
-          <div part="legend-for legend-for-${index}" class="for for-${index}">
-            <div class="block"></div>
-            ${name}
-          </div>`)}
-        </legend>` : ''}
+      <div part="chart-holder">
+        <lit-chart
+          part="chart"
+          width=${Math.trunc(Math.min(1024, document.body.clientWidth - 16 - 16) - 20 - 20)}
+          height=${Math.trunc((4 / 9) * Math.min(1024, document.body.clientWidth - 16 - 16) - 20 - 20)}
+          .data=${this.runningScores}
+        ></lit-chart>
+        <div part="axis-x">Time</div>
+        <div part="axis-y">${p2p.peers.length > 1 ? 'Score' : 'Sets Taken'}</div>
+        ${this.engine.players.length > 1 ? /* TODO legend should live inside the chart */ html`
+          <legend part="legend">${p2p.peers.map(({ name }, index) => html`
+            <div part="legend-for legend-for-${index}" class="for for-${index}">
+              <div part="legend-block" class="block"></div>
+              ${name}
+            </div>`)}
+          </legend>` : ''}
+      </div>
       <slot name="game-over"></slot>`)
 }
