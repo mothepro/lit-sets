@@ -41,14 +41,12 @@ function* scoreIncrementer(): Generator<number, never, Player> {
     yield 100
 }
 
-const
-  compliments = [
+const compliments = [
     'Good work',
     'Wow',
     'Nice Job',
     'Fantastic',
-  ],
-  compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
+  ]
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
@@ -83,6 +81,9 @@ export default class extends LitElement {
 
   /** Scores of all the players every tick */
   private runningScores: number[][] = []
+
+  /** The compliment to tell the user if they win */
+  private compliment = ''
 
   static readonly styles = [css`
     mwc-fab[disabled], /* Since mwc-fab[disabled] is not supported... SMH */
@@ -196,11 +197,12 @@ export default class extends LitElement {
         this.mainIndex = index
       }
 
-    // Reset running scores
+    // Reset things
     this.runningScores = this.engine.players.map(() => [])
     this.restartClock = true
     this.wantRematch = []
     this.confetti = 0
+    this.compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
     for (const player of this.engine.players) {
@@ -287,7 +289,7 @@ export default class extends LitElement {
           : p2p.peers[index].name)
     
     if (winners[0] == 'You') // Compliment if you won
-      ret += compliment + '! '
+      ret += this.compliment + '! '
     
     if (this.engine.players.length > 1) // Multiplayer
       ret += winners.join(' & ')
