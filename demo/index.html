@@ -147,7 +147,14 @@
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
     <!-- <span slot="p2p-lobby" class="p2p-lobby">in <mwc-fab extended icon="speed" label="Novice difficulty"></mwc-fab></span> -->
 
-    <p2p-sets class="p2p-disconnected-or-ready" easy-mode>
+    <p2p-sets 
+      easy-mode
+      class="p2p-disconnected-or-ready" 
+      ban-cost-initial="50"
+      hint-cost-initial="15"
+      hint-cost-increment="10"
+      score-gain-initial="100"
+    >
       <div slot="no-singleplayer-score" class="first-visit easy-mode">
         Choose 3 cards that all have the same, or all different
         <strong hidden-timer="0">color</strong>

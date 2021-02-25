@@ -22,25 +22,6 @@ declare global {
   }
 }
 
-/** 25 then +5 from there... */
-function* hintCosts(): Generator<number, never, Player> {
-  let times = 0
-  while (true)
-    yield 25 + (5 * times++)
-}
-
-/** Always 50 */
-function* banCosts(): Generator<number, never, Player> {
-  while (true)
-    yield 50
-}
-
-/** Always 100 */
-function* scoreIncrementer(): Generator<number, never, Player> {
-  while (true)
-    yield 100
-}
-
 const compliments = [
     'Good work',
     'Wow',
@@ -59,6 +40,30 @@ export default class extends LitElement {
 
   @property({ type: Boolean, reflect: true, attribute: 'easy-mode' })
   easyMode = false
+
+  @property({ type: Number, reflect: true, attribute: 'score-gain-initial' })
+  scoreGainInitial = 1
+
+  @property({ type: Number, reflect: true, attribute: 'score-gain-increment' })
+  scoreGainIncrement = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-timeout-initial' })
+  banTimeoutInitial = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-timeout-increment' })
+  banTimeoutIncrement = 0
+
+  @property({ type: Number, reflect: true, attribute: 'hint-cost-initial' })
+  hintCostInitial = 0
+
+  @property({ type: Number, reflect: true, attribute: 'hint-cost-increment' })
+  hintCostIncrement = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-cost-initial' })
+  banCostInitial = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-cost-increment' })
+  banCostIncrement = 0
 
   @internalProperty()
   protected confetti = 0
@@ -138,6 +143,38 @@ export default class extends LitElement {
         background-color:  var(--chart-color-${i});
       }`)]
 
+  /** Linear generator to calculate points to gain for taking a set. */
+  protected *scoreIncrementer(): Generator<number, never, Player> {
+    let val
+    yield val = this.scoreGainInitial
+    while (true)
+      yield val += this.scoreGainIncrement
+  }
+  
+  /** Linear generator to calculate points to lose for using a hint. */
+  protected *hintCosts(): Generator<number, never, Player> {
+    let val
+    yield val = this.hintCostInitial
+    while (true)
+      yield val += this.hintCostIncrement
+  }
+
+  /** Linear generator to calculate points to lose for taking a wrong set. */
+  protected *banCosts(): Generator<number, never, Player> {
+    let val
+    yield val = this.banCostInitial
+    while (true)
+      yield val += this.banTimeoutIncrement
+  }
+
+  /** Linear generator to calculate time to ban a for taking a wrong set. */
+  protected *banTimeouts(): Generator<number, never, Player> {
+    let val
+    yield val = this.banTimeoutInitial
+    while (true)
+      yield val += this.banTimeoutIncrement
+  }
+
   protected firstUpdated() {
     // Update peers and restart the game
     addEventListener('p2p-update', () => p2p?.peers.map(this.bindPeer) && this.restartGame())
@@ -163,16 +200,14 @@ export default class extends LitElement {
 
   private async restartGame() {
     // Make the players
-    // For singleplayer use the default rules.
     // For multiplayer uses generators defined at the top will be used.
-    const players = p2p.peers.length == 1
-      ? [new Player]
-      : [...Array(p2p.peers.length)]
-          .map(() => new Player(
-            undefined,
-            hintCosts(),
-            banCosts(),
-            scoreIncrementer()))
+    // TODO For singleplayer use the default rules... for now
+    const players = [...Array(p2p.peers.length)].map(() =>
+      new Player(
+        p2p.peers.length == 1 ? undefined : this.banTimeouts(),
+        p2p.peers.length == 1 ? undefined : this.hintCosts(),
+        p2p.peers.length == 1 ? undefined : this.banCosts(),
+        p2p.peers.length == 1 ? undefined : this.scoreIncrementer()))
     
     // Makes all possible (81) cards
     // For singleplayer, easy mode remove opacity from the cards
