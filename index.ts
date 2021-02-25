@@ -65,7 +65,7 @@ if (document.body.hasAttribute('hidden-timer-interval'))
 //     ? lobbyPrefix
 //     : lobbyPrefix + standardDifficultySuffix))
 
-// Global keybinds
+// Key shortcuts
 addEventListener('keypress', (event: KeyboardEvent) => {
   // Get at runtime since it may not always exist
   const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void

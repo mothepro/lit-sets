@@ -47,6 +47,9 @@
   --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
   --mdc-theme-text-hint-on-background: var(--mdc-theme-on-primary);
   --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
+
+  --mdc-theme-on-secondary-disabled: var(--mdc-button-disabled-ink-color, rgba(0, 0, 0, 0.38));
+  --mdc-theme-secondary-disabled: var(--mdc-button-disabled-fill-color, rgba(0, 0, 0, 0.12));
 }
 *, ::after, ::before {
     box-sizing: border-box;
@@ -57,8 +60,6 @@
   --mdc-theme-background: #fafafa;
   --mdc-theme-primary: #fff;
   --mdc-theme-on-primary: #050505;
-  --mdc-theme-secondary-disabled: #d3d3d3;
-  --mdc-theme-on-secondary-disabled: #fff;
 }
 
 /*** Media Queries ***/
