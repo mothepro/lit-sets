@@ -36,6 +36,9 @@
   --mdc-dialog-max-width: 768px;
   --mdc-theme-secondary: rgb(114, 0, 128);
   --mdc-theme-on-secondary: white;
+  --mdc-snackbar-action-color: white;
+  --mdc-theme-secondary-disabled: lightgrey;
+  --mdc-theme-on-secondary-disabled: white;
 
   /* Make these match general color set previously */
   --mdc-theme-surface: var(--mdc-theme-background);
@@ -46,12 +49,12 @@
   --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
   --mdc-theme-text-hint-on-background: var(--mdc-theme-on-primary);
   --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
-  --mdc-snackbar-action-color: white;
 }
 *, ::after, ::before {
     box-sizing: border-box;
 }
-/* Light theme (default) */
+
+/*** Light theme (default) ***/
 :root {
   --mdc-theme-background: #fafafa;
   --mdc-theme-primary: #fff;

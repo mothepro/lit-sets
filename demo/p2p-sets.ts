@@ -90,8 +90,8 @@ export default class extends LitElement {
     lit-sets:not([can-take]) [slot="take"] {/* Easiest way to verify set is takable? */
       pointer-events: none;
       cursor: default !important;
-      --mdc-theme-on-secondary: white;
-      --mdc-theme-secondary: lightgrey;
+      --mdc-theme-on-secondary: var(--mdc-theme-on-secondary-disabled, white);
+      --mdc-theme-secondary: var(--mdc-theme-secondary-disabled, lightgrey);
       --mdc-fab-box-shadow: none;
       --mdc-fab-box-shadow-hover: none;
       --mdc-fab-box-shadow-active: none;
