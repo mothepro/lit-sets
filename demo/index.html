@@ -33,12 +33,14 @@
 </head>
 
 <body first-visit first-visit-help-delay="10000" hidden-timer-interval="3000">
+  <!-- Why is p2p so unreliable :'( `retries="-1"` -->
   <lit-p2p
     fallback
     local-storage
     max-peers="5"
     signaling="ws://localhost:12345"
     version="0.3.2"
+    retries="-1"
     timeout="25000"
     lobby="lit-sets@0.0.8"
     stuns='[
