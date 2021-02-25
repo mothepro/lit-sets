@@ -99,6 +99,11 @@ export default class extends LitElement {
       position: fixed;
     }
 
+    /* Easy mode icon should be a "slow" icon instead */
+    [flip] {
+      transform: scaleX(-1);
+    }
+
     /* Chart */
     ::part(line) {
       stroke-width: var(--chart-line-width, 2px);
@@ -348,6 +353,7 @@ export default class extends LitElement {
           part="bottom-btn difficulty"
           mini
           icon="speed"
+          ?flipX=${!this.easyMode}
           label=${this.easyMode ? 'Standard' : 'Easy'}
           title=${this.easyMode ? 'Switch to standard mode' : 'Switch to easy mode'}
           @click=${() => this.easyMode = !this.easyMode}
