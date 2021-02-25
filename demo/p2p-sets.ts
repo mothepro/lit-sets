@@ -41,12 +41,14 @@ function* scoreIncrementer(): Generator<number, never, Player> {
     yield 100
 }
 
-const compliments = [
-  'Good work',
-  'Wow',
-  'Nice Job',
-  'Fantastic',
-]
+const
+  compliments = [
+    'Good work',
+    'Wow',
+    'Nice Job',
+    'Fantastic',
+  ],
+  compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
@@ -100,7 +102,7 @@ export default class extends LitElement {
     }
 
     /* Easy mode icon should be a "slow" icon instead */
-    [flip] {
+    [flipX] {
       transform: scaleX(-1);
     }
 
@@ -285,7 +287,7 @@ export default class extends LitElement {
           : p2p.peers[index].name)
     
     if (winners[0] == 'You') // Compliment if you won
-      ret += compliments[Math.trunc(Math.random() * compliments.length)] + '!'
+      ret += compliment + '! '
     
     if (this.engine.players.length > 1) // Multiplayer
       ret += winners.join(' & ')
