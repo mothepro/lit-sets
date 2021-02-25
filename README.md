@@ -20,6 +20,7 @@
 + Extend signaling fallback duration
 + censor bad words for viewer
 + Show loading when waiting for rematch
++ Add support for a bundled `nomodule` script
 + Animations
   + fix card animation order
   + Jiggle animation when taking bad set

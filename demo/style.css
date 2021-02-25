@@ -57,8 +57,6 @@
   --mdc-theme-background: #fafafa;
   --mdc-theme-primary: #fff;
   --mdc-theme-on-primary: #050505;
-  --mdc-theme-secondary-disabled: #d3d3d3;
-  --mdc-theme-on-secondary-disabled: #fff;
 }
 
 /*** Media Queries ***/
