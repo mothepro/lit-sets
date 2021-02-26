@@ -346,15 +346,16 @@ mwc-dialog .set {
   padding: 1.5em;
 }
 /* Mini tutorial */
-[slot="no-singleplayer-score"] strong[hidden] {
-  display: inline;
+[slot="no-singleplayer-score"] > span {
+  margin-inline-start: 0.5ch;
+}
+[slot="no-singleplayer-score"] strong[transparent] {
   opacity: 0;
 }
 [slot="no-singleplayer-score"] strong {
+  position: absolute;
   transition: opacity .5s ease-in;
   opacity: 1;
-  position: absolute;
-  margin-left: 1ch;
 }
 [slot="no-singleplayer-score"] mwc-list {
   display: inline-block;

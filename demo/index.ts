@@ -62,7 +62,7 @@ if (document.body.hasAttribute('hidden-timer-interval'))
   setInterval(() => {
     times++
     for (const elem of hideOnTimerElements)
-      elem.toggleAttribute('hidden', times % hideOnTimerElements.length != parseInt(elem.getAttribute('hidden-timer')!))
+      elem.toggleAttribute('transparent', times % hideOnTimerElements.length != parseInt(elem.getAttribute('hidden-timer')!))
   }, parseInt(document.body.getAttribute('hidden-timer-interval')!))
 
 // Difficulty Change switches online lobbies
