@@ -32,6 +32,12 @@ if (!document.body.hasAttribute('first-visit'))
 if (location.hash.includes('multiplayer'))
   litP2pElement.setAttribute('state', '')
 
+// Hide some elements in offline mode
+if (!navigator.onLine)
+  document
+    .querySelectorAll('[hide-offline]')
+    .forEach(elem => elem.setAttribute('hidden', ''))
+
 // Dialog openers
 for (const opener of dialogOpenerElements)
   opener.addEventListener('click', () => document
