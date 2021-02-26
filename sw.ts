@@ -4,7 +4,7 @@ const version = '0.0.10'
 interface InstallEvent extends Event {
   waitUntil(promise: Promise<any>): void
 }
-interface FetchEvent extends Event {
+interface FetchEvent extends InstallEvent {
   request: Request
   respondWith(promise?: Promise<Response | void> | Response): void
 }
@@ -25,13 +25,16 @@ async function installer(event: InstallEvent) {
 }
 
 async function fetcher(event: FetchEvent) {
-  let response = await caches.match(event.request)
-  if (!response) {
-    const cache = await caches.open(version),
-      response = await fetch(event.request)
-    if (Math.trunc(response.status / 100) != 2)
-      throw Error(`Request for "${event.request.url}" came back with status ${response.status}`)
-    cache.put(event.request, response.clone())
+  const cache = await caches.open(version)
+  let response = await cache.match(event.request)
+  if (response?.ok) // cache hit
+    event.waitUntil(cache.add(event.request))
+  else { // cache miss
+    response = await fetch(event.request)
+    if (response.ok)
+      cache.put(event.request, response.clone())
+    // else
+      // throw Error(`Failed to fetch & cache "${event.request.url}": ${response.status}`)
   }
   return response
 }
@@ -39,4 +42,4 @@ async function fetcher(event: FetchEvent) {
 // @ts-ignore
 addEventListener('install', (event: InstallEvent) => event.waitUntil(installer(event)))
 // @ts-ignore
-// addEventListener('fetch', (event: FetchEvent) => event.respondWith(fetcher(event)))
+addEventListener('fetch', (event: FetchEvent) => event.request.method == 'GET' && event.respondWith(fetcher(event)))
