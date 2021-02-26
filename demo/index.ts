@@ -76,7 +76,7 @@ if (document.body.hasAttribute('hidden-timer-interval'))
 // Key shortcuts
 addEventListener('keypress', (event: KeyboardEvent) => {
   // Get at runtime since it may not always exist
-  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void
+  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
   switch (event.key) {
     case '?': // Show help
       helpDialogElement.toggleAttribute('open')
@@ -94,17 +94,12 @@ addEventListener('keypress', (event: KeyboardEvent) => {
       break
     
     case 'h': // Take Hint
-      if (setsGameElement) {
-        event.preventDefault()
-        setsGameElement.takeHint()
-      }
+      // TODO this will also take a hint even if you're typing your name!!
+      setsGameElement?.takeHint()
       break
     
     case 'r': // Rearrange
-      if (setsGameElement) {
-        event.preventDefault()
-        setsGameElement.rearrange()
-      }
+      setsGameElement?.rearrange()
       break
   }
 })

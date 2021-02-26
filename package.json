@@ -16,11 +16,11 @@
     "access": "public"
   },
   "scripts": {
+    "start": "signaling-lobby -vvvvp 12345 -s 18000000 -a ' '",
+    "build:sw:watch": "npm run build:sw -- --watch",
     "release": "np",
     "deploy": "gh-pages -d demo -v *.ts",
     "build": "npm run build:npm && npm run build:esm && npm run build:sw",
-    "build:sw:watch": "npm run build:sw -- --watch",
-    "start": "signaling-lobby -vvvvp 12345 -s 18000000 -a ' '",
     "test": "echo 'no tests yet...'",
     "pretest": "npm run build:npm",
     "prerelease": "npm run build:npm && npm run deploy",
