@@ -9,7 +9,7 @@ import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
-navigator?.serviceWorker.register(`./sw${'.'}js`)
+navigator?.serviceWorker.register('./sw.' + 'js') // for dev
 
 const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,

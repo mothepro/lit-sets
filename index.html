@@ -471,6 +471,12 @@
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date)
     gtag('config', 'UA-172429940-2')
+
+  navigator?.serviceWorker?.register('./sw.js')
+  if (!navigator.onLine)
+    document
+      .querySelectorAll('[hide-offline]')
+      .forEach(elem => elem.setAttribute('hidden', ''))
   </script>
 </body>
 </html>
