@@ -36,7 +36,7 @@
     "postdeploy": "npm run html:dev:real && npm run html:prod:shim && npm run html:dev:signaling",
     "build:npm": "tsc",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build:sw": "tsc demo/sw.ts"
+    "build:sw": "tsc demo/sw.ts -t ES2020 --moduleResolution node"
   },
   "devDependencies": {
     "@material/icon-button": "^10.0.0",

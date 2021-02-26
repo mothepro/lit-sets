@@ -383,5 +383,5 @@ lit-p2p:not([state="2"]) .p2p-loading,
 lit-p2p[state="2"] .p2p-disconnected-or-ready,
 lit-p2p[state="3"] .p2p-disconnected,
 lit-p2p:not([state="3"]) .p2p-ready {
-  display: none;
+  display: none !important;
 }
