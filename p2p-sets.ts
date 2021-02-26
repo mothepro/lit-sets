@@ -22,31 +22,19 @@ declare global {
   }
 }
 
-/** 25 then +5 from there... */
-function* hintCosts(): Generator<number, never, Player> {
-  let times = 0
-  while (true)
-    yield 25 + (5 * times++)
-}
-
-/** Always 50 */
-function* banCosts(): Generator<number, never, Player> {
-  while (true)
-    yield 50
-}
-
-/** Always 100 */
-function* scoreIncrementer(): Generator<number, never, Player> {
-  while (true)
-    yield 100
-}
-
 const compliments = [
     'Good work',
     'Wow',
     'Nice Job',
     'Fantastic',
-  ]
+]
+
+/** Generator that returns linear values given `y = mx + b` */
+function* linear(m: number, b: number): Generator<number, never, any> {
+  yield b
+  while (true)
+    yield b += m
+}
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
@@ -59,6 +47,30 @@ export default class extends LitElement {
 
   @property({ type: Boolean, reflect: true, attribute: 'easy-mode' })
   easyMode = false
+
+  @property({ type: Number, reflect: true, attribute: 'score-gain-initial' })
+  scoreGainInitial = 1
+
+  @property({ type: Number, reflect: true, attribute: 'score-gain-increment' })
+  scoreGainIncrement = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-timeout-initial' })
+  banTimeoutInitial = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-timeout-increment' })
+  banTimeoutIncrement = 0
+
+  @property({ type: Number, reflect: true, attribute: 'hint-cost-initial' })
+  hintCostInitial = 0
+
+  @property({ type: Number, reflect: true, attribute: 'hint-cost-increment' })
+  hintCostIncrement = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-cost-initial' })
+  banCostInitial = 0
+
+  @property({ type: Number, reflect: true, attribute: 'ban-cost-increment' })
+  banCostIncrement = 0
 
   @internalProperty()
   protected confetti = 0
@@ -163,16 +175,14 @@ export default class extends LitElement {
 
   private async restartGame() {
     // Make the players
-    // For singleplayer use the default rules.
     // For multiplayer uses generators defined at the top will be used.
-    const players = p2p.peers.length == 1
-      ? [new Player]
-      : [...Array(p2p.peers.length)]
-          .map(() => new Player(
-            undefined,
-            hintCosts(),
-            banCosts(),
-            scoreIncrementer()))
+    // TODO For singleplayer use the default rules... for now
+    const players = [...Array(p2p.peers.length)].map(() =>
+      new Player(
+        p2p.peers.length == 1 ? undefined : linear(this.banTimeoutIncrement, this.banTimeoutInitial),
+        p2p.peers.length == 1 ? undefined : linear(this.hintCostIncrement, this.hintCostInitial),
+        p2p.peers.length == 1 ? undefined : linear(this.banCostIncrement, this.banCostInitial),
+        p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
     // Makes all possible (81) cards
     // For singleplayer, easy mode remove opacity from the cards

@@ -9,6 +9,8 @@ import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
+navigator?.serviceWorker.register(`./sw${'.'}js`)
+
 const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
@@ -29,6 +31,12 @@ if (!document.body.hasAttribute('first-visit'))
 // Auto connect
 if (location.hash.includes('multiplayer'))
   litP2pElement.setAttribute('state', '')
+
+// Hide some elements in offline mode
+if (!navigator.onLine)
+  document
+    .querySelectorAll('[hide-offline]')
+    .forEach(elem => elem.setAttribute('hidden', ''))
 
 // Dialog openers
 for (const opener of dialogOpenerElements)
@@ -132,18 +140,19 @@ addEventListener('keypress', (event: KeyboardEvent) => {
 //   console.log('PWA was installed')
 // })
 
+// Google Analytics
 declare global {
   interface Window {
     dataLayer: unknown[]
+    gtag(...args: any): void
   }
 }
 
 // Event logging
 if ('ga' in window) {
-  // Google Analytics
-  window.dataLayer = window.dataLayer || []
-  window.dataLayer.push('js', new Date)
-  window.dataLayer.push('config', 'UA-172429940-2')
+  // window.dataLayer = window.dataLayer || []
+  // window.dataLayer.push('js', new Date)
+  // window.dataLayer.push('config', 'UA-172429940-2')
   
   // @ts-ignore Event listerner types are garbage
   addEventListener('p2p-error', ({ error }: ErrorEvent) =>
@@ -157,4 +166,4 @@ if ('ga' in window) {
 }
 
 // @ts-ignore Error logging - Event listerner types are garbage
-addEventListener('p2p-error', ({error}: ErrorEvent) => console.error('P2P connection failed', error))
+addEventListener('p2p-error', ({ error }: ErrorEvent) => console.error('P2P connection failed', error))

@@ -63,6 +63,7 @@
       <mwc-button
         raised
         toggle-online
+        hide-offline
         class="p2p-disconnected"
         trailingIcon
         icon="groups"
@@ -70,6 +71,7 @@
       ></mwc-button>
       <mwc-icon-button
         toggle-online
+        hide-offline
         icon="groups"
         class="p2p-disconnected"
         title="Multiplayer"
@@ -114,6 +116,7 @@
         </mwc-icon-button>
       </a>
       <mwc-icon-button
+        hide-offline
         open-dialog="feedback"
         title="Improve this game"
         icon="feedback"
@@ -147,7 +150,14 @@
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
     <!-- <span slot="p2p-lobby" class="p2p-lobby">in <mwc-fab extended icon="speed" label="Novice difficulty"></mwc-fab></span> -->
 
-    <p2p-sets class="p2p-disconnected-or-ready" easy-mode>
+    <p2p-sets 
+      easy-mode
+      class="p2p-disconnected-or-ready" 
+      ban-cost-initial="50"
+      hint-cost-initial="15"
+      hint-cost-increment="10"
+      score-gain-initial="100"
+    >
       <div slot="no-singleplayer-score" class="first-visit easy-mode">
         Choose 3 cards that all have the same, or all different
         <strong hidden-timer="0">color</strong>
@@ -454,5 +464,13 @@
       <mwc-icon-button slot="primaryAction" dialogAction="close" icon="done"></mwc-icon-button>
     </mwc-dialog>
   </lit-p2p>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date)
+    gtag('config', 'UA-172429940-2')
+  </script>
 </body>
 </html>
