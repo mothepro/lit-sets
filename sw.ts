@@ -39,4 +39,4 @@ async function fetcher(event: FetchEvent) {
 // @ts-ignore
 addEventListener('install', (event: InstallEvent) => event.waitUntil(installer(event)))
 // @ts-ignore
-addEventListener('fetch', (event: FetchEvent) => event.respondWith(fetcher(event)))
+// addEventListener('fetch', (event: FetchEvent) => event.respondWith(fetcher(event)))
