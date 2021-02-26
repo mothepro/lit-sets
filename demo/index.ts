@@ -134,18 +134,19 @@ addEventListener('keypress', (event: KeyboardEvent) => {
 //   console.log('PWA was installed')
 // })
 
+// Google Analytics
 declare global {
   interface Window {
     dataLayer: unknown[]
+    gtag(...args: any): void
   }
 }
 
 // Event logging
 if ('ga' in window) {
-  // Google Analytics
-  window.dataLayer = window.dataLayer || []
-  window.dataLayer.push('js', new Date)
-  window.dataLayer.push('config', 'UA-172429940-2')
+  // window.dataLayer = window.dataLayer || []
+  // window.dataLayer.push('js', new Date)
+  // window.dataLayer.push('config', 'UA-172429940-2')
   
   // @ts-ignore Event listerner types are garbage
   addEventListener('p2p-error', ({ error }: ErrorEvent) =>
@@ -159,4 +160,4 @@ if ('ga' in window) {
 }
 
 // @ts-ignore Error logging - Event listerner types are garbage
-addEventListener('p2p-error', ({error}: ErrorEvent) => console.error('P2P connection failed', error))
+addEventListener('p2p-error', ({ error }: ErrorEvent) => console.error('P2P connection failed', error))
