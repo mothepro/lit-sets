@@ -48,8 +48,8 @@
   --mdc-theme-text-hint-on-background: var(--mdc-theme-on-primary);
   --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
 
---mdc-theme-on-secondary-disabled: var(rgba(0, 0, 0, 0.38));
---mdc-theme-secondary-disabled: var(rgba(0, 0, 0, 0.12));
+--mdc-theme-on-secondary-disabled: rgba(0, 0, 0, 0.38);
+--mdc-theme-secondary-disabled: rgba(0, 0, 0, 0.12);
 }
 *, ::after, ::before {
     box-sizing: border-box;
