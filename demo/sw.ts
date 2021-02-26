@@ -29,6 +29,8 @@ async function fetcher(event: FetchEvent) {
   if (!response) {
     const cache = await caches.open(version),
       response = await fetch(event.request)
+    if (Math.trunc(response.status / 100) != 2)
+      throw Error(`Request for "${event.request.url}" came back with status ${response.status}`)
     cache.put(event.request, response.clone())
   }
   return response
