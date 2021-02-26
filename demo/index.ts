@@ -110,6 +110,7 @@ addEventListener('keypress', (event: KeyboardEvent) => {
 // Go back offline
 // document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
 
+addEventListener('beforeinstallprompt', event => console.log('install??', event)) // for testing
 // addEventListener('beforeinstallprompt', event => {
 //   event.preventDefault()
 //   deferredPrompt = event

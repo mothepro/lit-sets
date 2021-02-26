@@ -146,6 +146,21 @@ header a {
 header mwc-button {
   margin-top: .5em;
 }
+.corner-ribbon {
+  position: absolute;
+  line-height: 2em;
+  transform: rotate(-45deg);
+  width: 100px;
+  top: 14px;
+  left: -24px;
+  
+  letter-spacing: 0.5ch;
+  text-transform: uppercase;
+  font-size: 0.8em;
+
+  background: var(--mdc-theme-secondary);
+  color: var(--mdc-theme-on-secondary);
+}
 /* Discord "Blurple" */
 /* #discord path { fill: #7289DA; } */
 

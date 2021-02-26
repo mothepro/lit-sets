@@ -14,7 +14,7 @@
 
 + Arrow key to choose card (assume 3xN grid)
 + Hide disabled fabs instead (hint and take button)
-+ PWA!
++ Improve first time helper text explaining what card #3 needs to be for valid set
 + Astroturfing?? (instead of `alone` slot)
 + easy mode in multiplayer
 + Extend signaling fallback duration
