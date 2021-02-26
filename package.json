@@ -34,7 +34,8 @@
     "predeploy": "npm run html:dev:shim && npm run html:prod:real && npm run html:prod:signaling && npm run build:esm",
     "postdeploy": "npm run html:dev:real && npm run html:prod:shim && npm run html:dev:signaling",
     "build:npm": "tsc",
-    "build:esm": "tsc -p tsconfig.esm.json"
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:sw": "tsc demo/sw.ts --watch"
   },
   "devDependencies": {
     "@material/icon-button": "^10.0.0",

@@ -27,7 +27,14 @@ const compliments = [
     'Wow',
     'Nice Job',
     'Fantastic',
-  ]
+]
+
+/** Generator that returns linear values given `y = mx + b` */
+function* linear(m: number, b: number): Generator<number, never, any> {
+  yield b
+  while (true)
+    yield b += m
+}
 
 /**
  * Peer to Peer (and offline) version of the game of sets.
@@ -143,38 +150,6 @@ export default class extends LitElement {
         background-color:  var(--chart-color-${i});
       }`)]
 
-  /** Linear generator to calculate points to gain for taking a set. */
-  protected *scoreIncrementer(): Generator<number, never, Player> {
-    let val
-    yield val = this.scoreGainInitial
-    while (true)
-      yield val += this.scoreGainIncrement
-  }
-  
-  /** Linear generator to calculate points to lose for using a hint. */
-  protected *hintCosts(): Generator<number, never, Player> {
-    let val
-    yield val = this.hintCostInitial
-    while (true)
-      yield val += this.hintCostIncrement
-  }
-
-  /** Linear generator to calculate points to lose for taking a wrong set. */
-  protected *banCosts(): Generator<number, never, Player> {
-    let val
-    yield val = this.banCostInitial
-    while (true)
-      yield val += this.banTimeoutIncrement
-  }
-
-  /** Linear generator to calculate time to ban a for taking a wrong set. */
-  protected *banTimeouts(): Generator<number, never, Player> {
-    let val
-    yield val = this.banTimeoutInitial
-    while (true)
-      yield val += this.banTimeoutIncrement
-  }
-
   protected firstUpdated() {
     // Update peers and restart the game
     addEventListener('p2p-update', () => p2p?.peers.map(this.bindPeer) && this.restartGame())
@@ -204,10 +179,10 @@ export default class extends LitElement {
     // TODO For singleplayer use the default rules... for now
     const players = [...Array(p2p.peers.length)].map(() =>
       new Player(
-        p2p.peers.length == 1 ? undefined : this.banTimeouts(),
-        p2p.peers.length == 1 ? undefined : this.hintCosts(),
-        p2p.peers.length == 1 ? undefined : this.banCosts(),
-        p2p.peers.length == 1 ? undefined : this.scoreIncrementer()))
+        p2p.peers.length == 1 ? undefined : linear(this.banTimeoutIncrement, this.banTimeoutInitial),
+        p2p.peers.length == 1 ? undefined : linear(this.hintCostIncrement, this.hintCostInitial),
+        p2p.peers.length == 1 ? undefined : linear(this.banCostIncrement, this.banCostInitial),
+        p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
     // Makes all possible (81) cards
     // For singleplayer, easy mode remove opacity from the cards

@@ -3,6 +3,7 @@ build
 dist
 *DO_NOT_COMMIT*
 doNotStage.ts
+sw.js
 
 .vscode
 .DS_Store
