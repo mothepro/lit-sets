@@ -15,14 +15,12 @@ async function installer(event) {
 async function fetcher(event) {
     const cache = await caches.open(version);
     let response = await cache.match(event.request);
-    if (response?.ok) // cache hit
+    if (response === null || response === void 0 ? void 0 : response.ok)
         event.waitUntil(cache.add(event.request));
-    else { // cache miss
+    else {
         response = await fetch(event.request);
         if (response.ok)
             cache.put(event.request, response.clone());
-        // else
-        // throw Error(`Failed to fetch & cache "${event.request.url}": ${response.status}`)
     }
     return response;
 }

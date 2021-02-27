@@ -30,7 +30,7 @@ const compliments = [
 ]
 
 /** Generator that returns linear values given `y = mx + b` */
-function* linear(m: number, b: number): Generator<number, never, any> {
+function* linear(m: number, b: number): Generator<number, never, unknown> {
   yield b
   while (true)
     yield b += m
@@ -78,6 +78,9 @@ export default class extends LitElement {
   @internalProperty()
   protected restartClock = false
 
+  @internalProperty()
+  protected takeFailed = false
+
   /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
   @internalProperty()
   protected wantRematch: number[] = []
@@ -98,6 +101,29 @@ export default class extends LitElement {
   private compliment = ''
 
   static readonly styles = [css`
+    /* https://css-tricks.com/snippets/css/shake-css-keyframe-animation/ */
+    @keyframes shake {
+      10%, 90% {
+        transform: var(--demo-shake-animation-transform-1, translate3d(-1px, 0, 0));
+      }
+      20%, 80% {
+        transform: var(--demo-shake-animation-transform-2, translate3d(2px, 0, 0));
+      }
+      30%, 50%, 70% {
+        transform: var(--demo-shake-animation-transform-3, translate3d(-4px, 0, 0));
+      }
+      40%, 60% {
+        transform: var(--demo-shake-animation-transform-4, translate3d(4px, 0, 0));
+      }
+    }
+
+    [shake] {
+      animation: var(--demo-shake-animation, shake .82s cubic-bezier(.36,.07,.19,.97) both);
+      /* transform: translate3d(0, 0, 0); */
+      /* backface-visibility: hidden; */
+      /* perspective: 1000px; */
+    }
+
     mwc-fab[disabled], /* Since mwc-fab[disabled] is not supported... SMH */
     lit-sets:not([can-take]) [slot="take"] {/* Easiest way to verify set is takable? */
       pointer-events: none;
@@ -184,19 +210,22 @@ export default class extends LitElement {
         p2p.peers.length == 1 ? undefined : linear(this.banCostIncrement, this.banCostInitial),
         p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
-    // Makes all possible (81) cards
-    // For singleplayer, easy mode remove opacity from the cards
-    const deck = [...Array(Details.COMBINATIONS)].map((_, i) =>
-      Card.make(this.easyMode && p2p.peers.length == 1
-        ? i % Details.SIZE ** 3
-        : i))
+    const // Number of cards to make
+      count = this.easyMode && p2p.peers.length == 1
+      // Easy mode - remove opacity
+      // This is SAFE because opacity is the last feature that's incremented (most signifigant bit/feature)
+      ? (Details.COUNT - 1) ** Details.SIZE
+      // Normal mode - all cards
+      : Details.COMBINATIONS,
+    // Makes all possible cards
+    deck = [...Array(count)].map((_, i) => Card.make(i))
     
     // Shuffle deck using shared RNG
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.abs(p2p.random(true)) % i;
       [deck[i], deck[j]] = [deck[j], deck[i]]
     }
-    
+
     // Make the game :)
     this.engine = new Game(players, deck)
 
@@ -221,6 +250,9 @@ export default class extends LitElement {
       player.take.on(() => this.requestUpdate())
       player.hintUpdate.on(() => this.requestUpdate())
     }
+
+    // Shake when we are banned
+    this.mainPlayer.ban.on(() => this.takeFailed = true)
       
     for await (const _ of this.engine.filled)
       this.requestUpdate()
@@ -313,18 +345,22 @@ export default class extends LitElement {
     ? html`
       <lit-sets
         part="sets"
+        exportparts="helper-text , solution-text"
         ?hint-allowed=${this.mainPlayer.hintCards.length < 3}
         ?take-allowed=${!this.mainPlayer.isBanned}
+        ?helper-text=${this.easyMode && p2p.peers.length == 1}
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
         @hint=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
+        @selected=${() => this.takeFailed = false}
       >
         <mwc-fab
           part="bottom-btn take"
           slot="take"
           extended
           ?disabled=${this.mainPlayer.isBanned}
+          ?shake=${this.takeFailed}
           icon="done_outline"
           label="Take Set"
         ></mwc-fab>

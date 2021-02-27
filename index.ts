@@ -9,16 +9,23 @@ import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
-navigator?.serviceWorker.register('./sw.' + 'js') // for dev
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
+  userChoice: Promise<'accepted' | 'dismissed'>
+  platforms: string[]
+}
 
 const // Elements in index.html
+  serviceWorker = './sw.' + 'js', // for dev
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
   hideOnTimerElements = document.querySelectorAll('[hidden-timer]')! as unknown as Element[],
   helpDialogElement = document.getElementById('help')! as Dialog,
-  // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
+  installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
+
+navigator?.serviceWorker.register(serviceWorker)
 
 // first-visit attribute
 if (localStorage.length)
@@ -62,7 +69,7 @@ if (document.body.hasAttribute('hidden-timer-interval'))
   setInterval(() => {
     times++
     for (const elem of hideOnTimerElements)
-      elem.toggleAttribute('hidden', times % hideOnTimerElements.length != parseInt(elem.getAttribute('hidden-timer')!))
+      elem.toggleAttribute('transparent', times % hideOnTimerElements.length != parseInt(elem.getAttribute('hidden-timer')!))
   }, parseInt(document.body.getAttribute('hidden-timer-interval')!))
 
 // Difficulty Change switches online lobbies
@@ -76,7 +83,7 @@ if (document.body.hasAttribute('hidden-timer-interval'))
 // Key shortcuts
 addEventListener('keypress', (event: KeyboardEvent) => {
   // Get at runtime since it may not always exist
-  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | void
+  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
   switch (event.key) {
     case '?': // Show help
       helpDialogElement.toggleAttribute('open')
@@ -94,66 +101,63 @@ addEventListener('keypress', (event: KeyboardEvent) => {
       break
     
     case 'h': // Take Hint
-      if (setsGameElement) {
-        event.preventDefault()
-        setsGameElement.takeHint()
-      }
+      // TODO this will also take a hint even if you're typing your name!!
+      setsGameElement?.takeHint()
       break
     
     case 'r': // Rearrange
-      if (setsGameElement) {
-        event.preventDefault()
-        setsGameElement.rearrange()
-      }
+      setsGameElement?.rearrange()
       break
   }
 })
 
-// Initialize deferredPrompt for use later to show browser install prompt.
-// let deferredPrompt: Event | void
+// Initialize `deferredPrompt` for use later to show browser install prompt.
+let deferredPrompt: BeforeInstallPromptEvent | void
 
-// Go back offline
-// document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
+addEventListener('beforeinstallprompt', event => {
+  // event.preventDefault() // should do this?
+  deferredPrompt = event as BeforeInstallPromptEvent
+  installBtn.removeAttribute('hidden')
+  if ('ga' in window)
+    ga('send', 'event', {
+      eventCategory: 'install',
+      eventAction: 'prompt',
+      // eventLabel,
+      // eventValue,
+      nonInteraction: true,
+    })
+})
 
-// addEventListener('beforeinstallprompt', event => {
-//   event.preventDefault()
-//   deferredPrompt = event
-//   installBtn.removeAttribute('hidden')
-//   ga('send', 'install', 'prompt')
-// })
-
-// installBtn.addEventListener('click', async () => {
-//   installBtn.toggleAttribute('hidden')
-//   if (deferredPrompt)
-//     deferredPrompt.prompt()
-//   // Wait for the user to respond to the prompt
-//   const { outcome } = await deferredPrompt.userChoice;
-//   // Optionally, send analytics event with outcome of user choice
-//   console.log(`User response to the install prompt: ${outcome}`)
-//   deferredPrompt = undefined;
-// });
-
-// addEventListener('appinstalled', () => {
-//   // Clear the deferredPrompt so it can be garbage collected
-//   deferredPrompt = undefined
-//   // Optionally, send analytics event to indicate successful install
-//   console.log('PWA was installed')
-// })
-
-// Google Analytics
-declare global {
-  interface Window {
-    dataLayer: unknown[]
-    gtag(...args: any): void
+installBtn.addEventListener('click', async () => {
+  let outcome = 'none'
+  installBtn.toggleAttribute('hidden')
+  if (deferredPrompt) {
+    deferredPrompt.prompt()
+    outcome = await deferredPrompt.userChoice
   }
-}
+  if ('ga' in window)
+    ga('send', 'event', {
+      eventCategory: 'install',
+      eventAction: 'button',
+      eventLabel: outcome,
+      // eventValue,
+    })
+  deferredPrompt = undefined;
+});
+
+addEventListener('appinstalled', () => {
+  deferredPrompt = undefined
+  if ('ga' in window)
+    ga('send', 'event', {
+      eventCategory: 'install',
+      eventAction: 'complete',
+      // eventLabel,
+      // eventValue,
+    })
+})
 
 // Event logging
-if ('ga' in window) {
-  // window.dataLayer = window.dataLayer || []
-  // window.dataLayer.push('js', new Date)
-  // window.dataLayer.push('config', 'UA-172429940-2')
-  
+if ('ga' in window)
   // @ts-ignore Event listerner types are garbage
   addEventListener('p2p-error', ({ error }: ErrorEvent) =>
     ga('send', 'event', {
@@ -163,7 +167,6 @@ if ('ga' in window) {
       // eventValue,
       nonInteraction: true,
     }))
-}
 
 // @ts-ignore Error logging - Event listerner types are garbage
 addEventListener('p2p-error', ({ error }: ErrorEvent) => console.error('P2P connection failed', error))
