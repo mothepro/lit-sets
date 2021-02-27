@@ -20,7 +20,6 @@ const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
-  hideOnTimerElements = document.querySelectorAll('[hidden-timer]')! as unknown as Element[],
   helpDialogElement = document.getElementById('help')! as Dialog,
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
@@ -37,13 +36,13 @@ if (!document.body.hasAttribute('first-visit'))
 
 // Auto connect
 if (location.hash.includes('multiplayer'))
-  litP2pElement.setAttribute('state', '')
+  litP2pElement.toggleAttribute('state', true)
 
 // Hide some elements in offline mode
 if (!navigator.onLine)
   document
     .querySelectorAll('[hide-offline]')
-    .forEach(elem => elem.setAttribute('hidden', ''))
+    .forEach(elem => elem.toggleAttribute('hidden', true))
 
 // Dialog openers
 for (const opener of dialogOpenerElements)
@@ -61,16 +60,8 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
 // Add [open] to <mwc-dialog> after some time if first visit
 if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('first-visit-help-delay'))
   setTimeout(
-    () => helpDialogElement.setAttribute('open', ''),
+    () => helpDialogElement.toggleAttribute('open', true),
     parseInt(document.body.getAttribute('first-visit-help-delay') ?? ''))
-
-let times = 0
-if (document.body.hasAttribute('hidden-timer-interval'))
-  setInterval(() => {
-    times++
-    for (const elem of hideOnTimerElements)
-      elem.toggleAttribute('transparent', times % hideOnTimerElements.length != parseInt(elem.getAttribute('hidden-timer')!))
-  }, parseInt(document.body.getAttribute('hidden-timer-interval')!))
 
 // Difficulty Change switches online lobbies
 // const lobbyPrefix = litP2pElement.getAttribute('lobby') ?? '',
