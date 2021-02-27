@@ -10,12 +10,14 @@ import './leaderboard.js'  // <sets-leaderboard>
 export type TakeEvent = CustomEvent<[number, number, number]>
 export type HintEvent = CustomEvent<void>
 export type RearrangeEvent = CustomEvent<void>
+export type IndexEvent = CustomEvent<{index: number, selected: boolean}>
 
 declare global {
   interface HTMLElementEventMap {
     take: TakeEvent
     hint: HintEvent
     rearrange: RearrangeEvent
+    selected: IndexEvent
   }
 }
 
@@ -151,6 +153,7 @@ export default class extends LitElement {
     else
       selected.add(index)
     this.selected = [...selected]
+    this.dispatchEvent(new CustomEvent('selected', { detail: { index, selected: selected.has(index) } }))
   }
 
   protected readonly render = () => html`

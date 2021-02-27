@@ -4,6 +4,12 @@
   --how-to-table-template-columns: 100%;
   --how-to-sets-template-columns: 100%;
 
+  --demo-shake-animation-transform-1: translate3d(-1px, 0, 0);
+  --demo-shake-animation-transform-2: translate3d(2px, 0, 0);
+  --demo-shake-animation-transform-3: translate3d(-4px, 0, 0);
+  --demo-shake-animation-transform-4: translate3d(4px, 0, 0);
+  --demo-shake-animation: shake .82s cubic-bezier(.36,.07,.19,.97) both;
+
   --sets-shape-size: 2.4em;
   --sets-shape-spacing: 8px;
   --sets-grid-template-columns: repeat(2, minmax(150px, 45vw));
