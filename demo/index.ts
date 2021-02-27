@@ -9,6 +9,12 @@ import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
+  userChoice: Promise<'accepted' | 'dismissed'>
+  platforms: string[]
+}
+
 const // Elements in index.html
   serviceWorker = './sw.' + 'js', // for dev
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
@@ -16,7 +22,7 @@ const // Elements in index.html
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
   hideOnTimerElements = document.querySelectorAll('[hidden-timer]')! as unknown as Element[],
   helpDialogElement = document.getElementById('help')! as Dialog,
-  // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
+  installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
 navigator?.serviceWorker.register(serviceWorker)
@@ -105,51 +111,53 @@ addEventListener('keypress', (event: KeyboardEvent) => {
   }
 })
 
-// Initialize deferredPrompt for use later to show browser install prompt.
-// let deferredPrompt: Event | void
+// Initialize `deferredPrompt` for use later to show browser install prompt.
+let deferredPrompt: BeforeInstallPromptEvent | void
 
-// Go back offline
-// document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
+addEventListener('beforeinstallprompt', event => {
+  // event.preventDefault() // should do this?
+  deferredPrompt = event as BeforeInstallPromptEvent
+  installBtn.removeAttribute('hidden')
+  if ('ga' in window)
+    ga('send', 'event', {
+      eventCategory: 'install',
+      eventAction: 'prompt',
+      // eventLabel,
+      // eventValue,
+      nonInteraction: true,
+    })
+})
 
-// addEventListener('beforeinstallprompt', event => {
-//   event.preventDefault()
-//   deferredPrompt = event
-//   installBtn.removeAttribute('hidden')
-//   ga('send', 'install', 'prompt')
-// })
-
-// installBtn.addEventListener('click', async () => {
-//   installBtn.toggleAttribute('hidden')
-//   if (deferredPrompt)
-//     deferredPrompt.prompt()
-//   // Wait for the user to respond to the prompt
-//   const { outcome } = await deferredPrompt.userChoice;
-//   // Optionally, send analytics event with outcome of user choice
-//   console.log(`User response to the install prompt: ${outcome}`)
-//   deferredPrompt = undefined;
-// });
-
-// addEventListener('appinstalled', () => {
-//   // Clear the deferredPrompt so it can be garbage collected
-//   deferredPrompt = undefined
-//   // Optionally, send analytics event to indicate successful install
-//   console.log('PWA was installed')
-// })
-
-// Google Analytics
-declare global {
-  interface Window {
-    dataLayer: unknown[]
-    gtag(...args: any): void
+installBtn.addEventListener('click', async () => {
+  let outcome = 'none'
+  installBtn.toggleAttribute('hidden')
+  if (deferredPrompt) {
+    deferredPrompt.prompt()
+    outcome = await deferredPrompt.userChoice
   }
-}
+  if ('ga' in window)
+    ga('send', 'event', {
+      eventCategory: 'install',
+      eventAction: 'button',
+      eventLabel: outcome,
+      // eventValue,
+    })
+  deferredPrompt = undefined;
+});
+
+addEventListener('appinstalled', () => {
+  deferredPrompt = undefined
+  if ('ga' in window)
+    ga('send', 'event', {
+      eventCategory: 'install',
+      eventAction: 'complete',
+      // eventLabel,
+      // eventValue,
+    })
+})
 
 // Event logging
-if ('ga' in window) {
-  // window.dataLayer = window.dataLayer || []
-  // window.dataLayer.push('js', new Date)
-  // window.dataLayer.push('config', 'UA-172429940-2')
-  
+if ('ga' in window)
   // @ts-ignore Event listerner types are garbage
   addEventListener('p2p-error', ({ error }: ErrorEvent) =>
     ga('send', 'event', {
@@ -159,7 +167,6 @@ if ('ga' in window) {
       // eventValue,
       nonInteraction: true,
     }))
-}
 
 // @ts-ignore Error logging - Event listerner types are garbage
 addEventListener('p2p-error', ({ error }: ErrorEvent) => console.error('P2P connection failed', error))
