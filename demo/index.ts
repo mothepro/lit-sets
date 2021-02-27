@@ -9,9 +9,8 @@ import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
-navigator?.serviceWorker.register('./sw.' + 'js') // for dev
-
 const // Elements in index.html
+  serviceWorker = './sw.' + 'js', // for dev
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
@@ -19,6 +18,8 @@ const // Elements in index.html
   helpDialogElement = document.getElementById('help')! as Dialog,
   // installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
+
+navigator?.serviceWorker.register(serviceWorker)
 
 // first-visit attribute
 if (localStorage.length)
@@ -110,7 +111,6 @@ addEventListener('keypress', (event: KeyboardEvent) => {
 // Go back offline
 // document.querySelector('h1.title')?.addEventListener('click', () => litP2pElement.setAttribute('state', 'reset'))
 
-addEventListener('beforeinstallprompt', event => console.log('install??', event)) // for testing
 // addEventListener('beforeinstallprompt', event => {
 //   event.preventDefault()
 //   deferredPrompt = event

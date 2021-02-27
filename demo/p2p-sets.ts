@@ -184,19 +184,22 @@ export default class extends LitElement {
         p2p.peers.length == 1 ? undefined : linear(this.banCostIncrement, this.banCostInitial),
         p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
-    // Makes all possible (81) cards
-    // For singleplayer, easy mode remove opacity from the cards
-    const deck = [...Array(Details.COMBINATIONS)].map((_, i) =>
-      Card.make(this.easyMode && p2p.peers.length == 1
-        ? i % Details.SIZE ** 3
-        : i))
+    const // Number of cards to make
+      count = this.easyMode && p2p.peers.length == 1
+      // Easy mode - remove opacity
+      // This is SAFE because opacity is the last feature that's incremented (most signifigant bit/feature)
+      ? (Details.COUNT - 1) ** Details.SIZE
+      // Normal mode - all cards
+      : Details.COMBINATIONS,
+    // Makes all possible cards
+    deck = [...Array(count)].map((_, i) => Card.make(i))
     
     // Shuffle deck using shared RNG
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.abs(p2p.random(true)) % i;
       [deck[i], deck[j]] = [deck[j], deck[i]]
     }
-    
+
     // Make the game :)
     this.engine = new Game(players, deck)
 
