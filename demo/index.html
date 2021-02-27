@@ -23,7 +23,7 @@
   <!-- Production -->
   <script prod-only type=prod-only-module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type=prod-only-module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.10/dist/esm/demo/index.js"></script>
+  <script prod-only type=prod-only-module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.11/dist/esm/demo/index.js"></script>
   <script prod-only type=prod-only-application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
   <!-- Development -->
@@ -32,7 +32,7 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit hidden-timer-interval="3000">
+<body first-visit>
   <!-- Why is p2p so unreliable :'( `retries="-1"` -->
   <lit-p2p
     fallback
@@ -42,7 +42,7 @@
     version="0.3.2"
     retries="-1"
     timeout="25000"
-    lobby="lit-sets@0.0.10"
+    lobby="lit-sets@0.0.11"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -162,11 +162,11 @@
       score-gain-initial="100"
     >
       <div slot="no-singleplayer-score" class="first-visit easy-mode">
-        Choose 3 cards that all have the same, or all different
+        Choose 3 cards that either have all the same, or all different
         <span>
-          <strong hidden-timer="0">color</strong>
-          <strong hidden-timer="1" transparent>shape</strong>
-          <strong hidden-timer="2" transparent>count</strong>
+          <strong>color</strong>
+          <strong>shape</strong>
+          <strong>quantity</strong>
         </span>
         <br>
         <mwc-list noninteractive>
@@ -279,7 +279,7 @@
       <p>The goal is to take cards on the screen in groups of 3, known as sets.</p>
 
       <p>
-        The deck contains 81 cards each one with 4 unique features. These are the color, shape, opacity, and count.
+        The deck contains 81 cards each one with 4 unique features. These are the color, shape, opacity, and quantity.
         Here you can see some cards and their features.
       </p>
       
@@ -296,7 +296,7 @@
             <th class="value">Value</th>
           </tr>
           <tr>
-            <td class="key">Count</td>
+            <td class="key">Quantity</td>
             <td class="value">1</td>
           </tr>
           <tr>
@@ -325,7 +325,7 @@
             <th class="value">Value</th>
           </tr>
           <tr>
-            <td class="key">Count</td>
+            <td class="key">Quantity</td>
             <td class="value">2</td>
           </tr>
           <tr>
@@ -354,7 +354,7 @@
             <th class="value">Value</th>
           </tr>
           <tr>
-            <td class="key">Count</td>
+            <td class="key">Quantity</td>
             <td class="value">3</td>
           </tr>
           <tr>
@@ -380,7 +380,7 @@
     
       <p>
         In the example below, the three cards are identical in opacity, <i>solid</i>, and color, <i>blue</i>, while
-        being different in count and shape.
+        being different in quantity and shape.
       </p>
 
       <div class="set">

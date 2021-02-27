@@ -356,19 +356,35 @@ mwc-dialog .set {
   padding: 1.5em;
 }
 /* Mini tutorial */
+[slot="no-singleplayer-score"] mwc-list {
+  display: inline-block;
+}
 [slot="no-singleplayer-score"] > span {
   margin-inline-start: 0.5ch;
 }
-[slot="no-singleplayer-score"] strong[transparent] {
-  opacity: 0;
-}
-[slot="no-singleplayer-score"] strong {
+[slot="no-singleplayer-score"] > span strong {
   position: absolute;
-  transition: opacity .5s ease-in;
-  opacity: 1;
+  animation: slidein 12s cubic-bezier(0.25, 1, 0.25, 1) infinite both;
 }
-[slot="no-singleplayer-score"] mwc-list {
-  display: inline-block;
+[slot="no-singleplayer-score"] > span strong:nth-child(2) {
+  animation-delay: 4s;
+}
+[slot="no-singleplayer-score"] > span strong:nth-child(3) {
+  animation-delay: 8s;
+}
+@keyframes slidein {
+  0% {
+    opacity: 0;
+    margin-top: -1em;
+  }
+  5%, 28% {
+    opacity: 1;
+    margin-top: 0;
+  }
+  33%, 100% {
+    opacity: 0;
+    margin-top: 1em;
+  }
 }
 
 /*** Helpers ***/
