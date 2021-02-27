@@ -30,7 +30,7 @@ const compliments = [
 ]
 
 /** Generator that returns linear values given `y = mx + b` */
-function* linear(m: number, b: number): Generator<number, never, any> {
+function* linear(m: number, b: number): Generator<number, never, unknown> {
   yield b
   while (true)
     yield b += m
@@ -316,8 +316,10 @@ export default class extends LitElement {
     ? html`
       <lit-sets
         part="sets"
+        exportparts="helper-text , solution-text"
         ?hint-allowed=${this.mainPlayer.hintCards.length < 3}
         ?take-allowed=${!this.mainPlayer.isBanned}
+        ?helper-text=${this.easyMode && p2p.peers.length == 1}
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}

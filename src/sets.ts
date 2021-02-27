@@ -37,6 +37,10 @@ export default class extends LitElement {
   @property({ type: Boolean, attribute: 'take-allowed' })
   takeAllowed = false
 
+  /** Sentence to inlcude to simplify (excludes opacity) */
+  @property({ type: Boolean, attribute: 'helper-text' })
+  helperText = false
+
   /** Cards in the market */
   @property({ type: Array, hasChanged: hasArrayChanged })
   cards: Card[] = []
@@ -167,6 +171,20 @@ export default class extends LitElement {
         @click=${() => !remove && this.toggleCard(index)}
       ></sets-card>`)}
     </div>
+    ${this.helperText && this.selected.length == 2 ? html`
+      <span part="helper-text">
+        The selected cards have
+        ${this.cards[this.selected[0]].color == this.cards[this.selected[1]].color ? 'the same color' : 'different colors'},
+        ${this.cards[this.selected[0]].shape == this.cards[this.selected[1]].shape ? 'the same shape' : 'different shapes'}, and
+        ${this.cards[this.selected[0]].quantity == this.cards[this.selected[1]].quantity ? 'the same quantity' : 'different quantities'}.
+      </span>
+      <span part="solution-text">
+        To complete the set, the next card must also be
+        ${this.cards[this.selected[0]].color == this.cards[this.selected[1]].color ? 'the same color' : 'a different color'},
+        ${this.cards[this.selected[0]].shape == this.cards[this.selected[1]].shape ? 'the same shape' : 'a different shape'}, and
+        ${this.cards[this.selected[0]].quantity == this.cards[this.selected[1]].quantity ? 'the same quantity' : 'a different quantity'}
+        from the selected cards.
+      </span>` : ''}
     <slot name="take" @click=${this.takeSet}></slot>
     <slot name="hint" @click=${this.takeHint}></slot>
     <slot name="rearrange" @click=${this.rearrange}></slot>`

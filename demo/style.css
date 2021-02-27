@@ -240,6 +240,10 @@ mwc-button:not([raised]), /* Weird */
   --mdc-theme-primary: var(--mdc-theme-on-primary);
   --mdc-typography-button-text-transform: none;
 }
+::part(helper-text), ::part(solution-text) {
+  margin-top: 2em;
+  display: block;
+}
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
 }
