@@ -52,6 +52,9 @@ export default class extends LitElement {
     animation-duration: var(--leaderboard-diff-duration, 3s);
     animation-timing-function: linear;
     animation-fill-mode: forwards;
+
+    /* Center text with sign... usually */
+    margin-inline-start: -.5ch;
   }
   [part~="diff-1"] {
     animation-name: var(--leaderboard-diff-positive-animation, positive);
