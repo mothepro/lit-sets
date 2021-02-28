@@ -25,10 +25,6 @@
 + Animations
   + fix card animation order
   + Jiggle animation when taking bad set
-+ Add tracking for metrics
-  + P2P success / failure rate
-  + Name changes
-  + Groups made
 + *No release needed*
   + nicer shapes
   + better color scheme

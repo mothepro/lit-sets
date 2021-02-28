@@ -1,5 +1,6 @@
 import type { Dialog } from '@material/mwc-dialog'
 import type { IconButton } from '@material/mwc-icon-button'
+import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
 import type LitSetsGame from '../src/sets.js'
@@ -8,12 +9,6 @@ import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>
-  userChoice: Promise<'accepted' | 'dismissed'>
-  platforms: string[]
-}
 
 const // Elements in index.html
   serviceWorker = './sw.' + 'js', // for dev
@@ -74,7 +69,9 @@ if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('fir
 // Key shortcuts
 addEventListener('keypress', (event: KeyboardEvent) => {
   // Get at runtime since it may not always exist
-  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
+  let setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
+  if (!setsGameElement?.offsetParent) // Remove if it's not currently visible
+    setsGameElement = null
   switch (event.key) {
     case '?': // Show help
       helpDialogElement.toggleAttribute('open')
@@ -102,62 +99,81 @@ addEventListener('keypress', (event: KeyboardEvent) => {
   }
 })
 
-// Initialize `deferredPrompt` for use later to show browser install prompt.
+  /////////////
+ // Logging //\
+///////////// \\
+// TODO add better support for interactive vs non-interactive
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
+  userChoice: Promise<'accepted' | 'dismissed'>
+  platforms: string[]
+}
+
+/** A user cause "interactive", event to save */
+function log(category: string, action: string, label?: string, value?: number, interaction = true) {
+  if ('ga' in window) // ga?.(...) should work!?
+    ga(`${ga?.getAll()[0]?.get('name')}.send`, 'event', {
+      eventCategory: category,
+      eventAction: action,
+      eventLabel: label,
+      eventValue: value,
+      nonInteraction: !interaction,
+    })
+  else
+    console.log(new Date, arguments)
+}
+
+function logClick(action: string, label: string, value?: number) {
+  log('click', action, label, value, true)
+}
+
+// PWA - Initialize `deferredPrompt` for use later to show browser install prompt.
 let deferredPrompt: BeforeInstallPromptEvent | void
 
+addEventListener('appinstalled', () => deferredPrompt = log('install', 'complete'))
 addEventListener('beforeinstallprompt', event => {
-  // event.preventDefault() // should do this?
   deferredPrompt = event as BeforeInstallPromptEvent
   installBtn.removeAttribute('hidden')
-  if ('ga' in window)
-    ga('send', 'event', {
-      eventCategory: 'install',
-      eventAction: 'prompt',
-      // eventLabel,
-      // eventValue,
-      nonInteraction: true,
-    })
+  log('install', 'prompt')
 })
-
 installBtn.addEventListener('click', async () => {
-  let outcome = 'none'
-  installBtn.toggleAttribute('hidden')
+  installBtn.toggleAttribute('hidden', true)
   if (deferredPrompt) {
     deferredPrompt.prompt()
-    outcome = await deferredPrompt.userChoice
+    deferredPrompt = logClick('install', await deferredPrompt.userChoice)
   }
-  if ('ga' in window)
-    ga('send', 'event', {
-      eventCategory: 'install',
-      eventAction: 'button',
-      eventLabel: outcome,
-      // eventValue,
-    })
-  deferredPrompt = undefined;
-});
-
-addEventListener('appinstalled', () => {
-  deferredPrompt = undefined
-  if ('ga' in window)
-    ga('send', 'event', {
-      eventCategory: 'install',
-      eventAction: 'complete',
-      // eventLabel,
-      // eventValue,
-    })
 })
 
-// Event logging
-if ('ga' in window)
-  // @ts-ignore Event listerner types are garbage
-  addEventListener('p2p-error', ({ error }: ErrorEvent) =>
-    ga('send', 'event', {
-      eventCategory: 'error',
-      eventAction: error.message,
-      eventLabel: error.stack,
-      // eventValue,
-      nonInteraction: true,
-    }))
+let times = 0
+//@ts-ignore General Events
+document.querySelector('theme-toggle')
+  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => logClick('theme-change', detail, times++))
 
-// @ts-ignore Error logging - Event listerner types are garbage
-addEventListener('p2p-error', ({ error }: ErrorEvent) => console.error('P2P connection failed', error))
+document.querySelectorAll('mwc-dialog').forEach(dialog =>
+  dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))
+
+// @ts-ignore P2P Events
+addEventListener('p2p-error', ({ error }: ErrorEvent) => log('error', error.message, error.stack))
+addEventListener('p2p-update', () => log('p2p', 'update', 'group', p2p.peers.length))
+
+new MutationObserver(records => {
+  for (const record of records)
+    log('p2p', record.attributeName!, litP2pElement.getAttribute(record.attributeName!) ?? '')
+    // `${record.oldValue} -> ${litP2pElement.getAttribute(record.attributeName!)}`
+}).observe(litP2pElement, {
+  attributes: true,
+  attributeFilter: ['state', 'name']
+})
+
+// Game Events
+p2pDemoElement.addEventListener('start', async () => {
+  log('game', 'start')
+  // TODO don't bind directly to <lit-sets>
+  await new Promise(r => setTimeout(r, 500))
+  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
+  setsGameElement?.addEventListener('hint', () => log('game', 'hint'))
+  setsGameElement?.addEventListener('selected', () => log('game', 'selected'))
+  setsGameElement?.addEventListener('rearrange', () => log('game', 'rearrange'))
+})
+p2pDemoElement.addEventListener('finish', ({ detail }) => log('game', 'finish', p2pDemoElement.winnerText, detail))
+p2pDemoElement.addEventListener('thetake', ({ detail }) => log('game', 'take', 'successful?', +detail))

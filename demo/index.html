@@ -26,6 +26,12 @@
   <script prod-only type=prod-only-module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.11/dist/esm/demo/index.js"></script>
   <script prod-only type=prod-only-application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || []
+    function gtag() { dataLayer.push(arguments) }
+    gtag('js', new Date)
+    gtag('config', 'UA-172429940-2')
+  </script>
   <!-- Development -->
   <script dev-only type=application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
   <script dev-only type=module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
@@ -469,13 +475,5 @@
       <mwc-icon-button slot="primaryAction" dialogAction="close" icon="done"></mwc-icon-button>
     </mwc-dialog>
   </lit-p2p>
-  
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script>
-    window.dataLayer = window.dataLayer || []
-    function gtag() { dataLayer.push(arguments) }
-    gtag('js', new Date)
-    gtag('config', 'UA-172429940-2')
-  </script>
 </body>
 </html>
