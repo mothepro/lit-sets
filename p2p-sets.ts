@@ -15,18 +15,24 @@ const enum Status {
 }
 
 export type DifficultyChangeEvent = CustomEvent<void>
+export type StartEvent = CustomEvent<void>
+export type FinishEvent = CustomEvent<number>
+export type TheTakeEvent = CustomEvent<boolean>
 
 declare global {
   interface HTMLElementEventMap {
+    'game-start': StartEvent
+    'game-finish': FinishEvent
     difficulty: DifficultyChangeEvent
+    thetake: TheTakeEvent
   }
 }
 
 const compliments = [
-    'Good work',
-    'Wow',
-    'Nice Job',
-    'Fantastic',
+  'Good work',
+  'Wow',
+  'Nice Job',
+  'Fantastic',
 ]
 
 /** Generator that returns linear values given `y = mx + b` */
@@ -253,13 +259,15 @@ export default class extends LitElement {
 
     // Shake when we are banned
     this.mainPlayer.ban.on(() => this.takeFailed = true)
-      
+
+    this.dispatchEvent(new CustomEvent('start'))
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     
     // push the final scores and drop confetti
     this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))
-    this.confetti = 100
+    this.dispatchEvent(new CustomEvent('finish', { detail: this.runningScores[0].length }))
+    this.confetti = Math.trunc(Math.max(200, Math.min(35, document.body.clientWidth / 10))) // 35 <= width / 10 <= 200
     await milliseconds(10 * 1000)
     this.confetti = 0
   }
@@ -291,9 +299,11 @@ export default class extends LitElement {
               const indexs = new Set(new Uint8Array(data))
               // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
               // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
-              this.engine.takeSet(
-                this.engine.players[index],
-                this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
+              this.dispatchEvent(new CustomEvent('thetake', {
+                detail: this.engine.takeSet(
+                  this.engine.players[index],
+                  this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
+              }))
               break
 
             default:
@@ -320,7 +330,10 @@ export default class extends LitElement {
     }
   }
 
-  private get winnerText() { // this is a mess lol
+  get winnerText() { // this is a mess lol
+    if (this.engine.filled.isAlive)
+      return ''
+    
     let ret = ''
     const winners: string[] = []
 
