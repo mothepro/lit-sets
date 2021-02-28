@@ -26,6 +26,8 @@
   <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.12/dist/esm/demo/index.js"></script>
   <script prod-only type=application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
+  <script prod-only type=application/javascript async
+    src="//platform-api.sharethis.com/js/sharethis.js#property=603c0541ae08f90011442468&product=inline-share-buttons"></script>
   <script>
     window.dataLayer = window.dataLayer || []
     function gtag() { dataLayer.push(arguments) }
@@ -131,6 +133,12 @@
         icon="feedback"
         label="Send feedback"
       ></mwc-icon-button>
+      <mwc-icon-button
+        onclick="document.getElementById('share').toggleAttribute('hidden')"
+        icon="share"
+        label="Share Mo's Sets"
+        title="Share Mo's Sets"
+      ></mwc-icon-button>
       <theme-toggle persistent>
         <mwc-icon-button
           slot="dark"
@@ -145,6 +153,7 @@
           title="Switch to dark theme"
         ></mwc-icon-button>
       </theme-toggle>
+      <div id="share" hidden><div class="sharethis-inline-share-buttons"></div></div>
     </header>
 
     <mwc-textfield
@@ -228,6 +237,8 @@
         </mwc-button>
       </a>
       &amp; improve it yourself!
+      <br><br>
+      <div class="sharethis-inline-share-buttons"></div>
     </mwc-dialog>
 
     <mwc-dialog id="help" heading="Welcome to Mo's Sets">

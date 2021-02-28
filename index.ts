@@ -89,7 +89,6 @@ addEventListener('keypress', (event: KeyboardEvent) => {
       break
     
     case 'h': // Take Hint
-      // TODO this will also take a hint even if you're typing your name!!
       setsGameElement?.takeHint()
       break
     
