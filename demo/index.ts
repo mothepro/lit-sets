@@ -166,7 +166,7 @@ new MutationObserver(records => {
 })
 
 // Game Events
-p2pDemoElement.addEventListener('start', async () => {
+p2pDemoElement.addEventListener('game-start', async () => {
   log('game', 'start')
   // TODO don't bind directly to <lit-sets>
   await new Promise(r => setTimeout(r, 500))
@@ -175,5 +175,5 @@ p2pDemoElement.addEventListener('start', async () => {
   setsGameElement?.addEventListener('selected', () => log('game', 'selected'))
   setsGameElement?.addEventListener('rearrange', () => log('game', 'rearrange'))
 })
-p2pDemoElement.addEventListener('finish', ({ detail }) => log('game', 'finish', p2pDemoElement.winnerText, detail))
+p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', p2pDemoElement.winnerText, detail))
 p2pDemoElement.addEventListener('thetake', ({ detail }) => log('game', 'take', 'successful?', +detail))
