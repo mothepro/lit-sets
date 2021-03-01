@@ -11,7 +11,6 @@ import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
 const // Elements in index.html
-  serviceWorker = './sw.' + 'js', // for dev
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
@@ -19,7 +18,7 @@ const // Elements in index.html
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
-navigator?.serviceWorker.register(serviceWorker)
+navigator?.serviceWorker.register('sw.js')
 
 // first-visit attribute
 if (localStorage.length)
@@ -146,14 +145,14 @@ installBtn.addEventListener('click', async () => {
 let times = 0
 //@ts-ignore General Events
 document.querySelector('theme-toggle')
-  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => logClick('theme-change', detail, times++))
+  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => logClick(`theme-${times ? 'start' : 'change'}`, detail, times++))
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))
 
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) => log('error', error.message, error.stack))
-addEventListener('p2p-update', () => log('p2p', 'update', 'group', p2p.peers.length))
+addEventListener('p2p-update', () => log('p2p', 'update', `group with ${p2p.peers.length}`))
 
 new MutationObserver(records => {
   for (const record of records)
@@ -174,5 +173,7 @@ p2pDemoElement.addEventListener('game-start', async () => {
   setsGameElement?.addEventListener('selected', () => log('game', 'selected'))
   setsGameElement?.addEventListener('rearrange', () => log('game', 'rearrange'))
 })
-p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', p2pDemoElement.winnerText, detail))
-p2pDemoElement.addEventListener('thetake', ({ detail }) => log('game', 'take', 'successful?', +detail))
+p2pDemoElement.addEventListener('game-finish', ({ detail }) =>
+  log('game', 'finish', `${p2pDemoElement.winnerText}
+    (${detail} seconds) (easy mode? ${p2pDemoElement.hasAttribute('easy-mode')})`))
+p2pDemoElement.addEventListener('thetake', ({ detail }) => log('game', 'take', detail.toString()))
