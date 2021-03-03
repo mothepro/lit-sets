@@ -28,5 +28,6 @@
 + *No release needed*
   + nicer shapes
   + better color scheme
-  + add key shortcuts and change log to their own dialogs
   + hamburger menu?
+    + add key shortcuts and change log to their own dialogs
+  + Fit feedback iframe for all sizes

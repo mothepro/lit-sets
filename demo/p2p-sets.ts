@@ -15,17 +15,23 @@ const enum Status {
   REMATCH,
 }
 
-export type DifficultyChangeEvent = CustomEvent<void>
 export type StartEvent = CustomEvent<void>
 export type FinishEvent = CustomEvent<number>
-export type TheTakeEvent = CustomEvent<boolean>
+export type DifficultyChangeEvent = CustomEvent<void>
+export type GameTakeEvent = CustomEvent<boolean>
+export type RearrangeEvent = CustomEvent<void>
+export type RestartEvent = CustomEvent<void>
+export type HintEvent = CustomEvent<boolean>
 
 declare global {
   interface HTMLElementEventMap {
     'game-start': StartEvent
     'game-finish': FinishEvent
-    difficulty: DifficultyChangeEvent
-    thetake: TheTakeEvent
+    'game-restart': RestartEvent
+    'game-difficulty': DifficultyChangeEvent
+    'game-rearrange': RearrangeEvent
+    'game-take': GameTakeEvent
+    'game-hint': HintEvent
   }
 }
 
@@ -92,6 +98,9 @@ export default class extends LitElement {
   @internalProperty()
   protected wantRematch: number[] = []
 
+  @internalProperty()
+  private selectedCount = 0
+
   /** The sets game engine */
   private engine!: Game
 
@@ -131,8 +140,7 @@ export default class extends LitElement {
       /* perspective: 1000px; */
     }
 
-    mwc-fab[disabled], /* Since mwc-fab[disabled] is not supported... SMH */
-    lit-sets:not([can-take]) [slot="take"] {/* Easiest way to verify set is takable? */
+    mwc-fab[disabled] { /* Since mwc-fab[disabled] is not supported... SMH */
       pointer-events: none;
       cursor: default !important;
       --mdc-theme-on-secondary: var(--mdc-button-disabled-ink-color, rgba(0, 0, 0, 0.38));
@@ -201,7 +209,7 @@ export default class extends LitElement {
     
     // Not first time
     if (changed.has('easyMode') && typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1) {
-      this.dispatchEvent(new CustomEvent('difficulty'))
+      this.dispatchEvent(new CustomEvent('game-difficulty'))
       this.restartGame()
     }
   }
@@ -282,25 +290,29 @@ export default class extends LitElement {
             case 1: // Status Bit
               switch (new DataView(data).getInt8(0)) {
                 case Status.HINT:
-                  this.engine.takeHint(this.engine.players[index])
+                  this.dispatchEvent(new CustomEvent('game-hint', {
+                    detail: this.engine.takeHint(this.engine.players[index])
+                  }))
                   break
                 
                 case Status.REMATCH:
                   this.wantRematch = [...new Set(this.wantRematch).add(index)]
                   if (this.wantRematch.length == p2p.peers.length)
                     this.restartGame()
+                  this.dispatchEvent(new CustomEvent('game-restart'))
                   break
                 
                 default:
-                  throw Error(`Unexpected data from ${name}: ${data}`)
+                  throw Error(`Unexpected status bit from ${name}: ${data}`)
               }
               break
 
             case 3: // Take
+              this.selectedCount = 0
               const indexs = new Set(new Uint8Array(data))
               // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
               // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
-              this.dispatchEvent(new CustomEvent('thetake', {
+              this.dispatchEvent(new CustomEvent('game-take', {
                 detail: this.engine.takeSet(
                   this.engine.players[index],
                   this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
@@ -366,7 +378,10 @@ export default class extends LitElement {
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @selected=${() => this.takeFailed = false}
+        @selected=${() => {
+          this.selectedCount = (this.renderRoot.firstElementChild as LitSets).selected.length
+          this.takeFailed = false
+        }}
       ></lit-sets>
       <lit-clock
         part="clock"
@@ -386,7 +401,6 @@ export default class extends LitElement {
       ></mwc-fab>
       <mwc-fab
         part="bottom-btn hint"
-        slot="hint"
         mini
         ?disabled=${this.mainPlayer.hintCards.length >= 3}
         icon="lightbulb"
@@ -396,12 +410,14 @@ export default class extends LitElement {
       ></mwc-fab>
       <mwc-fab
         part="bottom-btn rearrange"
-        slot="rearrange"
         mini
         icon="shuffle"
         label="Rearrange cards"
         title="Rearrange cards on screen"
-        @click=${() => (this.renderRoot.querySelector('lit-sets') as LitSets | null)?.rearrange()}
+        @click=${() => {
+          (this.renderRoot.firstElementChild as LitSets | null)?.rearrange()
+          this.dispatchEvent(new CustomEvent('game-rearrange'))
+        }}
       ></mwc-fab>
       ${p2p.peers.length == 1 ? html`
         <mwc-fab
@@ -415,13 +431,12 @@ export default class extends LitElement {
         ></mwc-fab>` : ''}
       <mwc-fab
         part="bottom-btn take"
-        slot="take"
         extended
-        ?disabled=${this.mainPlayer.isBanned}
+        ?disabled=${this.mainPlayer.isBanned || this.selectedCount != 3}
         ?shake=${this.takeFailed}
         icon="done_outline"
         label="Take Set"
-        @click=${() => (this.renderRoot.querySelector('lit-sets') as LitSets | null)?.takeSet()}
+        @click=${() => (this.renderRoot.firstElementChild as LitSets | null)?.takeSet()}
       ></mwc-fab>
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
         <sets-leaderboard

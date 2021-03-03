@@ -8,13 +8,11 @@ import './card.js'         // <sets-card>
 import './leaderboard.js'  // <sets-leaderboard>
 
 export type TakeEvent = CustomEvent<[number, number, number]>
-export type RearrangeEvent = CustomEvent<void>
 export type IndexEvent = CustomEvent<{ index: number, selected: boolean }>
 
 declare global {
   interface HTMLElementEventMap {
     take: TakeEvent
-    rearrange: RearrangeEvent
     selected: IndexEvent
   }
 }
@@ -28,10 +26,6 @@ export default class extends LitElement {
   /** Whether enough cards are selected to take */
   @property({ type: Boolean, attribute: 'can-take', reflect: true })
   protected canTake = false
-
-  /** Whether can request a hint */
-  @property({ type: Boolean, attribute: 'hint-allowed' })
-  hintAllowed = false
 
   /** Whether can take a set */
   @property({ type: Boolean, attribute: 'take-allowed' })
@@ -103,7 +97,6 @@ export default class extends LitElement {
       delay: index, // Randomly spots
       // delay: this.cardOrder[index], // Random duration
     }))
-    this.dispatchEvent(new CustomEvent('rearrange'))
   }
 
   protected update(changed: PropertyValues) {
