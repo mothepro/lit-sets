@@ -110,7 +110,7 @@ interface BeforeInstallPromptEvent extends Event {
 /** A user cause "interactive", event to save */
 function log(category: string, action: string, label?: string, value?: number, interaction = true) {
   if ('ga' in window) // ga?.(...) should work!?
-    ga(`${ga?.getAll()[0]?.get('name')}.send`, 'event', {
+    ga.getAll()[0]?.send('event', {
       eventCategory: category,
       eventAction: action,
       eventLabel: label,
@@ -119,10 +119,6 @@ function log(category: string, action: string, label?: string, value?: number, i
     })
   else
     console.log(new Date, arguments)
-}
-
-function logClick(action: string, label: string, value?: number) {
-  log('click', action, label, value, true)
 }
 
 // PWA - Initialize `deferredPrompt` for use later to show browser install prompt.
@@ -138,14 +134,14 @@ installBtn.addEventListener('click', async () => {
   installBtn.toggleAttribute('hidden', true)
   if (deferredPrompt) {
     deferredPrompt.prompt()
-    deferredPrompt = logClick('install', await deferredPrompt.userChoice)
+    deferredPrompt = log('install', await deferredPrompt.userChoice)
   }
 })
 
 let times = 0
 //@ts-ignore General Events
 document.querySelector('theme-toggle')
-  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => logClick(`theme-${times ? 'start' : 'change'}`, detail, times++))
+  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => log(`theme-${times ? 'change' : 'start'}`, detail, `Times clicked: ${times++}`))
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))

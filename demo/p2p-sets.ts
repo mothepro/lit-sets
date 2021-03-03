@@ -260,13 +260,13 @@ export default class extends LitElement {
     // Shake when we are banned
     this.mainPlayer.ban.on(() => this.takeFailed = true)
 
-    this.dispatchEvent(new CustomEvent('start'))
+    this.dispatchEvent(new CustomEvent('game-start'))
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     
     // push the final scores and drop confetti
     this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))
-    this.dispatchEvent(new CustomEvent('finish', { detail: this.runningScores[0].length }))
+    this.dispatchEvent(new CustomEvent('game-finish', { detail: this.runningScores[0].length }))
     this.confetti = Math.trunc(Math.max(200, Math.min(35, document.body.clientWidth / 10))) // 35 <= width / 10 <= 200
     await milliseconds(10 * 1000)
     this.confetti = 0
@@ -424,7 +424,7 @@ export default class extends LitElement {
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
         <sets-leaderboard
           part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
-          .scores=${this.engine.players.map(({score}) => score)}
+          .scores=${this.engine.players.map(({ score }) => score)}
           .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
           .names=${p2p.peers?.map(peer => peer.name) ?? []}
         ></sets-leaderboard>`
