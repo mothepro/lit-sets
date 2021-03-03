@@ -8,14 +8,12 @@ import './card.js'         // <sets-card>
 import './leaderboard.js'  // <sets-leaderboard>
 
 export type TakeEvent = CustomEvent<[number, number, number]>
-export type HintEvent = CustomEvent<void>
 export type RearrangeEvent = CustomEvent<void>
-export type IndexEvent = CustomEvent<{index: number, selected: boolean}>
+export type IndexEvent = CustomEvent<{ index: number, selected: boolean }>
 
 declare global {
   interface HTMLElementEventMap {
     take: TakeEvent
-    hint: HintEvent
     rearrange: RearrangeEvent
     selected: IndexEvent
   }
@@ -83,10 +81,6 @@ export default class extends LitElement {
       this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
       this.selected = []
     }
-  }
-
-  takeHint() {
-    this.dispatchEvent(new CustomEvent('hint'))
   }
 
   async rearrange() {
@@ -187,8 +181,5 @@ export default class extends LitElement {
         ${this.cards[this.selected[0]].shape == this.cards[this.selected[1]].shape ? 'the same shape' : 'a different shape'}, and
         ${this.cards[this.selected[0]].quantity == this.cards[this.selected[1]].quantity ? 'the same quantity' : 'a different quantity'}
         from the selected cards.
-      </span>` : ''}
-    <slot name="take" @click=${this.takeSet}></slot>
-    <slot name="hint" @click=${this.takeHint}></slot>
-    <slot name="rearrange" @click=${this.rearrange}></slot>`
+      </span>` : ''}`
 }

@@ -1,6 +1,7 @@
+import type LitSets from '../index.js'
+import type { TakeEvent } from '../index.js'
 import { LitElement, customElement, html, css, internalProperty, PropertyValues, property } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
-import type { TakeEvent } from '../index.js'
 import { milliseconds } from '../src/helper.js'
 
 import 'lit-confetti'         // <lit-confetti>
@@ -365,36 +366,8 @@ export default class extends LitElement {
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @hint=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
         @selected=${() => this.takeFailed = false}
-      >
-        <mwc-fab
-          part="bottom-btn take"
-          slot="take"
-          extended
-          ?disabled=${this.mainPlayer.isBanned}
-          ?shake=${this.takeFailed}
-          icon="done_outline"
-          label="Take Set"
-        ></mwc-fab>
-        <mwc-fab
-          part="bottom-btn hint"
-          slot="hint"
-          mini
-          ?disabled=${this.mainPlayer.hintCards.length >= 3}
-          icon="lightbulb"
-          label="Get Hint"
-          title="Get a hint"
-        ></mwc-fab>
-        <mwc-fab
-          part="bottom-btn rearrange"
-          slot="rearrange"
-          mini
-          icon="shuffle"
-          label="Rearrange cards"
-          title="Rearrange cards on screen"
-        ></mwc-fab>
-      </lit-sets>
+      ></lit-sets>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -411,6 +384,25 @@ export default class extends LitElement {
         title=${this.showClock ? 'Hide time' : 'Show time'}
         @click=${() => this.showClock = !this.showClock}
       ></mwc-fab>
+      <mwc-fab
+        part="bottom-btn hint"
+        slot="hint"
+        mini
+        ?disabled=${this.mainPlayer.hintCards.length >= 3}
+        icon="lightbulb"
+        label="Get Hint"
+        title="Get a hint"
+        @click=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
+      ></mwc-fab>
+      <mwc-fab
+        part="bottom-btn rearrange"
+        slot="rearrange"
+        mini
+        icon="shuffle"
+        label="Rearrange cards"
+        title="Rearrange cards on screen"
+        @click=${() => (this.renderRoot.querySelector('lit-sets') as LitSets | null)?.rearrange()}
+      ></mwc-fab>
       ${p2p.peers.length == 1 ? html`
         <mwc-fab
           part="bottom-btn difficulty"
@@ -421,6 +413,16 @@ export default class extends LitElement {
           title=${this.easyMode ? 'Switch to standard mode' : 'Switch to easy mode'}
           @click=${() => this.easyMode = !this.easyMode}
         ></mwc-fab>` : ''}
+      <mwc-fab
+        part="bottom-btn take"
+        slot="take"
+        extended
+        ?disabled=${this.mainPlayer.isBanned}
+        ?shake=${this.takeFailed}
+        icon="done_outline"
+        label="Take Set"
+        @click=${() => (this.renderRoot.querySelector('lit-sets') as LitSets | null)?.takeSet()}
+      ></mwc-fab>
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
         <sets-leaderboard
           part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
