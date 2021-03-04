@@ -283,7 +283,7 @@ export default class extends LitElement {
                   break
                 
                 default:
-                  throw Error(`Unexpected status bit from ${name}: 0x${view[0].toString(16).padStart(2, '0').toUpperCase()}`)
+                  throw Error(`Unexpected status bit: 0x${view[0].toString(16).padStart(2, '0').toUpperCase()}`)
               }
               break
 
@@ -302,7 +302,7 @@ export default class extends LitElement {
               break
 
             default:
-              throw Error(`${view.byteLength} unexpected bytes from ${name}: 0x${[...view]
+              throw Error(`${view.byteLength} unexpected bytes: 0x${[...view]
                 .map(byte => byte.toString(16).padStart(2, '0').toUpperCase()).join(' 0x')}`)
           }
         }

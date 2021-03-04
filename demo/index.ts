@@ -135,7 +135,7 @@ document.querySelectorAll('mwc-dialog').forEach(dialog =>
 
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) =>
-  log('error', `${p2pDemoElement.getAttribute('name')}> ${error.message}`, error.stack))
+  log('error', `me: "${p2pDemoElement.getAttribute('name')}" causer: "${error?.peer}" message: ${error.message} `, error.stack))
 addEventListener('p2p-update', () => log('p2p', 'update', `group with ${p2p.peers.length}`))
 
 // some are redundant
