@@ -1,4 +1,4 @@
-const version = '0.0.10';
+const version = '0.0.13';
 async function installer(event) {
     const cache = await caches.open(version), images = [
         'android-chrome-192x192.png',

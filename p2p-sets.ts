@@ -1,6 +1,7 @@
+import type LitSets from '../index.js'
+import type { TakeEvent } from '../index.js'
 import { LitElement, customElement, html, css, internalProperty, PropertyValues, property } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
-import type { TakeEvent } from '../index.js'
 import { milliseconds } from '../src/helper.js'
 
 import 'lit-confetti'         // <lit-confetti>
@@ -14,17 +15,23 @@ const enum Status {
   REMATCH,
 }
 
-export type DifficultyChangeEvent = CustomEvent<void>
 export type StartEvent = CustomEvent<void>
 export type FinishEvent = CustomEvent<number>
-export type TheTakeEvent = CustomEvent<boolean>
+export type DifficultyChangeEvent = CustomEvent<void>
+export type GameTakeEvent = CustomEvent<boolean>
+export type RearrangeEvent = CustomEvent<void>
+export type RestartEvent = CustomEvent<void>
+export type HintEvent = CustomEvent<boolean>
 
 declare global {
   interface HTMLElementEventMap {
     'game-start': StartEvent
     'game-finish': FinishEvent
-    difficulty: DifficultyChangeEvent
-    thetake: TheTakeEvent
+    'game-restart': RestartEvent
+    'game-difficulty': DifficultyChangeEvent
+    'game-rearrange': RearrangeEvent
+    'game-take': GameTakeEvent
+    'game-hint': HintEvent
   }
 }
 
@@ -42,6 +49,49 @@ function* linear(m: number, b: number): Generator<number, never, unknown> {
     yield b += m
 }
 
+/** Returns the `html` of the card which would be needed to complete the given set. */
+function getNeededCard(
+  { shape: shapeA, quantity: quantityA, color: colorA }: Card,
+  { shape: shapeB, quantity: quantityB, color: colorB }: Card) {
+  // Assume these will just be all the same as first card
+  let shape = shapeA,
+    quantity = quantityA,
+    color = colorA
+
+  // The shapes are actually different
+  if (shapeA != shapeB) {
+    const details = new Set([Details.Shape.CIRCLE, Details.Shape.SQUARE, Details.Shape.TRIANGLE])
+    details.delete(shapeA)
+    details.delete(shapeB)
+    shape = [...details][0]
+  }
+
+  // The quantities are actually different
+  if (quantityA != quantityB) {
+    const details = new Set([Details.Quantity.ONE, Details.Quantity.TWO, Details.Quantity.THREE])
+    details.delete(quantityA)
+    details.delete(quantityB)
+    quantity = [...details][0]
+  }
+
+  // The colors are actually different
+  if (colorA != colorB) {
+  const details = new Set([Details.Color.BLUE, Details.Color.GREEN, Details.Color.RED])
+    details.delete(colorA)
+    details.delete(colorB)
+    color = [...details][0]
+  }
+
+  return html`
+    <sets-card
+      part="solution-card"
+      opacity="0"
+      shape=${shape}
+      quantity=${quantity}
+      color=${color}
+    ></sets-card>`
+}
+  
 /**
  * Peer to Peer (and offline) version of the game of sets.
  * Should live inside a `<lit-p2p>`.
@@ -87,6 +137,9 @@ export default class extends LitElement {
   @internalProperty()
   protected takeFailed = false
 
+  @property({ type: Number, reflect: true, attribute: 'selected-count'})
+  private selectedCount = 0
+
   /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
   @internalProperty()
   protected wantRematch: number[] = []
@@ -106,32 +159,14 @@ export default class extends LitElement {
   /** The compliment to tell the user if they win */
   private compliment = ''
 
+  private cardsLeft = 0
+
   static readonly styles = [css`
-    /* https://css-tricks.com/snippets/css/shake-css-keyframe-animation/ */
-    @keyframes shake {
-      10%, 90% {
-        transform: var(--demo-shake-animation-transform-1, translate3d(-1px, 0, 0));
-      }
-      20%, 80% {
-        transform: var(--demo-shake-animation-transform-2, translate3d(2px, 0, 0));
-      }
-      30%, 50%, 70% {
-        transform: var(--demo-shake-animation-transform-3, translate3d(-4px, 0, 0));
-      }
-      40%, 60% {
-        transform: var(--demo-shake-animation-transform-4, translate3d(4px, 0, 0));
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to {   opacity: 1; }
     }
-
-    [shake] {
-      animation: var(--demo-shake-animation, shake .82s cubic-bezier(.36,.07,.19,.97) both);
-      /* transform: translate3d(0, 0, 0); */
-      /* backface-visibility: hidden; */
-      /* perspective: 1000px; */
-    }
-
-    mwc-fab[disabled], /* Since mwc-fab[disabled] is not supported... SMH */
-    lit-sets:not([can-take]) [slot="take"] {/* Easiest way to verify set is takable? */
+    mwc-fab[disabled] { /* Since mwc-fab[disabled] is not supported... SMH */
       pointer-events: none;
       cursor: default !important;
       --mdc-theme-on-secondary: var(--mdc-button-disabled-ink-color, rgba(0, 0, 0, 0.38));
@@ -200,7 +235,7 @@ export default class extends LitElement {
     
     // Not first time
     if (changed.has('easyMode') && typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1) {
-      this.dispatchEvent(new CustomEvent('difficulty'))
+      this.dispatchEvent(new CustomEvent('game-difficulty'))
       this.restartGame()
     }
   }
@@ -216,17 +251,18 @@ export default class extends LitElement {
         p2p.peers.length == 1 ? undefined : linear(this.banCostIncrement, this.banCostInitial),
         p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
-    const // Number of cards to make
-      count = this.easyMode && p2p.peers.length == 1
+    // Number of cards to make
+    this.cardsLeft = this.easyMode && p2p.peers.length == 1
       // Easy mode - remove opacity
       // This is SAFE because opacity is the last feature that's incremented (most signifigant bit/feature)
       ? (Details.COUNT - 1) ** Details.SIZE
       // Normal mode - all cards
-      : Details.COMBINATIONS,
-    // Makes all possible cards
-    deck = [...Array(count)].map((_, i) => Card.make(i))
+      : Details.COMBINATIONS
     
+    // Makes all possible cards
     // Shuffle deck using shared RNG
+    const deck = [...Array(this.cardsLeft)].map((_, i) => Card.make(i))
+    
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.abs(p2p.random(true)) % i;
       [deck[i], deck[j]] = [deck[j], deck[i]]
@@ -247,6 +283,7 @@ export default class extends LitElement {
     this.restartClock = true
     this.wantRematch = []
     this.confetti = 0
+    this.selectedCount = 0
     this.compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
@@ -260,13 +297,13 @@ export default class extends LitElement {
     // Shake when we are banned
     this.mainPlayer.ban.on(() => this.takeFailed = true)
 
-    this.dispatchEvent(new CustomEvent('start'))
+    this.dispatchEvent(new CustomEvent('game-start'))
     for await (const _ of this.engine.filled)
       this.requestUpdate()
     
     // push the final scores and drop confetti
     this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))
-    this.dispatchEvent(new CustomEvent('finish', { detail: this.runningScores[0].length }))
+    this.dispatchEvent(new CustomEvent('game-finish', { detail: this.runningScores[0].length }))
     this.confetti = Math.trunc(Math.max(200, Math.min(35, document.body.clientWidth / 10))) // 35 <= width / 10 <= 200
     await milliseconds(10 * 1000)
     this.confetti = 0
@@ -281,29 +318,35 @@ export default class extends LitElement {
             case 1: // Status Bit
               switch (new DataView(data).getInt8(0)) {
                 case Status.HINT:
-                  this.engine.takeHint(this.engine.players[index])
+                  this.dispatchEvent(new CustomEvent('game-hint', {
+                    detail: this.engine.takeHint(this.engine.players[index])
+                  }))
                   break
                 
                 case Status.REMATCH:
                   this.wantRematch = [...new Set(this.wantRematch).add(index)]
                   if (this.wantRematch.length == p2p.peers.length)
                     this.restartGame()
+                  this.dispatchEvent(new CustomEvent('game-restart'))
                   break
                 
                 default:
-                  throw Error(`Unexpected data from ${name}: ${data}`)
+                  throw Error(`Unexpected status bit from ${name}: ${data}`)
               }
               break
 
             case 3: // Take
-              const indexs = new Set(new Uint8Array(data))
+              this.selectedCount = 0
+              const indexs = new Set(new Uint8Array(data)),
               // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
               // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
-              this.dispatchEvent(new CustomEvent('thetake', {
-                detail: this.engine.takeSet(
-                  this.engine.players[index],
-                  this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
-              }))
+              detail = this.engine.takeSet(
+                this.engine.players[index],
+                this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
+              this.dispatchEvent(new CustomEvent('game-take', { detail }))
+
+              if (detail) // allows new cards to zoom in again
+                (this.renderRoot.firstElementChild as LitSets).previousSelection = undefined
               break
 
             default:
@@ -353,48 +396,36 @@ export default class extends LitElement {
     return ret.trim()
   }
 
+  // TODO cache this
+  getSelectedCard(index: number) {
+    const litSets = this.renderRoot.firstElementChild as LitSets
+    return litSets.cards[ litSets.selected[index] ]
+  }
+
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
     // In game
     ? html`
       <lit-sets
         part="sets"
-        exportparts="helper-text , solution-text"
-        ?hint-allowed=${this.mainPlayer.hintCards.length < 3}
-        ?take-allowed=${!this.mainPlayer.isBanned}
-        ?helper-text=${this.easyMode && p2p.peers.length == 1}
+        ?shake=${this.takeFailed}
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @hint=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
-        @selected=${() => this.takeFailed = false}
-      >
-        <mwc-fab
-          part="bottom-btn take"
-          slot="take"
-          extended
-          ?disabled=${this.mainPlayer.isBanned}
-          ?shake=${this.takeFailed}
-          icon="done_outline"
-          label="Take Set"
-        ></mwc-fab>
-        <mwc-fab
-          part="bottom-btn hint"
-          slot="hint"
-          mini
-          ?disabled=${this.mainPlayer.hintCards.length >= 3}
-          icon="lightbulb"
-          label="Get Hint"
-          title="Get a hint"
-        ></mwc-fab>
-        <mwc-fab
-          part="bottom-btn rearrange"
-          slot="rearrange"
-          mini
-          icon="shuffle"
-          label="Rearrange cards"
-          title="Rearrange cards on screen"
-        ></mwc-fab>
-      </lit-sets>
+        @selected=${() => {
+          this.selectedCount = (this.renderRoot.firstElementChild as LitSets).selected.length
+          this.takeFailed = false
+        }}></lit-sets>
+      ${this.easyMode && p2p.peers.length == 1 && this.selectedCount == 2 ? html`
+        <span part="helper-text">
+          The selected cards have
+          ${this.getSelectedCard(0).color    == this.getSelectedCard(1).color    ? 'the same color'    : 'different colors'},
+          ${this.getSelectedCard(0).shape    == this.getSelectedCard(1).shape    ? 'the same shape'    : 'different shapes'}, and
+          ${this.getSelectedCard(0).quantity == this.getSelectedCard(1).quantity ? 'the same quantity' : 'different quantities'}.
+        </span>
+        <div>
+          <span part="solution-text">To complete the set, the next card must be</span>
+          ${getNeededCard(this.getSelectedCard(0), this.getSelectedCard(1))}
+        </div>` : ''}
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -411,6 +442,25 @@ export default class extends LitElement {
         title=${this.showClock ? 'Hide time' : 'Show time'}
         @click=${() => this.showClock = !this.showClock}
       ></mwc-fab>
+      <mwc-fab
+        part="bottom-btn hint"
+        mini
+        ?disabled=${this.mainPlayer.hintCards.length >= 3}
+        icon="lightbulb"
+        label="Get Hint"
+        title="Get a hint"
+        @click=${() => p2p.broadcast(new Uint8Array([Status.HINT]))}
+      ></mwc-fab>
+      <mwc-fab
+        part="bottom-btn rearrange"
+        mini
+        icon="shuffle"
+        label="Rearrange cards"
+        title="Rearrange cards on screen"
+        @click=${() => {
+          (this.renderRoot.firstElementChild as LitSets | null)?.rearrange()
+          this.dispatchEvent(new CustomEvent('game-rearrange'))
+        }}></mwc-fab>
       ${p2p.peers.length == 1 ? html`
         <mwc-fab
           part="bottom-btn difficulty"
@@ -421,10 +471,19 @@ export default class extends LitElement {
           title=${this.easyMode ? 'Switch to standard mode' : 'Switch to easy mode'}
           @click=${() => this.easyMode = !this.easyMode}
         ></mwc-fab>` : ''}
+      <mwc-fab
+        part="bottom-btn take"
+        extended
+        ?disabled=${this.mainPlayer.isBanned || this.selectedCount != 3}
+        icon="done_outline"
+        label="Take Set"
+        @click=${() => (this.renderRoot.firstElementChild as LitSets | null)?.takeSet()}
+      ></mwc-fab>
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
         <sets-leaderboard
           part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
-          .scores=${this.engine.players.map(({score}) => score)}
+          .max=${Math.trunc(this.cardsLeft / 3)}
+          .scores=${this.engine.players.map(({ score }) => score)}
           .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
           .names=${p2p.peers?.map(peer => peer.name) ?? []}
         ></sets-leaderboard>`

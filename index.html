@@ -7,14 +7,14 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!-- <meta name="color-scheme" content="light dark"> Not supported yet, causes feedback form to break... WTF -->
   <meta name="description" content="Mo's take on the classic card game with multiplayer">
-  <title>Mo's Sets</title>
+  <title>Sets by Mo</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="theme-color" content="#ffffff">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#673ab7">
+  <meta name="msapplication-TileColor" content="#603cba">
+  <meta name="theme-color" content="#673ab7">
   <script type="importmap-shim" src="import-map.json"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
@@ -23,7 +23,7 @@
   <!-- Production -->
   <script prod-only type=module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.12/dist/esm/demo/index.js"></script>
+  <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.13/dist/esm/demo/index.js"></script>
   <script prod-only type=application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
   <script prod-only type=application/javascript async
@@ -50,7 +50,7 @@
     version="0.3.2"
     retries="-1"
     timeout="25000"
-    lobby="lit-sets@0.0.12"
+    lobby="lit-sets@0.0.13"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -61,7 +61,7 @@
     ]'>
     <h1 class="title">
       Sets
-      <span class="subtitle">by Mo</span>
+      <span class="subtitle">by <span class="signature">Mo</span></span>
     </h1>
     <div class="corner-ribbon" title="Come again! Updates are frequent ;)">Beta</div>
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
@@ -136,8 +136,8 @@
       <mwc-icon-button
         onclick="document.getElementById('share').toggleAttribute('hidden')"
         icon="share"
-        label="Share Mo's Sets"
-        title="Share Mo's Sets"
+        label="Share Sets by Mo"
+        title="Share Sets by Mo"
       ></mwc-icon-button>
       <theme-toggle persistent>
         <mwc-icon-button
@@ -239,9 +239,11 @@
       &amp; improve it yourself!
       <br><br>
       <div class="sharethis-inline-share-buttons"></div>
+
+      <mwc-icon-button slot="primaryAction" dialogAction="close" icon="done"></mwc-icon-button>
     </mwc-dialog>
 
-    <mwc-dialog id="help" heading="Welcome to Mo's Sets">
+    <mwc-dialog id="help" heading="Welcome to Sets by Mo">
       <details>
         <summary>Keyboard Shortcuts</summary>
 
@@ -296,7 +298,7 @@
       <p>The goal is to take cards on the screen in groups of 3, known as sets.</p>
 
       <p>
-        The deck contains 81 cards each one with 4 unique features. These are the color, shape, opacity, and quantity.
+        The standard deck contains 81 cards each one with 4 unique features: color, shape, opacity, and quantity.
         Here you can see some cards and their features.
       </p>
       
@@ -326,7 +328,7 @@
           </tr>
           <tr>
             <td class="key">Opacity</td>
-            <td class="value">Opaque</td>
+            <td class="value">Solid</td>
           </tr>
         </table>
 
@@ -384,7 +386,7 @@
           </tr>
           <tr>
             <td class="key">Opacity</td>
-            <td class="value">Transparent</td>
+            <td class="value">Empty</td>
           </tr>
         </table>
       </div>

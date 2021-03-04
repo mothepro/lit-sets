@@ -3,7 +3,6 @@ import type { IconButton } from '@material/mwc-icon-button'
 import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
-import type LitSetsGame from '../src/sets.js'
 
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
@@ -11,7 +10,6 @@ import '@material/mwc-dialog'   // <mwc-dialog>
 import './p2p-sets.js'          // <p2p-sets>
 
 const // Elements in index.html
-  serviceWorker = './sw.' + 'js', // for dev
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
@@ -19,7 +17,7 @@ const // Elements in index.html
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
-navigator?.serviceWorker.register(serviceWorker)
+navigator?.serviceWorker.register('sw.js')
 
 // first-visit attribute
 if (localStorage.length)
@@ -68,10 +66,13 @@ if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('fir
 
 // Key shortcuts
 addEventListener('keypress', (event: KeyboardEvent) => {
-  // Get at runtime since it may not always exist
-  let setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
-  if (!setsGameElement?.offsetParent) // Remove if it's not currently visible
-    setsGameElement = null
+  // Get these at runtime since it may not always exist or be visible
+  const gameVisible = !!((p2pDemoElement.shadowRoot?.querySelector('lit-sets') as HTMLElement)?.offsetParent),
+    // TODO add `:not([disabled])` to selector so events arent preformed on disabled buttons
+    // Must support if ban timers are enabled
+    hintBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="hint"]') as IconButton | null,
+    rearrangeBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="rearrange"]') as IconButton | null,
+    takeBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="take"]') as IconButton | null
   switch (event.key) {
     case '?': // Show help
       helpDialogElement.toggleAttribute('open')
@@ -82,18 +83,20 @@ addEventListener('keypress', (event: KeyboardEvent) => {
       break
     
     case 'Enter': // Take set
-      if (setsGameElement) {
-        event.preventDefault() // Don't select card that is currently focuesed
-        setsGameElement.takeSet()
+      if (gameVisible) {
+        event.preventDefault() // Don't select card that is currently focused
+        takeBtn?.click()
       }
       break
     
     case 'h': // Take Hint
-      setsGameElement?.takeHint()
+      if (gameVisible)
+        hintBtn?.click()
       break
     
     case 'r': // Rearrange
-      setsGameElement?.rearrange()
+      if (gameVisible)
+        rearrangeBtn?.click()
       break
   }
 })
@@ -101,7 +104,6 @@ addEventListener('keypress', (event: KeyboardEvent) => {
   /////////////
  // Logging //\
 ///////////// \\
-// TODO add better support for interactive vs non-interactive
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
   userChoice: Promise<'accepted' | 'dismissed'>
@@ -109,9 +111,10 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 /** A user cause "interactive", event to save */
+// TODO add better support for interactive vs non-interactive
 function log(category: string, action: string, label?: string, value?: number, interaction = true) {
   if ('ga' in window) // ga?.(...) should work!?
-    ga(`${ga?.getAll()[0]?.get('name')}.send`, 'event', {
+    ga.getAll()[0]?.send('event', {
       eventCategory: category,
       eventAction: action,
       eventLabel: label,
@@ -120,10 +123,6 @@ function log(category: string, action: string, label?: string, value?: number, i
     })
   else
     console.log(new Date, arguments)
-}
-
-function logClick(action: string, label: string, value?: number) {
-  log('click', action, label, value, true)
 }
 
 // PWA - Initialize `deferredPrompt` for use later to show browser install prompt.
@@ -139,21 +138,21 @@ installBtn.addEventListener('click', async () => {
   installBtn.toggleAttribute('hidden', true)
   if (deferredPrompt) {
     deferredPrompt.prompt()
-    deferredPrompt = logClick('install', await deferredPrompt.userChoice)
+    deferredPrompt = log('install', await deferredPrompt.userChoice)
   }
 })
 
 let times = 0
 //@ts-ignore General Events
 document.querySelector('theme-toggle')
-  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => logClick('theme-change', detail, times++))
+  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => log(`theme-${times ? 'change' : 'start'}`, detail, `Times clicked: ${times++}`))
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))
 
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) => log('error', error.message, error.stack))
-addEventListener('p2p-update', () => log('p2p', 'update', 'group', p2p.peers.length))
+addEventListener('p2p-update', () => log('p2p', 'update', `group with ${p2p.peers.length}`))
 
 new MutationObserver(records => {
   for (const record of records)
@@ -163,16 +162,21 @@ new MutationObserver(records => {
   attributes: true,
   attributeFilter: ['state', 'name']
 })
+new MutationObserver(records => {
+  for (const record of records)
+    log('game', record.attributeName!)
+}).observe(p2pDemoElement, {
+  attributes: true,
+  attributeFilter: ['show-clock']
+})
 
 // Game Events
-p2pDemoElement.addEventListener('game-start', async () => {
-  log('game', 'start')
-  // TODO don't bind directly to <lit-sets>
-  await new Promise(r => setTimeout(r, 500))
-  const setsGameElement = p2pDemoElement.shadowRoot?.querySelector('lit-sets') as LitSetsGame | null
-  setsGameElement?.addEventListener('hint', () => log('game', 'hint'))
-  setsGameElement?.addEventListener('selected', () => log('game', 'selected'))
-  setsGameElement?.addEventListener('rearrange', () => log('game', 'rearrange'))
-})
-p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', p2pDemoElement.winnerText, detail))
-p2pDemoElement.addEventListener('thetake', ({ detail }) => log('game', 'take', 'successful?', +detail))
+p2pDemoElement.addEventListener('game-restart', () => log('game', 'restart'))
+p2pDemoElement.addEventListener('game-start', () => log('game', 'start', p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'))
+p2pDemoElement.addEventListener('game-difficulty', () => log('game', 'difficulty', p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'))
+p2pDemoElement.addEventListener('game-hint', ({ detail }) => log('game', 'hint', detail.toString()))
+p2pDemoElement.addEventListener('game-rearrange', () => log('game', 'rearrange'))
+p2pDemoElement.addEventListener('game-take', ({ detail }) => log('game', 'take', detail.toString()))
+p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', `${p2pDemoElement.winnerText}
+  ${detail} seconds, ${p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'} difficulty`))
+// p2pDemoElement.addEventListener('game-selected', () => log('game', 'selected')) // Do I even care about this
