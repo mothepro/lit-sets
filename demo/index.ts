@@ -3,6 +3,7 @@ import type { IconButton } from '@material/mwc-icon-button'
 import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
+import { log, BeforeInstallPromptEvent } from './util.js'
 
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
@@ -106,27 +107,6 @@ addEventListener('keypress', (event: KeyboardEvent) => {
   /////////////
  // Logging //\
 ///////////// \\
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>
-  userChoice: Promise<'accepted' | 'dismissed'>
-  platforms: string[]
-}
-
-/** A user cause "interactive", event to save */
-// TODO add better support for interactive vs non-interactive
-function log(category: string, action: string, label?: string, value?: number, interaction = true) {
-  if ('ga' in window) // ga?.(...) should work!?
-    ga.getAll()[0]?.send('event', {
-      eventCategory: category,
-      eventAction: action,
-      eventLabel: label,
-      eventValue: value,
-      nonInteraction: !interaction,
-    })
-  else
-    console.log(new Date, arguments)
-}
-
 // PWA - Initialize `deferredPrompt` for use later to show browser install prompt.
 let deferredPrompt: BeforeInstallPromptEvent | void
 
@@ -147,15 +127,18 @@ installBtn.addEventListener('click', async () => {
 let times = 0
 //@ts-ignore General Events
 document.querySelector('theme-toggle')
-  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) => log(`theme-${times ? 'change' : 'start'}`, detail, `Times clicked: ${times++}`))
+  ?.addEventListener('theme-change', ({ detail }: ThemeEvent) =>
+    log(`theme-${times ? 'change' : 'start'}`, detail, `Times clicked: ${times++}`))
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))
 
 // @ts-ignore P2P Events
-addEventListener('p2p-error', ({ error }: ErrorEvent) => log('error', error.message, error.stack))
+addEventListener('p2p-error', ({ error }: ErrorEvent) =>
+  log('error', `${p2pDemoElement.getAttribute('name')}> ${error.message}`, error.stack))
 addEventListener('p2p-update', () => log('p2p', 'update', `group with ${p2p.peers.length}`))
 
+// some are redundant
 new MutationObserver(records => {
   for (const record of records)
     log('p2p', record.attributeName!, litP2pElement.getAttribute(record.attributeName!) ?? '')

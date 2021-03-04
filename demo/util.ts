@@ -3,6 +3,27 @@
 import { html } from 'lit-element'
 import { Card, Details } from 'sets-game-engine'
 
+export interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
+  userChoice: Promise<'accepted' | 'dismissed'>
+  platforms: string[]
+}
+
+/** A user cause "interactive", event to save */
+// TODO add better support for interactive vs non-interactive
+export function log(category: string, action: string, label?: string, value?: number, interaction = true) {
+  if ('ga' in window) // ga?.(...) should work!?
+    ga.getAll()[0]?.send('event', {
+      eventCategory: category,
+      eventAction: action,
+      eventLabel: label,
+      eventValue: value,
+      nonInteraction: !interaction,
+    })
+  // else // Allow logging in prod for now
+    console.log(new Date, arguments)
+}
+
 /** Generator that returns linear values given `y = mx + b` */
 export function* linear(m: number, b: number): Generator<number, never, unknown> {
   yield b
