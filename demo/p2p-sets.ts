@@ -116,6 +116,8 @@ export default class extends LitElement {
   /** The compliment to tell the user if they win */
   private compliment = ''
 
+  private cardsLeft = 0
+
   static readonly styles = [css`
     mwc-fab[disabled] { /* Since mwc-fab[disabled] is not supported... SMH */
       pointer-events: none;
@@ -202,17 +204,18 @@ export default class extends LitElement {
         p2p.peers.length == 1 ? undefined : linear(this.banCostIncrement, this.banCostInitial),
         p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
-    const // Number of cards to make
-      count = this.easyMode && p2p.peers.length == 1
+    // Number of cards to make
+    this.cardsLeft = this.easyMode && p2p.peers.length == 1
       // Easy mode - remove opacity
       // This is SAFE because opacity is the last feature that's incremented (most signifigant bit/feature)
       ? (Details.COUNT - 1) ** Details.SIZE
       // Normal mode - all cards
-      : Details.COMBINATIONS,
-    // Makes all possible cards
-    deck = [...Array(count)].map((_, i) => Card.make(i))
+      : Details.COMBINATIONS
     
+    // Makes all possible cards
     // Shuffle deck using shared RNG
+    const deck = [...Array(this.cardsLeft)].map((_, i) => Card.make(i))
+    
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.abs(p2p.random(true)) % i;
       [deck[i], deck[j]] = [deck[j], deck[i]]
@@ -416,6 +419,7 @@ export default class extends LitElement {
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
         <sets-leaderboard
           part="leaderboard leaderboard-${this.engine.players.length == 1 ? 'simple' : 'full'}"
+          .max=${Math.trunc(this.cardsLeft / 3)}
           .scores=${this.engine.players.map(({ score }) => score)}
           .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
           .names=${p2p.peers?.map(peer => peer.name) ?? []}
