@@ -1,4 +1,4 @@
-const version = '0.0.10'
+const version = '0.0.13'
 // import { version } from '../package.json'
 
 interface InstallEvent extends Event {
