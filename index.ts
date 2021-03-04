@@ -4,4 +4,4 @@ export { default as shape } from './src/shape.js'
 export { default } from './src/sets.js'
 
 // Split off so the dev instance stops crying...
-export type { TakeEvent, HintEvent } from './src/sets.js'
+export type { TakeEvent, IndexEvent } from './src/sets.js'
