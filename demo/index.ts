@@ -17,7 +17,9 @@ const // Elements in index.html
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
 
-navigator?.serviceWorker.register('sw.js')
+// Service worker to make this a PWA
+if (location.protocol == 'https:')
+  navigator?.serviceWorker.register('sw.js')
 
 // first-visit attribute
 if (localStorage.length)
