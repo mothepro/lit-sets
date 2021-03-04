@@ -313,10 +313,11 @@ export default class extends LitElement {
   private bindPeer = async ({ message, close, isYou, name }: typeof p2p.peers[0], index: number) => {
     try {
       for await (const data of message)
-        if (data instanceof ArrayBuffer)
-          switch (data.byteLength) {
+        if (data instanceof ArrayBuffer) {
+          const view = new Uint8Array(data)
+          switch (view.byteLength) {
             case 1: // Status Bit
-              switch (new DataView(data).getInt8(0)) {
+              switch (view[0]) {
                 case Status.HINT:
                   this.dispatchEvent(new CustomEvent('game-hint', {
                     detail: this.engine.takeHint(this.engine.players[index])
@@ -331,18 +332,18 @@ export default class extends LitElement {
                   break
                 
                 default:
-                  throw Error(`Unexpected status bit from ${name}: ${data}`)
+                  throw Error(`Unexpected status bit from ${name}: 0x${view[0].toString(16).padStart(2, '0').toUpperCase()}`)
               }
               break
 
             case 3: // Take
               this.selectedCount = 0
-              const indexs = new Set(new Uint8Array(data)),
-              // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
-              // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
-              detail = this.engine.takeSet(
-                this.engine.players[index],
-                this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
+              const indexs = new Set(view),
+                // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
+                // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
+                detail = this.engine.takeSet(
+                  this.engine.players[index],
+                  this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
               this.dispatchEvent(new CustomEvent('game-take', { detail }))
 
               if (detail) // allows new cards to zoom in again
@@ -350,8 +351,10 @@ export default class extends LitElement {
               break
 
             default:
-              throw Error(`Unexpected data from ${name}: ${data}`)
+              throw Error(`${view.byteLength} unexpected bytes from ${name}: 0x${[...view]
+                .map(byte => byte.toString(16).padStart(2, '0').toUpperCase()).join(' 0x')}`)
           }
+        }
     } catch (error) {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
