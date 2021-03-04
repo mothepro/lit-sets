@@ -49,6 +49,49 @@ function* linear(m: number, b: number): Generator<number, never, unknown> {
     yield b += m
 }
 
+/** Returns the `html` of the card which would be needed to complete the given set. */
+function getNeededCard(
+  { shape: shapeA, quantity: quantityA, color: colorA }: Card,
+  { shape: shapeB, quantity: quantityB, color: colorB }: Card) {
+  // Assume these will just be all the same as first card
+  let shape = shapeA,
+    quantity = quantityA,
+    color = colorA
+
+  // The shapes are actually different
+  if (shapeA != shapeB) {
+    const details = new Set([Details.Shape.CIRCLE, Details.Shape.SQUARE, Details.Shape.TRIANGLE])
+    details.delete(shapeA)
+    details.delete(shapeB)
+    shape = [...details][0]
+  }
+
+  // The quantities are actually different
+  if (quantityA != quantityB) {
+    const details = new Set([Details.Quantity.ONE, Details.Quantity.TWO, Details.Quantity.THREE])
+    details.delete(quantityA)
+    details.delete(quantityB)
+    quantity = [...details][0]
+  }
+
+  // The colors are actually different
+  if (colorA != colorB) {
+  const details = new Set([Details.Color.BLUE, Details.Color.GREEN, Details.Color.RED])
+    details.delete(colorA)
+    details.delete(colorB)
+    color = [...details][0]
+  }
+
+  return html`
+    <sets-card
+      part="solution-card"
+      opacity="0"
+      shape=${shape}
+      quantity=${quantity}
+      color=${color}
+    ></sets-card>`
+}
+  
 /**
  * Peer to Peer (and offline) version of the game of sets.
  * Should live inside a `<lit-p2p>`.
@@ -94,12 +137,12 @@ export default class extends LitElement {
   @internalProperty()
   protected takeFailed = false
 
+  @property({ type: Number, reflect: true, attribute: 'selected-count'})
+  private selectedCount = 0
+
   /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
   @internalProperty()
   protected wantRematch: number[] = []
-
-  @internalProperty()
-  private selectedCount = 0
 
   /** The sets game engine */
   private engine!: Game
@@ -119,6 +162,10 @@ export default class extends LitElement {
   private cardsLeft = 0
 
   static readonly styles = [css`
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to {   opacity: 1; }
+    }
     mwc-fab[disabled] { /* Since mwc-fab[disabled] is not supported... SMH */
       pointer-events: none;
       cursor: default !important;
@@ -236,6 +283,7 @@ export default class extends LitElement {
     this.restartClock = true
     this.wantRematch = []
     this.confetti = 0
+    this.selectedCount = 0
     this.compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
@@ -348,14 +396,18 @@ export default class extends LitElement {
     return ret.trim()
   }
 
+  // TODO cache this
+  getSelectedCard(index: number) {
+    const litSets = this.renderRoot.firstElementChild as LitSets
+    return litSets.cards[ litSets.selected[index] ]
+  }
+
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
     // In game
     ? html`
       <lit-sets
         part="sets"
-        exportparts="helper-text , solution-text"
         ?shake=${this.takeFailed}
-        ?helper-text=${this.easyMode && p2p.peers.length == 1}
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
@@ -363,6 +415,17 @@ export default class extends LitElement {
           this.selectedCount = (this.renderRoot.firstElementChild as LitSets).selected.length
           this.takeFailed = false
         }}></lit-sets>
+      ${this.easyMode && p2p.peers.length == 1 && this.selectedCount == 2 ? html`
+        <span part="helper-text">
+          The selected cards have
+          ${this.getSelectedCard(0).color    == this.getSelectedCard(1).color    ? 'the same color'    : 'different colors'},
+          ${this.getSelectedCard(0).shape    == this.getSelectedCard(1).shape    ? 'the same shape'    : 'different shapes'}, and
+          ${this.getSelectedCard(0).quantity == this.getSelectedCard(1).quantity ? 'the same quantity' : 'different quantities'}.
+        </span>
+        <div>
+          <span part="solution-text">To complete the set, the next card must be</span>
+          ${getNeededCard(this.getSelectedCard(0), this.getSelectedCard(1))}
+        </div>` : ''}
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}

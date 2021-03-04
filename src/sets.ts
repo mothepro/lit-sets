@@ -1,5 +1,5 @@
 import { LitElement, customElement, property, html, css, PropertyValues, internalProperty } from 'lit-element'
-import type { Card } from 'sets-game-engine'
+import { Card } from 'sets-game-engine'
 import { hasArrayChanged, milliseconds } from './helper.js'
 import { ANIMATION_DURATION } from './card.js'
 
@@ -22,19 +22,6 @@ export const MAX_CARDS_COUNT = 21
 
 @customElement('lit-sets')
 export default class extends LitElement {
-
-  /** Whether enough cards are selected to take */
-  @property({ type: Boolean, attribute: 'can-take', reflect: true })
-  protected canTake = false
-
-  /** Whether can take a set */
-  @property({ type: Boolean, attribute: 'take-allowed' })
-  takeAllowed = false
-
-  /** Sentence to inlcude to simplify (excludes opacity) */
-  @property({ type: Boolean, attribute: 'helper-text' })
-  helperText = false
-
   /** Cards in the market */
   @property({ type: Array, hasChanged: hasArrayChanged })
   cards: Card[] = []
@@ -165,19 +152,5 @@ export default class extends LitElement {
         quantity=${card.quantity}
         @click=${() => !remove && this.toggleCard(index)}
       ></sets-card>`)}
-    </div>
-    ${this.helperText && this.selected.length == 2 ? html`
-      <span part="helper-text">
-        The selected cards have
-        ${this.cards[this.selected[0]].color == this.cards[this.selected[1]].color ? 'the same color' : 'different colors'},
-        ${this.cards[this.selected[0]].shape == this.cards[this.selected[1]].shape ? 'the same shape' : 'different shapes'}, and
-        ${this.cards[this.selected[0]].quantity == this.cards[this.selected[1]].quantity ? 'the same quantity' : 'different quantities'}.
-      </span>
-      <span part="solution-text">
-        To complete the set, the next card must also be
-        ${this.cards[this.selected[0]].color == this.cards[this.selected[1]].color ? 'the same color' : 'a different color'},
-        ${this.cards[this.selected[0]].shape == this.cards[this.selected[1]].shape ? 'the same shape' : 'a different shape'}, and
-        ${this.cards[this.selected[0]].quantity == this.cards[this.selected[1]].quantity ? 'the same quantity' : 'a different quantity'}
-        from the selected cards.
-      </span>` : ''}`
+    </div>`
 }

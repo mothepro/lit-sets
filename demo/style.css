@@ -254,9 +254,19 @@ mwc-button:not([raised]), /* Weird */
   --mdc-theme-primary: var(--mdc-theme-on-primary);
   --mdc-typography-button-text-transform: none;
 }
-::part(helper-text), ::part(solution-text) {
+::part(helper-text), ::part(solution-text), ::part(solution-card) {
   margin-top: 2em;
   display: block;
+}
+::part(solution-text) {
+  animation: fadeIn 3s ease 2.45s both;
+}
+::part(solution-card) {
+  animation: fadeIn 3s ease 6s both;
+  width: 300px;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
@@ -363,7 +373,15 @@ mwc-dialog .set {
   grid-row-gap: 1.5em;
   padding: 1.5em;
 }
+
+mwc-dialog iframe {
+  max-width: 100%;
+  min-width: 330px;
+}
 /* Mini tutorial */
+[selected-count="2"] [slot="no-singleplayer-score"] {
+  display: none;
+}
 [slot="no-singleplayer-score"] mwc-list {
   display: inline-block;
 }

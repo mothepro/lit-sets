@@ -22,9 +22,6 @@
 + Show loading when waiting for rematch
 + Add support for a bundled `nomodule` script
 + Allow non-linear generators to be defined in attributes
-+ Animations
-  + fix card animation order
-  + Jiggle animation when taking bad set
 + *No release needed*
   + nicer shapes
   + better color scheme
