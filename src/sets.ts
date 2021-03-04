@@ -47,6 +47,9 @@ export default class extends LitElement {
   @property({ type: Array, reflect: true })
   selected: number[] = []
 
+  @property({ type: Boolean })
+  shake = false
+
   @internalProperty()
   private display: {
     /** Whether the transition to remove should be run */
@@ -58,7 +61,10 @@ export default class extends LitElement {
   }[] = []
 
   /** The order the cards should be shown in, handled by CSS. */
-  private cardOrder = [...Array(MAX_CARDS_COUNT).keys()] // not reset on difficulty change lol
+  private cardOrder = [...Array(MAX_CARDS_COUNT).keys()] // this is not reset on difficulty change lol
+
+  /** Indexes of the cards to shake */
+  previousSelection?: Set<number>
 
   static readonly styles = css`
   .grid {
@@ -71,8 +77,9 @@ export default class extends LitElement {
   }`
 
   takeSet() {
-    if (this.takeAllowed && this.canTake) {
+    if (this.selected.length == 3) {
       this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
+      this.previousSelection = new Set(this.selected)
       this.selected = []
     }
   }
@@ -100,9 +107,6 @@ export default class extends LitElement {
   }
 
   protected update(changed: PropertyValues) {
-    if (changed.has('selected'))
-      this.canTake = this.selected.length == 3
-    
     if (changed.has('cards')) {
       this.selected = []
       if ((changed.get('cards') as Card[])?.length) { // Remove cards no longer in the deck
@@ -147,12 +151,13 @@ export default class extends LitElement {
     <div class="grid">${this.display.map(({ remove, delay, card }, index) => html`
       <sets-card
         part="card card-${remove ? 'removal' : 'entrance'}"
-        zoom
+        ?zoom=${remove || (delay >= 0 && !this.previousSelection)}
         index=${this.cardOrder[index]}
         delay=${delay}
         ?out=${remove}
         ?interactive=${!remove}
         ?selected=${this.selected.includes(index)}
+        ?shake=${this.shake && this.previousSelection?.has(index)}
         ?hint=${this.hint.includes(index)}
         opacity=${card.opacity}
         color=${card.color}

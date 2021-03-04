@@ -35,9 +35,16 @@ export default class extends LitElement {
 
   // TODO transtitions as CSS vars
   static readonly styles = [css`
+    /* https://css-tricks.com/snippets/css/shake-css-keyframe-animation/ */
+    @keyframes shake {
+      10%, 90% {      transform: var(--demo-shake-animation-transform-1); }
+      20%, 80% {      transform: var(--demo-shake-animation-transform-2); }
+      30%, 50%, 70% { transform: var(--demo-shake-animation-transform-3); }
+      40%, 60% {      transform: var(--demo-shake-animation-transform-4); }
+    }
     @keyframes zoom {
       from { transform: scale(0) }
-      to { transform: scale(1) }
+      to {   transform: scale(1) }
     }
 
     :host {
@@ -53,6 +60,9 @@ export default class extends LitElement {
     :host([zoom][out]) {
       animation-name: none;
       opacity: 0;
+    }
+    :host([shake]) {
+      animation: var(--demo-shake-animation, shake .82s cubic-bezier(.36,.07,.19,.97) both) !important;
     }
 
     mwc-icon {
@@ -78,7 +88,7 @@ export default class extends LitElement {
       margin: var(--sets-shape-spacing, .2em);
     }`,
 
-  // The animation delays
+  // The animation delays & card order
   ...[...Array(MAX_CARDS_COUNT).keys()].map(i => css`
     :host([index="${i}"]) {
       order: ${i};

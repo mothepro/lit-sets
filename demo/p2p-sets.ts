@@ -117,29 +117,6 @@ export default class extends LitElement {
   private compliment = ''
 
   static readonly styles = [css`
-    /* https://css-tricks.com/snippets/css/shake-css-keyframe-animation/ */
-    @keyframes shake {
-      10%, 90% {
-        transform: var(--demo-shake-animation-transform-1, translate3d(-1px, 0, 0));
-      }
-      20%, 80% {
-        transform: var(--demo-shake-animation-transform-2, translate3d(2px, 0, 0));
-      }
-      30%, 50%, 70% {
-        transform: var(--demo-shake-animation-transform-3, translate3d(-4px, 0, 0));
-      }
-      40%, 60% {
-        transform: var(--demo-shake-animation-transform-4, translate3d(4px, 0, 0));
-      }
-    }
-
-    [shake] {
-      animation: var(--demo-shake-animation, shake .82s cubic-bezier(.36,.07,.19,.97) both);
-      /* transform: translate3d(0, 0, 0); */
-      /* backface-visibility: hidden; */
-      /* perspective: 1000px; */
-    }
-
     mwc-fab[disabled] { /* Since mwc-fab[disabled] is not supported... SMH */
       pointer-events: none;
       cursor: default !important;
@@ -309,14 +286,16 @@ export default class extends LitElement {
 
             case 3: // Take
               this.selectedCount = 0
-              const indexs = new Set(new Uint8Array(data))
+              const indexs = new Set(new Uint8Array(data)),
               // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
               // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
-              this.dispatchEvent(new CustomEvent('game-take', {
-                detail: this.engine.takeSet(
-                  this.engine.players[index],
-                  this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
-              }))
+              detail = this.engine.takeSet(
+                this.engine.players[index],
+                this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
+              this.dispatchEvent(new CustomEvent('game-take', { detail }))
+
+              if (detail) // allows new cards to zoom in again
+                (this.renderRoot.firstElementChild as LitSets).previousSelection = undefined
               break
 
             default:
@@ -372,8 +351,7 @@ export default class extends LitElement {
       <lit-sets
         part="sets"
         exportparts="helper-text , solution-text"
-        ?hint-allowed=${this.mainPlayer.hintCards.length < 3}
-        ?take-allowed=${!this.mainPlayer.isBanned}
+        ?shake=${this.takeFailed}
         ?helper-text=${this.easyMode && p2p.peers.length == 1}
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
@@ -381,8 +359,7 @@ export default class extends LitElement {
         @selected=${() => {
           this.selectedCount = (this.renderRoot.firstElementChild as LitSets).selected.length
           this.takeFailed = false
-        }}
-      ></lit-sets>
+        }}></lit-sets>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -417,8 +394,7 @@ export default class extends LitElement {
         @click=${() => {
           (this.renderRoot.firstElementChild as LitSets | null)?.rearrange()
           this.dispatchEvent(new CustomEvent('game-rearrange'))
-        }}
-      ></mwc-fab>
+        }}></mwc-fab>
       ${p2p.peers.length == 1 ? html`
         <mwc-fab
           part="bottom-btn difficulty"
@@ -433,7 +409,6 @@ export default class extends LitElement {
         part="bottom-btn take"
         extended
         ?disabled=${this.mainPlayer.isBanned || this.selectedCount != 3}
-        ?shake=${this.takeFailed}
         icon="done_outline"
         label="Take Set"
         @click=${() => (this.renderRoot.firstElementChild as LitSets | null)?.takeSet()}

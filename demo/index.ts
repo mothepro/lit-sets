@@ -68,6 +68,8 @@ if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('fir
 addEventListener('keypress', (event: KeyboardEvent) => {
   // Get these at runtime since it may not always exist or be visible
   const gameVisible = !!((p2pDemoElement.shadowRoot?.querySelector('lit-sets') as HTMLElement)?.offsetParent),
+    // TODO add `:not([disabled])` to selector so events arent preformed on disabled buttons
+    // Must support if ban timers are enabled
     hintBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="hint"]') as IconButton | null,
     rearrangeBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="rearrange"]') as IconButton | null,
     takeBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="take"]') as IconButton | null
