@@ -304,7 +304,7 @@ export default class extends LitElement {
     // push the final scores and drop confetti
     this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))
     this.dispatchEvent(new CustomEvent('game-finish', { detail: this.runningScores[0].length }))
-    this.confetti = Math.trunc(Math.max(200, Math.min(35, document.body.clientWidth / 10))) // 35 <= width / 10 <= 200
+    this.confetti = Math.trunc(Math.min(200, Math.max(35, document.body.clientWidth / 10))) // 35 <= width / 10 <= 200
     await milliseconds(10 * 1000)
     this.confetti = 0
   }
