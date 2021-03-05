@@ -188,8 +188,13 @@ header mwc-button {
 
 /*** Parts ***/
 ::part(sets) {
+  display: grid;
+  grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
+  gap: var(--sets-gap, 2em);
+  justify-content: center;
+  justify-items: stretch;
+  align-items: stretch;
   /* Leave space for fixed buttons at bottom */
-  display: block;
   margin: 0 1em 3em;
 }
 ::part(client-list),

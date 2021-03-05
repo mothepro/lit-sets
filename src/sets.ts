@@ -53,16 +53,6 @@ export default class extends LitElement {
   /** Indexes of the cards to shake */
   previousSelection?: Set<number>
 
-  static readonly styles = css`
-  .grid {
-    display: grid;
-    grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
-    gap: var(--sets-gap, 2em);
-    justify-content: center;
-    justify-items: stretch;
-    align-items: stretch;
-  }`
-
   takeSet() {
     if (this.selected.length == 3) {
       this.dispatchEvent(new CustomEvent('take', { detail: this.selected }))
@@ -134,23 +124,21 @@ export default class extends LitElement {
     this.dispatchEvent(new CustomEvent('selected', { detail: { index, selected: selected.has(index) } }))
   }
 
-  protected readonly render = () => html`
-    <div class="grid">${this.display.map(({ remove, delay, card }, index) => html`
-      <sets-card
-        part="card card-${remove ? 'removal' : 'entrance'}"
-        ?zoom=${remove || (delay >= 0 && !this.previousSelection)}
-        index=${this.cardOrder[index]}
-        delay=${delay}
-        ?out=${remove}
-        ?interactive=${!remove}
-        ?selected=${this.selected.includes(index)}
-        ?shake=${this.shake && this.previousSelection?.has(index)}
-        ?hint=${this.hint.includes(index)}
-        opacity=${card.opacity}
-        color=${card.color}
-        shape=${card.shape}
-        quantity=${card.quantity}
-        @click=${() => !remove && this.toggleCard(index)}
-      ></sets-card>`)}
-    </div>`
+  protected readonly render = () => this.display.map(({ remove, delay, card }, index) => html`
+    <sets-card
+      part="card card-${remove ? 'removal' : 'entrance'}"
+      ?zoom=${remove || (delay >= 0 && !this.previousSelection)}
+      index=${this.cardOrder[index]}
+      delay=${delay}
+      ?out=${remove}
+      ?interactive=${!remove}
+      ?selected=${this.selected.includes(index)}
+      ?shake=${this.shake && this.previousSelection?.has(index)}
+      ?hint=${this.hint.includes(index)}
+      opacity=${card.opacity}
+      color=${card.color}
+      shape=${card.shape}
+      quantity=${card.quantity}
+      @click=${() => !remove && this.toggleCard(index)}
+    ></sets-card>`)
 }
