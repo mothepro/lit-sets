@@ -85,12 +85,6 @@ export default class extends LitElement {
   @internalProperty()
   protected restartClock = false
 
-  @internalProperty()
-  protected takeFailed = false
-
-  @property({ type: Number, reflect: true, attribute: 'selected-count'})
-  private selectedCount = 0
-
   /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
   @internalProperty()
   protected wantRematch: number[] = []
@@ -111,6 +105,8 @@ export default class extends LitElement {
   private compliment = ''
 
   private cardsLeft = 0
+  
+  protected takeFailed = false
 
   static readonly styles = [css`
     @keyframes fadeIn {
@@ -167,6 +163,29 @@ export default class extends LitElement {
       legend .for-${i} .block {
         background-color:  var(--chart-color-${i});
       }`)]
+
+  get winnerText() { // this is a mess lol
+    if (this.engine.filled.isAlive)
+      return ''
+    
+    let ret = ''
+    const winners: string[] = []
+
+    for (const [index, { score }] of this.engine.players.entries())
+      if (score == this.engine.maxScore)
+        winners.push(p2p.peers[index].isYou
+          ? 'You'
+          : p2p.peers[index].name)
+    
+    if (winners[0] == 'You') // Compliment if you won
+      ret += this.compliment + '! '
+    
+    if (this.engine.players.length > 1) // Multiplayer
+      ret += winners.join(' & ')
+        + ' Win'
+        + (winners.length == 1 && winners[0] != 'You' ? 's' : '')
+    return ret.trim()
+  }
 
   protected firstUpdated() {
     // Update peers and restart the game
@@ -234,7 +253,6 @@ export default class extends LitElement {
     this.restartClock = true
     this.wantRematch = []
     this.confetti = 0
-    this.selectedCount = 0
     this.compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
 
     // Refresh when market changes OR when the player performs some actions that could change score. */
@@ -288,7 +306,6 @@ export default class extends LitElement {
               break
 
             case 3: // Take
-              this.selectedCount = 0
               const indexs = new Set(view),
                 // TODO: pack this to 1 (or 2) bytes, using `detail` as a boolean list
                 // https://github.com/mothepro/sets-game/blob/master/src/messages.ts
@@ -326,33 +343,14 @@ export default class extends LitElement {
     }
   }
 
-  get winnerText() { // this is a mess lol
-    if (this.engine.filled.isAlive)
-      return ''
-    
-    let ret = ''
-    const winners: string[] = []
-
-    for (const [index, { score }] of this.engine.players.entries())
-      if (score == this.engine.maxScore)
-        winners.push(p2p.peers[index].isYou
-          ? 'You'
-          : p2p.peers[index].name)
-    
-    if (winners[0] == 'You') // Compliment if you won
-      ret += this.compliment + '! '
-    
-    if (this.engine.players.length > 1) // Multiplayer
-      ret += winners.join(' & ')
-        + ' Win'
-        + (winners.length == 1 && winners[0] != 'You' ? 's' : '')
-    return ret.trim()
-  }
-
   // TODO cache this
-  getSelectedCard(index: number) {
+  private getSelectedCard(index: number) {
     const litSets = this.renderRoot.firstElementChild as LitSets
     return litSets.cards[ litSets.selected[index] ]
+  }
+
+  private get selectedCardsCount() {
+    return (this.renderRoot.firstElementChild as LitSets).selected.length
   }
 
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
@@ -365,10 +363,10 @@ export default class extends LitElement {
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
         @selected=${() => {
-          this.selectedCount = (this.renderRoot.firstElementChild as LitSets).selected.length
           this.takeFailed = false
+          this.requestUpdate() // since count has changed
         }}></lit-sets>
-      ${this.easyMode && p2p.peers.length == 1 && this.selectedCount == 2 ? html`
+      ${this.easyMode && p2p.peers.length == 1 && this.selectedCardsCount == 2 ? html`
         <span part="helper-text">
           The selected cards have
           ${this.getSelectedCard(0).color    == this.getSelectedCard(1).color    ? 'the same color'    : 'different colors'},
@@ -427,7 +425,7 @@ export default class extends LitElement {
       <mwc-fab
         part="bottom-btn take"
         extended
-        ?disabled=${this.mainPlayer.isBanned || this.selectedCount != 3}
+        ?disabled=${this.mainPlayer.isBanned || this.selectedCardsCount != 3}
         icon="done_outline"
         label="Take Set"
         @click=${() => (this.renderRoot.firstElementChild as LitSets | null)?.takeSet()}
