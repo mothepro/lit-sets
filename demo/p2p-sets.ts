@@ -310,7 +310,7 @@ export default class extends LitElement {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
     }
-    // doubly close the connection. Dont care if this throws :)
+    // Ensure the connection is closed. Dont care if this throws :)
     try {
       close()
     } catch { } 
@@ -320,7 +320,6 @@ export default class extends LitElement {
       // https://github.com/angular/components/issues/9860
       const notification = document.createElement('mwc-snackbar')
       notification.setAttribute('open', '')
-      notification.setAttribute('leading', '')
       notification.setAttribute('labelText', `${name} disconnected.`)
       notification.addEventListener('MDCSnackbar:closed', () => document.body.removeChild(notification))
       document.body.appendChild(notification)

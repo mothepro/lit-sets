@@ -120,7 +120,7 @@ installBtn.addEventListener('click', async () => {
   installBtn.toggleAttribute('hidden', true)
   if (deferredPrompt) {
     deferredPrompt.prompt()
-    deferredPrompt = log('install', await deferredPrompt.userChoice)
+    deferredPrompt = log('install', JSON.stringify(await deferredPrompt.userChoice))
   }
 })
 
@@ -136,27 +136,27 @@ document.querySelectorAll('mwc-dialog').forEach(dialog =>
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) =>
   log('error', `me: "${p2pDemoElement.getAttribute('name')}" causer: "${error?.peer}" message: ${error.message} `, error.stack))
-addEventListener('p2p-update', () => log('p2p', 'update', `group with ${p2p.peers.length}`))
 
-// some are redundant
+const skip = { // TODO this is horrible!! I just don't wanna log the 1st time loading events
+  update: false,
+  name: false,
+  state: false,
+}
+addEventListener('p2p-update', () => skip.update ? log('p2p', 'update', `group with ${p2p.peers.length}`) : skip.update = true)
 new MutationObserver(records => {
   for (const record of records)
-    log('p2p', record.attributeName!, litP2pElement.getAttribute(record.attributeName!) ?? '')
-    // `${record.oldValue} -> ${litP2pElement.getAttribute(record.attributeName!)}`
+    if (skip[record.attributeName as 'state' | 'name'])
+      log('p2p', record.attributeName!, litP2pElement.getAttribute(record.attributeName!) ?? '')
+      // `${record.oldValue} -> ${litP2pElement.getAttribute(record.attributeName!)}`
+    else
+      skip[record.attributeName as 'state' | 'name'] = true
 }).observe(litP2pElement, {
   attributes: true,
   attributeFilter: ['state', 'name']
 })
-new MutationObserver(records => {
-  for (const record of records)
-    log('game', record.attributeName!)
-}).observe(p2pDemoElement, {
-  attributes: true,
-  attributeFilter: ['show-clock']
-})
 
 // Game Events
-p2pDemoElement.addEventListener('game-restart', () => log('game', 'restart'))
+p2pDemoElement.addEventListener('game-restart', () => log('game', 'restart', p2p.peers.length.toString() + ' players'))
 p2pDemoElement.addEventListener('game-start', () => log('game', 'start', p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'))
 p2pDemoElement.addEventListener('game-difficulty', () => log('game', 'difficulty', p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'))
 p2pDemoElement.addEventListener('game-hint', ({ detail }) => log('game', 'hint', detail.toString()))
@@ -165,3 +165,10 @@ p2pDemoElement.addEventListener('game-take', ({ detail }) => log('game', 'take',
 p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', `${p2pDemoElement.winnerText}
   ${detail} seconds, ${p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'} difficulty`))
 // p2pDemoElement.addEventListener('game-selected', () => log('game', 'selected')) // Do I even care about this
+new MutationObserver(records => {
+  for (const record of records)
+    log('game', record.attributeName!)
+}).observe(p2pDemoElement, {
+  attributes: true,
+  attributeFilter: ['show-clock']
+})

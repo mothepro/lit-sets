@@ -77,6 +77,11 @@ mwc-button[toggle-online] {
     --how-to-sets-template-columns: 30% 30% 30%;
     --sets-shape-size: 3.5em;
   }
+
+  lit-p2p { /* Make sure fab's are always given enough space */
+    display: block;
+    margin-bottom: 5em;
+  }
 }
 @media (min-width: 768px) {
   /* bootstrap "md" */
@@ -123,6 +128,7 @@ body {
   padding: 0;
   overscroll-behavior-y: contain;
   /* -webkit-tap-highlight-color: transparent; */
+  text-align: center; /* It's a game! */
 }
 h1, h2, h3, h4, h5, h6 {
   text-align: center;
@@ -414,11 +420,6 @@ mwc-dialog iframe {
 }
 
 /*** Helpers ***/
-lit-p2p {
-  display: block;
-  text-align: center;
-  margin-bottom: 5em;
-}
 .next-to-lobby {
   display: inline-block;
   line-height: 36px;
