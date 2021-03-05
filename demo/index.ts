@@ -128,7 +128,7 @@ let times = 0
 //@ts-ignore General Events
 document.querySelector('theme-toggle')
   ?.addEventListener('theme-change', ({ detail }: ThemeEvent) =>
-    log(`theme-${times ? 'change' : 'start'}`, detail, `Times clicked: ${times++}`))
+    log(`theme-${times ? 'change' : 'start'}`, detail, times ? `Times clicked: ${times++}` : undefined))
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))

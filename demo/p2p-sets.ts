@@ -345,12 +345,12 @@ export default class extends LitElement {
 
   // TODO cache this
   private getSelectedCard(index: number) {
-    const litSets = this.renderRoot.firstElementChild as LitSets
-    return litSets.cards[ litSets.selected[index] ]
+    const litSets = this.renderRoot.firstElementChild as LitSets | null
+    return litSets?.cards[ litSets.selected[index] ]
   }
 
   private get selectedCardsCount() {
-    return (this.renderRoot.firstElementChild as LitSets).selected.length
+    return (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length ?? undefined
   }
 
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
@@ -369,13 +369,13 @@ export default class extends LitElement {
       ${this.easyMode && p2p.peers.length == 1 && this.selectedCardsCount == 2 ? html`
         <span part="helper-text">
           The selected cards have
-          ${this.getSelectedCard(0).color    == this.getSelectedCard(1).color    ? 'the same color'    : 'different colors'},
-          ${this.getSelectedCard(0).shape    == this.getSelectedCard(1).shape    ? 'the same shape'    : 'different shapes'}, and
-          ${this.getSelectedCard(0).quantity == this.getSelectedCard(1).quantity ? 'the same quantity' : 'different quantities'}.
+          ${this.getSelectedCard(0)!.color    == this.getSelectedCard(1)!.color    ? 'the same color'    : 'different colors'},
+          ${this.getSelectedCard(0)!.shape    == this.getSelectedCard(1)!.shape    ? 'the same shape'    : 'different shapes'}, and
+          ${this.getSelectedCard(0)!.quantity == this.getSelectedCard(1)!.quantity ? 'the same quantity' : 'different quantities'}.
         </span>
         <div>
           <span part="solution-text">To complete the set, the next card must be</span>
-          ${getNeededCard(this.getSelectedCard(0), this.getSelectedCard(1))}
+          ${getNeededCard(this.getSelectedCard(0)!, this.getSelectedCard(1)!)}
         </div>` : ''}
       <lit-clock
         part="clock"
@@ -444,7 +444,7 @@ export default class extends LitElement {
 
     // Game over
     : html`
-      <lit-confetti gravity=1 count=${this.confetti}></lit-confetti>
+      <lit-confetti gravity="1" count=${this.confetti}></lit-confetti>
       <h2 part="title">${this.winnerText}</h2>
       <mwc-fab
         part="rematch"
