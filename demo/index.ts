@@ -27,7 +27,7 @@ if (localStorage.length)
   document.body.removeAttribute('first-visit')
 
 // Remove easy mode
-if (!document.body.hasAttribute('first-visit'))
+if (!document.body.hasAttribute('first-visit') && document.body.getAttribute('not-first-visit-mode') == 'hard')
   p2pDemoElement.removeAttribute('easy-mode')
 
 // Auto connect
