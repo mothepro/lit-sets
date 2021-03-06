@@ -13,12 +13,13 @@
 ## TODO
 
 + Arrow key to choose card (assume 3xN grid)
-+ Hide disabled fabs instead (hint and take button)
-+ Improve first time helper text explaining what card #3 needs to be for valid set
++ Mini tutorial can be more clear
 + Astroturfing?? (instead of `alone` slot)
-+ easy mode in multiplayer
+  + easy mode in multiplayer
 + Extend signaling fallback duration
+  + Why is p2p so unreliable :'( `lit-p2p[retries="-1"]`
 + censor bad words for viewer
++ show big multi/single player button on first visit for all devices
 + Show loading when waiting for rematch
 + Add support for a bundled `nomodule` script
 + Allow non-linear generators to be defined in attributes

@@ -14,6 +14,7 @@ const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
+  toggleHiddenBtns = document.querySelectorAll('[toggle-hidden]')! as unknown as IconButton[],
   helpDialogElement = document.getElementById('help')! as Dialog,
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
@@ -45,6 +46,11 @@ for (const opener of dialogOpenerElements)
   opener.addEventListener('click', () => document
     .getElementById(opener.getAttribute('open-dialog') ?? '')
     ?.toggleAttribute('open'))
+
+// Make the toggle hidden buttons actually do something
+for (const toggleHiddenBtn of toggleHiddenBtns)
+  toggleHiddenBtn.addEventListener('click', () => 
+    document.getElementById(toggleHiddenBtn.getAttribute('toggle-hidden')!)?.toggleAttribute('hidden'))
 
 // Make the toggle button actually do something
 for (const toggleOnlineBtn of toggleOnlineBtns)

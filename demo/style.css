@@ -297,6 +297,7 @@ mwc-button:not([raised]), /* Weird */
 }
 [slot="game-over"] {
   margin-top: 5em;
+  line-height: 3em;
 }
 
 /*** Loading ***/

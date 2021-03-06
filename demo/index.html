@@ -41,7 +41,6 @@
 </head>
 
 <body first-visit>
-  <!-- Why is p2p so unreliable :'( `retries="-1"` -->
   <lit-p2p
     fallback
     local-storage
@@ -73,7 +72,6 @@
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
     <header>
-      <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
         toggle-online
@@ -139,7 +137,7 @@
         label="Send feedback"
       ></mwc-icon-button>
       <mwc-icon-button
-        onclick="document.getElementById('share').toggleAttribute('hidden')"
+        toggle-hidden="share"
         icon="share"
         label="Share Sets by Mo"
         title="Share Sets by Mo"
@@ -221,7 +219,13 @@
     <span slot="p2p-alone" class="p2p-lobby centered-text">
       Waiting for players to join&hellip;
       <br />
-      Share this game with friends!
+      Invite your friends
+      <mwc-icon-button
+        toggle-hidden="share"
+        icon="share"
+        label="Share Sets by Mo"
+        title="Share Sets by Mo"
+      ></mwc-icon-button>
     </span>
     <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
 
