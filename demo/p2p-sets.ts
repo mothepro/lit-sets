@@ -22,6 +22,7 @@ export type DifficultyChangeEvent = CustomEvent<void>
 export type GameTakeEvent = CustomEvent<boolean>
 export type RearrangeEvent = CustomEvent<void>
 export type RestartEvent = CustomEvent<void>
+export type SelectedEvent = CustomEvent<void>
 export type HintEvent = CustomEvent<boolean>
 
 declare global {
@@ -33,6 +34,7 @@ declare global {
     'game-rearrange': RearrangeEvent
     'game-take': GameTakeEvent
     'game-hint': HintEvent
+    'game-selected': SelectedEvent
   }
 }
 
@@ -194,6 +196,9 @@ export default class extends LitElement {
     // Update the final chart when when the screen resizes
     addEventListener('resize', () => p2p && this.engine && !this.engine.filled.isAlive && this.requestUpdate())
 
+    // Refresh selected count and remove shake animation after selecting a card
+    this.addEventListener('game-selected', () => this.takeFailed = this.requestUpdate() && false)
+
     // Start game and bind peers (order shouldn't matter)
     p2p?.peers.map(this.bindPeer)
     this.restartGame()
@@ -322,7 +327,8 @@ export default class extends LitElement {
               throw Error(`${view.byteLength} unexpected bytes: 0x${[...view]
                 .map(byte => byte.toString(16).padStart(2, '0').toUpperCase()).join(' 0x')}`)
           }
-        }
+        } else
+          throw Error(`Expected an ArrayBuffer but got a ${typeof data}: ${JSON.stringify(data)} "${data}"`)
     } catch (error) {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
@@ -358,10 +364,8 @@ export default class extends LitElement {
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @selected=${() => {
-          this.takeFailed = false
-          this.requestUpdate() // since count has changed
-        }}></lit-sets>
+        @selected=${() => this.dispatchEvent(new CustomEvent('game-selected'))}
+      ></lit-sets>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}

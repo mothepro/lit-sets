@@ -17,7 +17,7 @@ export function log(category: string, action: string, label?: string, value?: nu
       eventValue: value,
       nonInteraction: !interaction,
     })
-  // else // Allow logging in prod for now
+  else // Allow logging in prod for now??
     console.log(new Date, arguments)
 }
 
