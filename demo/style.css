@@ -66,7 +66,7 @@
 }
 
 /*** Media Queries ***/
-mwc-button[toggle-online] {
+mwc-button[toggle-online], .desktop-only {
   /* Too big for mobile (must be before media queries) */
   display: none;
 }
@@ -99,6 +99,9 @@ mwc-button[toggle-online] {
   :root {
     --sets-gap: 2.5em;
     --sets-shape-spacing: 18px 12px;
+  }
+  .desktop-only {
+    display: initial;
   }
 }
 @media (min-width: 1200px) {
@@ -196,7 +199,7 @@ header mwc-button {
     0px 24px 38px 3px rgba(0, 0, 0, 0.14),
     0px 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
-::part(leaderboard), ::part(tip) { /* Gaps between game and extra info */
+[slot="no-singleplayer-score"], ::part(leaderboard), ::part(tip) { /* Gaps between game and extra info */
   margin-top: 3em;
 }
 ::part(leaderboard-simple) {
@@ -272,7 +275,7 @@ mwc-button:not([raised]), /* Weird */
   --mdc-typography-button-text-transform: none;
 }
 ::part(tip) {
-  animation: fadeIn 2s ease 2.45s both;
+  animation: fadeIn 2.45s ease 1s both;
   display: inline-block;
   overflow: hidden;
   padding: 2em;
@@ -285,7 +288,7 @@ mwc-button:not([raised]), /* Weird */
   margin-left: auto;
   margin-right: auto;
 
-  animation-delay: 5s;
+  animation-delay: 4s;
   animation-duration: 5s;
   animation-timing-function: cubic-bezier(1, 0, 0.64, 1.13);
 }
