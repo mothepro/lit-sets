@@ -1,4 +1,6 @@
-import { Card, Details } from 'sets-game-engine'
+// git update-index --no-skip-worktree demo/util.ts
+import { Card } from 'sets-game-engine'
+import { Details } from '../doNotStage.js'
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
