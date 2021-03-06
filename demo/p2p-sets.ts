@@ -349,10 +349,6 @@ export default class extends LitElement {
     return litSets?.cards[ litSets.selected[index] ]
   }
 
-  private get selectedCardsCount() {
-    return (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length ?? undefined
-  }
-
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
     // In game
     ? html`
@@ -366,17 +362,6 @@ export default class extends LitElement {
           this.takeFailed = false
           this.requestUpdate() // since count has changed
         }}></lit-sets>
-      ${this.easyMode && p2p.peers.length == 1 && this.selectedCardsCount == 2 ? html`
-        <span part="helper-text">
-          The selected cards have
-          ${this.getSelectedCard(0)!.color    == this.getSelectedCard(1)!.color    ? 'the same color'    : 'different colors'},
-          ${this.getSelectedCard(0)!.shape    == this.getSelectedCard(1)!.shape    ? 'the same shape'    : 'different shapes'}, and
-          ${this.getSelectedCard(0)!.quantity == this.getSelectedCard(1)!.quantity ? 'the same quantity' : 'different quantities'}.
-        </span>
-        <div>
-          <span part="solution-text">To complete the set, the next card must be</span>
-          ${getNeededCard(this.getSelectedCard(0)!, this.getSelectedCard(1)!)}
-        </div>` : ''}
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -425,9 +410,9 @@ export default class extends LitElement {
       <mwc-fab
         part="bottom-btn take"
         extended
-        ?disabled=${this.mainPlayer.isBanned || this.selectedCardsCount != 3}
         icon="done_outline"
         label="Take Set"
+        ?disabled=${this.mainPlayer.isBanned || (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length != 3}
         @click=${() => (this.renderRoot.firstElementChild as LitSets | null)?.takeSet()}
       ></mwc-fab>
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
@@ -440,7 +425,32 @@ export default class extends LitElement {
         ></sets-leaderboard>`
       
       // TODO show leaderboard as default (child of this slot)
-      : html`<slot name="no-singleplayer-score"></slot>`}`
+      : html`<slot name="no-singleplayer-score"></slot>`}${
+      
+      // Big hint
+      this.easyMode && p2p.peers.length == 1
+        && (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length == 2
+          // Cache these cards for the render below
+          && (firstCard = this.getSelectedCard(0)!)
+          && (secondCard = this.getSelectedCard(1)!)
+          && (nextCard = getNeededCard(firstCard, secondCard)) ? html`
+        <div part="big-hint">
+          <span part="helper-text">
+            The selected cards have
+            ${firstCard.color    == secondCard.color    ? 'the same color'    : 'different colors'},
+            ${firstCard.shape    == secondCard.shape    ? 'the same shape'    : 'different shapes'}, and
+            ${firstCard.quantity == secondCard.quantity ? 'the same quantity' : 'different quantities'}.
+          </span>
+          <slot name="solution-text"></slot>
+          <sets-card
+            part="solution-card"
+            zoom
+            opacity=${nextCard.opacity}
+            shape=${nextCard.shape}
+            quantity=${nextCard.quantity}
+            color=${nextCard.color}
+          ></sets-card>
+        </div>` : ''}`
 
     // Game over
     : html`
@@ -478,3 +488,6 @@ export default class extends LitElement {
       </div>
       <slot name="game-over"></slot>`)
 }
+
+// TODO update temp vars (used to create solution) to getters?
+let nextCard, firstCard, secondCard

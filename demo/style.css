@@ -77,11 +77,6 @@ mwc-button[toggle-online] {
     --how-to-sets-template-columns: 30% 30% 30%;
     --sets-shape-size: 3.5em;
   }
-
-  lit-p2p { /* Make sure fab's are always given enough space */
-    display: block;
-    margin-bottom: 5em;
-  }
 }
 @media (min-width: 768px) {
   /* bootstrap "md" */
@@ -152,6 +147,10 @@ a {
 .signature {
   font-family: 'HarlowSolidItalic';
 }
+lit-p2p { /* Make sure fab's are always given enough space w/o overlap */
+  display: block;
+  margin-bottom: 5em;
+}
 
 /*** Icons ***/
 header {
@@ -187,6 +186,28 @@ header mwc-button {
 /* #discord path { fill: #7289DA; } */
 
 /*** Parts ***/
+/* Nicer Boxes */
+::part(chart-holder), ::part(big-hint), ::part(client-list), ::part(leaderboard-full) {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  border-radius: .5em;
+  box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
+    0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+}
+::part(leaderboard), ::part(big-hint) { /* Gaps between game and extra info */
+  margin-top: 3em;
+}
+::part(leaderboard-simple) {
+  display: block;
+}
+::part(client-list), ::part(leaderboard-full) {
+  display: block;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
 ::part(sets) {
   display: grid;
   grid-template-columns: var(--sets-grid-template-columns, repeat(3, minmax(200px, 1fr)));
@@ -194,17 +215,7 @@ header mwc-button {
   justify-content: center;
   justify-items: stretch;
   align-items: stretch;
-  /* Leave space for fixed buttons at bottom */
-  margin: 0 1em 3em;
-}
-::part(client-list),
-::part(leaderboard-full) {
-  display: block;
-  max-width: 400px;
-  border: 1px solid #d3d3d3;
-  border-radius: 0.5em;
-  color: var(--mdc-theme-on-primary);
-  margin: 0 auto;
+  margin: 0 var(--sets-gap, 1em);
 }
 ::part(clock) {
   position: fixed;
@@ -239,16 +250,9 @@ header mwc-button {
   display: none;
 }
 ::part(chart-holder) {
-  position: relative;
-  box-sizing: border-box;
-  display: inline-block;
   max-width: 1024px;
-  padding: 20px;
   margin: 0 16px;
-  border-radius: .5em;
-  box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
-    0px 24px 38px 3px rgba(0, 0, 0, 0.14),
-    0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+  padding: 20px;
 }
 ::part(axis-y) {
   transform: rotate(270deg);
@@ -267,19 +271,26 @@ mwc-button:not([raised]), /* Weird */
   --mdc-theme-primary: var(--mdc-theme-on-primary);
   --mdc-typography-button-text-transform: none;
 }
-::part(helper-text), ::part(solution-text), ::part(solution-card) {
-  margin-top: 2em;
-  display: block;
-}
-::part(solution-text) {
-  animation: fadeIn 3s ease 2.45s both;
+::part(big-hint) {
+  animation: fadeIn 2s ease 2.45s both;
+  display: inline-block;
+  overflow: hidden;
+  padding: 2em;
+  max-width: 90%;
 }
 ::part(solution-card) {
-  animation: fadeIn 3s ease 6s both;
+  display: block;
   width: 300px;
   max-width: 90%;
   margin-left: auto;
   margin-right: auto;
+
+  animation-delay: 5s;
+  animation-duration: 5s;
+  animation-timing-function: cubic-bezier(1, 0, 0.64, 1.13);
+}
+[slot="solution-text"].text {
+  margin: 1em 0;
 }
 [slot="p2p-alone"] {
   min-height: var(--loading-size);
