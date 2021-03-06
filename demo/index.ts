@@ -113,9 +113,10 @@ addEventListener('keypress', (event: KeyboardEvent) => {
   /////////////
  // Logging //\
 ///////////// \\
-// PWA - Initialize `deferredPrompt` for use later to show browser install prompt.
-let deferredPrompt: BeforeInstallPromptEvent | void
-
+// PWA
+ga('set', 'dimension1', matchMedia('(display-mode: standalone)')?.matches // || navigator.standalone
+  ? 'standalone' : 'browser')
+let deferredPrompt: BeforeInstallPromptEvent | void // for use later to show browser install prompt.
 addEventListener('appinstalled', () => deferredPrompt = log('install', 'complete'))
 addEventListener('beforeinstallprompt', event => {
   deferredPrompt = event as BeforeInstallPromptEvent
