@@ -435,15 +435,15 @@ export default class extends LitElement {
         && (secondCard = this.getSelectedCard(1)!)
         && (nextCard = getNeededCard(firstCard, secondCard)) ? html`
         <div part="tip">
-          <span part="helper-text">
-            The selected cards have
+          <slot name="pre-tip-text"></slot>
+          <span part="tip-text">
             ${firstCard.color    == secondCard.color    ? 'the same color'    : 'different colors'},
             ${firstCard.shape    == secondCard.shape    ? 'the same shape'    : 'different shapes'}, and
             ${firstCard.quantity == secondCard.quantity ? 'the same quantity' : 'different quantities'}.
           </span>
-          <slot name="solution-text"></slot>
+          <slot name="post-tip-text"></slot>
           <sets-card
-            part="solution-card"
+            part="tip-card"
             zoom
             opacity=${nextCard.opacity}
             shape=${nextCard.shape}

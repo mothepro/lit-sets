@@ -35,9 +35,9 @@
     gtag('config', 'UA-172429940-2')
   </script>
   <!-- Development -->
-  <script dev-only type=dev-only-application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
-  <script dev-only type=dev-only-module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
-  <script dev-only type=dev-only-module-shim src="./index.ts"></script>
+  <script dev-only type=dev-only-dev-only-application/javascript src="//unpkg.com/typescript/lib/typescript.js"></script>
+  <script dev-only type=dev-only-dev-only-module src="//unpkg.com/@mothepro/es-module-shims@0.0.0/dist/es-module-shims.min.js"></script>
+  <script dev-only type=dev-only-dev-only-module-shim src="./index.ts"></script>
 </head>
 
 <body first-visit>
@@ -118,10 +118,9 @@
       ></mwc-icon-button>
       <a
         hide-offline
-        hidden
         title="Join the community"
         target="_blank"
-        href="//discord.gg/ZBequ8RZE9">
+        href="//discord.gg/vrDUqr9P3s">
         <mwc-icon-button>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240" style="max-width: 24px; max-height: 24px;">
             <path d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"/>
@@ -213,8 +212,9 @@
           onclick="document.querySelector('p2p-sets').removeAttribute('easy-mode')"
         ></mwc-fab>
       </div>
-      <div slot="solution-text" class="corner-ribbon" style="z-index: -1">Tip</div>
-      <div slot="solution-text" class="text">To complete the set, the next card must be</div>
+      <div slot="pre-tip-text" class="corner-ribbon" style="z-index: -1">Tip</div>
+      <span slot="pre-tip-text">The selected cards have</span>
+      <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
     <span slot="p2p-alone" class="p2p-lobby centered-text" style="line-height: 3em">
