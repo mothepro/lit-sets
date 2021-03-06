@@ -430,11 +430,11 @@ export default class extends LitElement {
       // Big hint
       this.easyMode && p2p.peers.length == 1
         && (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length == 2
-          // Cache these cards for the render below
-          && (firstCard = this.getSelectedCard(0)!)
-          && (secondCard = this.getSelectedCard(1)!)
-          && (nextCard = getNeededCard(firstCard, secondCard)) ? html`
-        <div part="big-hint">
+        // Cache these cards for the render below
+        && (firstCard = this.getSelectedCard(0)!)
+        && (secondCard = this.getSelectedCard(1)!)
+        && (nextCard = getNeededCard(firstCard, secondCard)) ? html`
+        <div part="tip">
           <span part="helper-text">
             The selected cards have
             ${firstCard.color    == secondCard.color    ? 'the same color'    : 'different colors'},

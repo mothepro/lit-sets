@@ -187,7 +187,7 @@ header mwc-button {
 
 /*** Parts ***/
 /* Nicer Boxes */
-::part(chart-holder), ::part(big-hint), ::part(client-list), ::part(leaderboard-full) {
+::part(chart-holder), ::part(tip), ::part(client-list), ::part(leaderboard-full) {
   position: relative;
   box-sizing: border-box;
   display: inline-block;
@@ -196,7 +196,7 @@ header mwc-button {
     0px 24px 38px 3px rgba(0, 0, 0, 0.14),
     0px 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
-::part(leaderboard), ::part(big-hint) { /* Gaps between game and extra info */
+::part(leaderboard), ::part(tip) { /* Gaps between game and extra info */
   margin-top: 3em;
 }
 ::part(leaderboard-simple) {
@@ -271,7 +271,7 @@ mwc-button:not([raised]), /* Weird */
   --mdc-theme-primary: var(--mdc-theme-on-primary);
   --mdc-typography-button-text-transform: none;
 }
-::part(big-hint) {
+::part(tip) {
   animation: fadeIn 2s ease 2.45s both;
   display: inline-block;
   overflow: hidden;
@@ -355,8 +355,7 @@ mwc-button:not([raised]), /* Weird */
 mwc-dialog:not([open]) {
   display: none;
 }
-p,
-ul {
+p, ul {
   text-align: start;
 }
 mwc-dialog h2 {
