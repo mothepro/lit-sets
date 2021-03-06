@@ -281,7 +281,7 @@ mwc-button:not([raised]), /* Weird */
   padding: 2em;
   max-width: 90%;
 }
-::part(solution-card) {
+::part(tip-card) {
   display: block;
   width: 300px;
   max-width: 90%;
@@ -290,9 +290,9 @@ mwc-button:not([raised]), /* Weird */
 
   animation-delay: 4s;
   animation-duration: 5s;
-  animation-timing-function: cubic-bezier(1, 0, 0.64, 1.13);
+  animation-timing-function: cubic-bezier(1, 0.0, 0.66, 1);
 }
-[slot="solution-text"].text {
+[slot="post-tip-text"] {
   margin: 1em 0;
 }
 [slot="p2p-alone"] {

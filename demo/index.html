@@ -23,7 +23,7 @@
   <!-- Production -->
   <script prod-only type=prod-only-module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type=prod-only-module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.15/dist/esm/demo/index.js"></script>
+  <script prod-only type=prod-only-module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.16/dist/esm/demo/index.js"></script>
   <script prod-only type=prod-only-application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
   <script prod-only type=prod-only-application/javascript async
@@ -49,7 +49,7 @@
     version="0.3.3"
     retries="-1"
     timeout="25000"
-    lobby="lit-sets@0.0.15"
+    lobby="lit-sets@0.0.16"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -213,8 +213,9 @@
           onclick="document.querySelector('p2p-sets').removeAttribute('easy-mode')"
         ></mwc-fab>
       </div>
-      <div slot="solution-text" class="corner-ribbon" style="z-index: -1">Tip</div>
-      <div slot="solution-text" class="text">To complete the set, the next card must be</div>
+      <div slot="pre-tip-text" class="corner-ribbon" style="z-index: -1">Tip</div>
+      <span slot="pre-tip-text">The selected cards have</span>
+      <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
     <span slot="p2p-alone" class="p2p-lobby centered-text" style="line-height: 3em">

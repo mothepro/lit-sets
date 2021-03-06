@@ -19,7 +19,7 @@
 + Extend signaling fallback duration
   + Why is p2p so unreliable :'( `lit-p2p[retries="-1"]`
 + censor bad words for viewer
-+ show big multi/single player button on first visit for all devices
++ show big multi/single player button on first visit for **all** devices
 + Show loading when waiting for rematch
 + Add support for a bundled `nomodule` script
 + Allow non-linear generators to be defined in attributes
