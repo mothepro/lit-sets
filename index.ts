@@ -14,6 +14,7 @@ const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
+  toggleHiddenBtns = document.querySelectorAll('[toggle-hidden]')! as unknown as IconButton[],
   helpDialogElement = document.getElementById('help')! as Dialog,
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
@@ -27,7 +28,7 @@ if (localStorage.length)
   document.body.removeAttribute('first-visit')
 
 // Remove easy mode
-if (!document.body.hasAttribute('first-visit'))
+if (!document.body.hasAttribute('first-visit') && document.body.getAttribute('not-first-visit-mode') == 'hard')
   p2pDemoElement.removeAttribute('easy-mode')
 
 // Auto connect
@@ -45,6 +46,11 @@ for (const opener of dialogOpenerElements)
   opener.addEventListener('click', () => document
     .getElementById(opener.getAttribute('open-dialog') ?? '')
     ?.toggleAttribute('open'))
+
+// Make the toggle hidden buttons actually do something
+for (const toggleHiddenBtn of toggleHiddenBtns)
+  toggleHiddenBtn.addEventListener('click', () => 
+    document.getElementById(toggleHiddenBtn.getAttribute('toggle-hidden')!)?.toggleAttribute('hidden'))
 
 // Make the toggle button actually do something
 for (const toggleOnlineBtn of toggleOnlineBtns)
@@ -120,7 +126,7 @@ installBtn.addEventListener('click', async () => {
   installBtn.toggleAttribute('hidden', true)
   if (deferredPrompt) {
     deferredPrompt.prompt()
-    deferredPrompt = log('install', await deferredPrompt.userChoice)
+    deferredPrompt = log('install', JSON.stringify(await deferredPrompt.userChoice))
   }
 })
 
@@ -128,7 +134,7 @@ let times = 0
 //@ts-ignore General Events
 document.querySelector('theme-toggle')
   ?.addEventListener('theme-change', ({ detail }: ThemeEvent) =>
-    log(`theme-${times ? 'change' : 'start'}`, detail, `Times clicked: ${times++}`))
+    log(`theme-${times ? 'change' : 'start'}`, detail, times ? `Times clicked: ${times++}` : undefined))
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))
@@ -136,27 +142,27 @@ document.querySelectorAll('mwc-dialog').forEach(dialog =>
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) =>
   log('error', `me: "${p2pDemoElement.getAttribute('name')}" causer: "${error?.peer}" message: ${error.message} `, error.stack))
-addEventListener('p2p-update', () => log('p2p', 'update', `group with ${p2p.peers.length}`))
 
-// some are redundant
+const skip = { // TODO this is horrible!! I just don't wanna log the 1st time loading events
+  update: false,
+  name: false,
+  state: false,
+}
+addEventListener('p2p-update', () => skip.update ? log('p2p', 'update', `group with ${p2p.peers.length}`) : skip.update = true)
 new MutationObserver(records => {
   for (const record of records)
-    log('p2p', record.attributeName!, litP2pElement.getAttribute(record.attributeName!) ?? '')
-    // `${record.oldValue} -> ${litP2pElement.getAttribute(record.attributeName!)}`
+    if (skip[record.attributeName as 'state' | 'name'])
+      log('p2p', record.attributeName!, litP2pElement.getAttribute(record.attributeName!) ?? '')
+      // `${record.oldValue} -> ${litP2pElement.getAttribute(record.attributeName!)}`
+    else
+      skip[record.attributeName as 'state' | 'name'] = true
 }).observe(litP2pElement, {
   attributes: true,
   attributeFilter: ['state', 'name']
 })
-new MutationObserver(records => {
-  for (const record of records)
-    log('game', record.attributeName!)
-}).observe(p2pDemoElement, {
-  attributes: true,
-  attributeFilter: ['show-clock']
-})
 
 // Game Events
-p2pDemoElement.addEventListener('game-restart', () => log('game', 'restart'))
+p2pDemoElement.addEventListener('game-restart', () => log('game', 'restart', p2p.peers.length.toString() + ' players'))
 p2pDemoElement.addEventListener('game-start', () => log('game', 'start', p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'))
 p2pDemoElement.addEventListener('game-difficulty', () => log('game', 'difficulty', p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'))
 p2pDemoElement.addEventListener('game-hint', ({ detail }) => log('game', 'hint', detail.toString()))
@@ -165,3 +171,10 @@ p2pDemoElement.addEventListener('game-take', ({ detail }) => log('game', 'take',
 p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', `${p2pDemoElement.winnerText}
   ${detail} seconds, ${p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'} difficulty`))
 // p2pDemoElement.addEventListener('game-selected', () => log('game', 'selected')) // Do I even care about this
+new MutationObserver(records => {
+  for (const record of records)
+    log('game', record.attributeName!)
+}).observe(p2pDemoElement, {
+  attributes: true,
+  attributeFilter: ['show-clock']
+})

@@ -41,13 +41,12 @@
 </head>
 
 <body first-visit>
-  <!-- Why is p2p so unreliable :'( `retries="-1"` -->
   <lit-p2p
     fallback
     local-storage
     max-peers="5"
     signaling="wss://ws.parkshade.com:443"
-    version="0.3.2"
+    version="0.3.3"
     retries="-1"
     timeout="25000"
     lobby="lit-sets@0.0.15"
@@ -63,14 +62,16 @@
       Sets
       <span class="subtitle">by <span class="signature">Mo</span></span>
     </h1>
-    <a href="//github.com/mothepro/lit-sets" target="_blank">
-      <div class="corner-ribbon" title="Come again! Updates are frequent ;)">Beta</div>
-    </a>
+    <a
+      href="//github.com/mothepro/lit-sets"
+      target="_blank"
+      class="corner-ribbon"
+      title="Come again! Updates are frequent"
+    >Beta</a>
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
     <header>
-      <!-- TODO only show big button on first visit? -->
       <mwc-button
         raised
         toggle-online
@@ -136,7 +137,7 @@
         label="Send feedback"
       ></mwc-icon-button>
       <mwc-icon-button
-        onclick="document.getElementById('share').toggleAttribute('hidden')"
+        toggle-hidden="share"
         icon="share"
         label="Share Sets by Mo"
         title="Share Sets by Mo"
@@ -173,10 +174,10 @@
     <p2p-sets 
       easy-mode
       class="p2p-disconnected-or-ready" 
+      score-gain-initial="100"
       ban-cost-initial="50"
       hint-cost-initial="15"
-      hint-cost-increment="10"
-      score-gain-initial="100"
+      hint-cost-increment="5"
     >
       <div slot="no-singleplayer-score" class="first-visit easy-mode">
         Choose 3 cards that either have all the same, or all different
@@ -188,11 +189,12 @@
         <br>
         <mwc-list noninteractive>
           <mwc-list-item graphic="avatar">
-            Gives a hint if you're stuck
+            Gives a hint
             <mwc-icon slot="graphic">lightbulb</mwc-icon>
           </mwc-list-item>
           <mwc-list-item graphic="avatar">
-            Shows the complete guide
+            Shows guide
+            <span class="desktop-only">&amp; keyboard shortcuts</span>
             <mwc-icon slot="graphic">help</mwc-icon>
           </mwc-list-item>
           <mwc-list-item graphic="avatar">
@@ -211,12 +213,20 @@
           onclick="document.querySelector('p2p-sets').removeAttribute('easy-mode')"
         ></mwc-fab>
       </div>
+      <div slot="solution-text" class="corner-ribbon" style="z-index: -1">Tip</div>
+      <div slot="solution-text" class="text">To complete the set, the next card must be</div>
     </p2p-sets>
     
-    <span slot="p2p-alone" class="p2p-lobby centered-text">
+    <span slot="p2p-alone" class="p2p-lobby centered-text" style="line-height: 3em">
       Waiting for players to join&hellip;
       <br />
-      Share this game with friends!
+      Invite your friends
+      <mwc-icon-button
+        toggle-hidden="share"
+        icon="share"
+        label="Share Sets by Mo"
+        title="Share Sets by Mo"
+      ></mwc-icon-button>
     </span>
     <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
 
