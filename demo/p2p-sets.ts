@@ -293,9 +293,9 @@ export default class extends LitElement {
             case 1: // Status Bit
               switch (view[0]) {
                 case Status.HINT:
-                  this.dispatchEvent(new CustomEvent('game-hint', {
-                    detail: this.engine.takeHint(this.engine.players[index])
-                  }))
+                  const detail = this.engine.takeHint(this.engine.players[index])
+                  if (isYou)
+                    this.dispatchEvent(new CustomEvent('game-hint', { detail }))
                   break
                 
                 case Status.REMATCH:
@@ -317,7 +317,9 @@ export default class extends LitElement {
                 detail = this.engine.takeSet(
                   this.engine.players[index],
                   this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
-              this.dispatchEvent(new CustomEvent('game-take', { detail }))
+              
+              if (isYou)
+                this.dispatchEvent(new CustomEvent('game-take', { detail }))
 
               if (detail) // allows new cards to zoom in again
                 (this.renderRoot.firstElementChild as LitSets).previousSelection = undefined

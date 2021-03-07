@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
+  <title>Sets by Mo - The realtime puzziling card game</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!-- <meta name="color-scheme" content="light dark"> Not supported yet, causes feedback form to break... WTF -->
   <meta name="description" content="Mo's take on the classic card game with multiplayer">
-  <title>Sets by Mo</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -68,6 +68,7 @@
       class="corner-ribbon"
       title="Come again! Updates are frequent"
     >Beta</a>
+    <noscript>Requires Javascript to play!</noscript>
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
@@ -178,8 +179,9 @@
       hint-cost-initial="15"
       hint-cost-increment="5"
     >
-      <div slot="no-singleplayer-score" class="first-visit easy-mode">
-        Choose 3 cards that either have all the same, or all different
+      <!-- Is this needed if you have played before? -->
+      <div slot="no-singleplayer-score" class="easy-mode">
+        Choose 3 cards that have all the same <b>or</b> all different
         <span>
           <strong>color</strong>
           <strong>shape</strong>
