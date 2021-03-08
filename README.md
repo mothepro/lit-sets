@@ -22,6 +22,7 @@
 + Show loading when waiting for rematch
 + Add support for a bundled `nomodule` script
 + Allow non-linear generators to be defined in attributes
++ duplicate `theme-toggle` event if localStorage != OS preference
 + *No release needed*
   + nicer shapes
   + better color scheme

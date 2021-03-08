@@ -3,15 +3,17 @@ import type { Fab } from '@material/mwc-fab'
 import type litP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets'
 import type Game from 'sets-game-engine'
+import type { Player } from 'sets-game-engine'
 
-import { Status } from './util.js'
 import { MockPeer } from '@mothepro/fancy-p2p'
 import { Emitter } from 'fancy-emitter'
+import { Status } from './util.js'
 import { milliseconds } from '../src/helper.js'
 
 const
   names = JSON.parse(document.body.getAttribute('astroturf-names') ?? '[]'),
-  [minPlayers, maxPlayers] = JSON.parse(document.body.getAttribute('astroturf-player-range') ?? '[0,0]'),
+  [minPlayers = 0, maxPlayers = 0] = JSON.parse(document.body.getAttribute('astroturf-player-range') ?? '[]'),
+  [minDifficulty = 0, maxDifficulty = 1] = JSON.parse(document.body.getAttribute('astroturf-difficulty-range') ?? '[]'),
 
   // Elements
   litP2pElement = document.querySelector('lit-p2p')! as litP2P,
@@ -47,7 +49,9 @@ makeGroupBtn.addEventListener('click', () => {
   p2p.peers.length = 0 // Clear peers
   p2p.peers.push(myPeer) // ReAdd me to rebind emitters
   for (const index of clientList.index) // Add astros!
-    p2p.peers.push(new AstroPeer(clientList.children[index].textContent!.trim()))
+    p2p.peers.push(new AstroPeer(
+      clientList.children[index].textContent!.trim(),
+      minDifficulty + Math.random() * (maxDifficulty - minDifficulty)))
   
   // TODO wait a bit to make it feel real
   // await milliseconds(1000 + 4000 * Math.random())
@@ -67,22 +71,90 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   readonly send = (data: ArrayBuffer | ArrayBufferView) =>
     this.message.activate(ArrayBuffer.isView(data) ? data.buffer : data)
   
+  private currentRound = 0
   private engine!: Game
 
-  constructor(readonly name: string, readonly difficulty = Math.random()) { 
+  constructor(
+    readonly name: string,
+    /** Positive number to determine the skill, the lower the better */
+    readonly difficulty = Math.random()) { 
     addEventListener('p2p-update', this.startGame)
     p2pDemoElement.addEventListener('game-restart', this.startGame)
   }
 
   private startGame = async () => {
     this.engine = p2pDemoElement.engine
+    
+    for await (const _ of this.engine.filled)
+      this.round(++this.currentRound)
 
-    await this.engine.filled.on(() => { })
-    await milliseconds(1000 + 4000 * Math.random())
+    // Rematch!
+    await milliseconds(3000 + 5000 * Math.random())
     this.send(new Uint8Array([Status.REMATCH]))
   }
+
+  /** New cards are on the field... time to astroturf 😈 */
+  private async round(round: number) {
+    // Wait a bit before doing anything
+    await milliseconds(
+      4000 // animation
+      + 120000 * this.difficulty
+      + 5000 * Math.random())
+
+    // Dummy (unlucky) took the wrong thing!
+    if (Math.random() * maxDifficulty < this.difficulty ** 2)
+      await this.takeRandom(round, 60000 * Math.random())
+
+    // Hints, increased likelyhood the higher the difficulty
+    for (
+      let time = 0, skill = -this.difficulty;
+      time < 2 && skill < 0;
+      time++, skill += Math.random() * maxDifficulty)
+      await this.hint(round, 
+        time == 0
+        ? 5000 // First hint
+          + 90000 * this.difficulty
+          + 60000 * Math.random()
+        : 3000 // Second hint
+          + 10000 * this.difficulty
+          + 5000 * Math.random())
+
+    this.takeSuccess(round)
+  }
   
-  private hint() {
+  private hint(round: number, ms: number) {
+    if (round != this.currentRound)
+      return
+
+    if (!this.engine.filled.isAlive)
+      throw Error('Can not astroturf hint when game is completed')
+    
     this.send(new Uint8Array([Status.HINT]))
+    return milliseconds(ms)
+  }
+
+  private takeSuccess(round: number) {
+    if (round != this.currentRound)
+      return
+
+    if (!this.engine.filled.isAlive)
+      throw Error('Can not astroturf take when game is completed')
+
+    const cards = this.engine.solution
+    if (!cards)
+      throw Error('Unable to find an astroturfed solution')
+    
+    this.send(new Uint8Array(cards.map(card => this.engine.cards.indexOf(card))))
+  }
+
+  private takeRandom(round: number, ms: number) {
+    if (round != this.currentRound)
+      return
+
+    if (!this.engine.filled.isAlive)
+      throw Error('Can not astroturf take when game is completed')
+
+    this.send(new Uint8Array([1, 2, 3])) // This is the "random" set LOL
+    return milliseconds(ms)
   }
 }
