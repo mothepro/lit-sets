@@ -205,13 +205,16 @@ export default class extends LitElement {
     if (changed.has('easyMode')) {
       this.restartGame()
         
-      // Not first time
+      // Not first time & solo only
       if (typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1)
         this.dispatchEvent(new CustomEvent('game-difficulty'))
     }
   }
 
   private async restartGame() {
+    if (p2p.peers.length != 1)
+      this.easyMode = false
+    
     // Make the players
     // For multiplayer uses generators defined at the top will be used.
     // TODO For singleplayer use the default rules... for now
@@ -223,7 +226,7 @@ export default class extends LitElement {
         p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
     // Number of cards to make
-    this.cardsLeft = this.easyMode && p2p.peers.length == 1
+    this.cardsLeft = this.easyMode
       // Easy mode - remove opacity
       // This is SAFE because opacity is the last feature that's incremented (most signifigant bit/feature)
       ? (Details.COUNT - 1) ** Details.SIZE
@@ -431,7 +434,7 @@ export default class extends LitElement {
       : html`<slot name="no-singleplayer-score"></slot>`}${
       
       // Big hint
-      this.easyMode && p2p.peers.length == 1
+      this.easyMode
         && (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length == 2
         // Cache these cards for the render below
         && (firstCard = this.getSelectedCard(0)!)

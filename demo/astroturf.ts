@@ -77,13 +77,11 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
     readonly name: string,
     /** Positive number to determine the skill, the lower the better */
     readonly difficulty = Math.random()) { 
-    addEventListener('p2p-update', this.startGame)
-    p2pDemoElement.addEventListener('game-restart', this.startGame)
+    p2pDemoElement.addEventListener('game-start', this.startGame)
   }
 
   private startGame = async () => {
     this.engine = p2pDemoElement.engine
-    // this.currentRound = 0 // shouldn't matter
     
     for await (const _ of this.engine.filled)
       this.round(++this.currentRound)
