@@ -4,6 +4,7 @@ import type litP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets'
 import type Game from 'sets-game-engine'
 
+import { foreverStrings } from '@mothepro/emojis'
 import { MockPeer } from '@mothepro/fancy-p2p'
 import { Emitter } from 'fancy-emitter'
 import { Status } from './util.js'
@@ -11,6 +12,7 @@ import { milliseconds } from '../src/helper.js'
 
 const
   names = JSON.parse(document.body.getAttribute('astroturf-names') ?? '[]'),
+  backupNames = foreverStrings(),
   [minPlayers = 0, maxPlayers = 0] = JSON.parse(document.body.getAttribute('astroturf-player-range') ?? '[]'),
   [minDifficulty = 0, maxDifficulty = 1] = JSON.parse(document.body.getAttribute('astroturf-difficulty-range') ?? '[]'),
 
@@ -20,11 +22,17 @@ const
   clientList = document.querySelector('.astroturf mwc-list') as List,
   makeGroupBtn = document.querySelector('.astroturf mwc-fab') as Fab
 
+// For my best friend
+if (Math.random() < 0.1)
+  names.push('Max ⭐️')
+else if (Math.random() > 0.9)
+  names.push('🐯boy')
+
 // Fill player list
 for (let i = 0; i < minPlayers + (1 + maxPlayers - minPlayers) * Math.random(); i++)
   clientList.innerHTML +=
   '<mwc-check-list-item>' +
-    (names.splice(Math.trunc(Math.random() * names.length), 1)[0] ?? `Player #${i+1}`) +
+    (names.splice(Math.trunc(Math.random() * names.length), 1)[0] ?? `Anonymous ${backupNames.next().value}`) +
   '</mwc-check-list-item>'
 
 // @ts-ignore Ensure button count matches the selection from list

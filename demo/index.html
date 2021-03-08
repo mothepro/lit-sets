@@ -40,7 +40,10 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit astroturf astroturf-player-range="[2,4]" astroturf-names='["bear"]'>
+<body first-visit
+  astroturf-player-range="[2,4]"
+  astroturf-difficulty-range="[0,1]"
+  astroturf>
   <lit-p2p
     fallback
     local-storage
@@ -308,11 +311,7 @@
       </details>
 
       <p>
-        This is an
-        <a href="//github.com/mothepro/lit-sets" target="_blank">
-          <mwc-button dense trailingIcon icon="open_in_new">open source</mwc-button>
-        </a>
-        version of the reflex card game
+        This is a web version of the reflex card game
         <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">
           <mwc-button dense trailingIcon icon="open_in_new">Set</mwc-button>
         </a>

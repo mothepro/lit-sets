@@ -202,11 +202,11 @@ export default class extends LitElement {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
     
-    if (changed.has('easyMode')) {
+    if (changed.has('easyMode') && p2p.peers.length == 1) {
       this.restartGame()
         
       // Not first time & solo only
-      if (typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1)
+      if (typeof changed.get('easyMode') != 'undefined')
         this.dispatchEvent(new CustomEvent('game-difficulty'))
     }
   }
