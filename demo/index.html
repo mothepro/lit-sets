@@ -222,17 +222,16 @@
       <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
-    <div class="astroturf p2p-lobby" slot="p2p-alone">
-      <mwc-list class="client-list" multi></mwc-list>
-      <mwc-fab
-        icon="done"
-        label="Make Group"
-        selected="0"
-        class="make-group"
-      ></mwc-fab>
-    </div>
+    <mwc-list hidden rootTabbable slot="p2p-alone" class="p2p-lobby client-list" multi></mwc-list>
+    <mwc-fab
+      icon="done"
+      label="Make Group"
+      slot="p2p-alone"
+      selected="0"
+      class="make-group p2p-lobby"
+    ></mwc-fab>
 
-    <span slot="p2p-alone" class="p2p-lobby centered-text not-astroturf" style="line-height: 3em">
+    <span slot="p2p-alone" class="astroturf-default p2p-lobby centered-text" style="line-height: 3em">
       Waiting for players to join&hellip;
       <br />
       Invite your friends
@@ -243,7 +242,7 @@
         title="Share Sets by Mo"
       ></mwc-icon-button>
     </span>
-    <div slot="p2p-alone" class="p2p-lobby centered loading not-astroturf"><div></div><div></div></div>
+    <div slot="p2p-alone" class="astroturf-default p2p-lobby centered loading"><div></div><div></div></div>
 
     <mwc-dialog id="feedback">
       <iframe
