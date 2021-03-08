@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
+  <title>Sets by Mo &bull; Realtime Puzzle Card Game</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!-- <meta name="color-scheme" content="light dark"> Not supported yet, causes feedback form to break... WTF -->
   <meta name="description" content="Mo's take on the classic card game with multiplayer">
-  <title>Sets by Mo</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -23,7 +23,7 @@
   <!-- Production -->
   <script prod-only type=module
     src="//unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.min.js"></script>
-  <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.16/dist/esm/demo/index.js"></script>
+  <script prod-only type=module-shim src="//unpkg.com/@mothepro/lit-sets@0.0.17/dist/esm/demo/index.js"></script>
   <script prod-only type=application/javascript async
     src="https://www.googletagmanager.com/gtag/js?id=UA-172429940-2"></script>
   <script prod-only type=application/javascript async
@@ -40,7 +40,10 @@
   <script dev-only type=dev-only-module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit>
+<body first-visit
+  astroturf-player-range="[2,4]"
+  astroturf-difficulty-range="[0,1]"
+  astroturf>
   <lit-p2p
     fallback
     local-storage
@@ -49,7 +52,7 @@
     version="0.3.3"
     retries="-1"
     timeout="25000"
-    lobby="lit-sets@0.0.16"
+    lobby="lit-sets@0.0.17"
     stuns='[
       "stun:stun.stunprotocol.org",
       "stun:stun.l.google.com:19302",
@@ -68,6 +71,7 @@
       class="corner-ribbon"
       title="Come again! Updates are frequent"
     >Beta</a>
+    <noscript>Requires Javascript to play!</noscript>
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
@@ -178,8 +182,9 @@
       hint-cost-initial="15"
       hint-cost-increment="5"
     >
-      <div slot="no-singleplayer-score" class="first-visit easy-mode">
-        Choose 3 cards that either have all the same, or all different
+      <!-- Is this needed if you have played before? -->
+      <div slot="no-singleplayer-score" class="easy-mode">
+        Choose 3 cards that have all the same <b>or</b> all different
         <span>
           <strong>color</strong>
           <strong>shape</strong>
@@ -204,7 +209,7 @@
       </div>
       <div slot="game-over" class="easy-mode">
         Ready for a challenge?
-        <br><br>
+        <br>
         <mwc-fab
           extended 
           icon="speed" 
@@ -217,7 +222,17 @@
       <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
-    <span slot="p2p-alone" class="p2p-lobby centered-text" style="line-height: 3em">
+    <div class="astroturf p2p-lobby" slot="p2p-alone">
+      <mwc-list class="client-list" multi></mwc-list>
+      <mwc-fab
+        icon="done"
+        label="Make Group"
+        selected="0"
+        class="make-group"
+      ></mwc-fab>
+    </div>
+
+    <span slot="p2p-alone" class="p2p-lobby centered-text not-astroturf" style="line-height: 3em">
       Waiting for players to join&hellip;
       <br />
       Invite your friends
@@ -228,7 +243,7 @@
         title="Share Sets by Mo"
       ></mwc-icon-button>
     </span>
-    <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
+    <div slot="p2p-alone" class="p2p-lobby centered loading not-astroturf"><div></div><div></div></div>
 
     <mwc-dialog id="feedback">
       <iframe
@@ -296,11 +311,7 @@
       </details>
 
       <p>
-        This is an
-        <a href="//github.com/mothepro/lit-sets" target="_blank">
-          <mwc-button dense trailingIcon icon="open_in_new">open source</mwc-button>
-        </a>
-        version of the reflex card game
+        This is a web version of the reflex card game
         <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">
           <mwc-button dense trailingIcon icon="open_in_new">Set</mwc-button>
         </a>

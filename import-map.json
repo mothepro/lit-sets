@@ -8,6 +8,8 @@
     "@mothepro/lit-chart": "//unpkg.com/@mothepro/lit-chart@0.0.2/dist/esm/index.js",
     "@mothepro/theme-toggle/": "//unpkg.com/@mothepro/theme-toggle@0.0.2/dist/esm/",
     "@mothepro/theme-toggle": "//unpkg.com/@mothepro/theme-toggle@0.0.2/dist/esm/index.js",
+    "@mothepro/emojis/": "//unpkg.com/@mothepro/emojis@1.2.2/dist/esm/",
+    "@mothepro/emojis": "//unpkg.com/@mothepro/emojis@1.2.2/dist/esm/index.js",
     "lit-confetti/": "//unpkg.com/lit-confetti@0.1.5/dist/esm/",
     "lit-confetti": "//unpkg.com/lit-confetti@0.1.5/dist/esm/index.js",
     "lit-p2p/": "//unpkg.com/lit-p2p@0.4.9/dist/esm/",

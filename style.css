@@ -190,7 +190,7 @@ header mwc-button {
 
 /*** Parts ***/
 /* Nicer Boxes */
-::part(chart-holder), ::part(tip), ::part(client-list), ::part(leaderboard-full) {
+::part(chart-holder), ::part(tip), ::part(client-list), ::part(leaderboard-full), .client-list {
   position: relative;
   box-sizing: border-box;
   display: inline-block;
@@ -198,6 +198,7 @@ header mwc-button {
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
     0px 24px 38px 3px rgba(0, 0, 0, 0.14),
     0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+  max-width: 90%;
 }
 [slot="no-singleplayer-score"], ::part(leaderboard), ::part(tip) { /* Gaps between game and extra info */
   margin-top: 3em;
@@ -205,9 +206,9 @@ header mwc-button {
 ::part(leaderboard-simple) {
   display: block;
 }
-::part(client-list), ::part(leaderboard-full) {
+::part(client-list), ::part(leaderboard-full), .client-list {
   display: block;
-  max-width: 400px;
+  width: 400px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -229,7 +230,7 @@ header mwc-button {
   user-select: none;
   z-index: 1;
 }
-::part(bottom-btn), ::part(make-group), ::part(rematch) {
+::part(bottom-btn), ::part(make-group), ::part(rematch), .make-group {
   position: fixed;
   bottom: 1em;
   z-index: 1;
@@ -246,10 +247,10 @@ header mwc-button {
 ::part(difficulty) {
   left: 10em;
 }
-::part(take), ::part(make-group) {
+::part(take), ::part(make-group), .make-group {
   right: 1em;
 }
-::part(mwc-fab-disabled) {
+::part(mwc-fab-disabled), [selected="0"].make-group {
   display: none;
 }
 ::part(chart-holder) {
@@ -279,7 +280,6 @@ mwc-button:not([raised]), /* Weird */
   display: inline-block;
   overflow: hidden;
   padding: 2em;
-  max-width: 90%;
 }
 ::part(tip-card) {
   display: block;
@@ -453,6 +453,9 @@ mwc-dialog iframe {
 /* First visit */
 body:not([first-visit]) .first-visit,
 body[first-visit] .not-first-visit,  
+/* Astroturfing */
+body:not([astroturf]) .astroturf,
+body[astroturf] .not-astroturf,  
 /* Easy mode only  */
 p2p-sets:not([easy-mode]) .easy-mode,
 p2p-sets[easy-mode] .not-easy-mode, 

@@ -3,7 +3,8 @@ import type { IconButton } from '@material/mwc-icon-button'
 import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
-import { log, BeforeInstallPromptEvent } from './util.js'
+import { log, BeforeInstallPromptEvent, dimension } from './util.js'
+import './astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
@@ -113,9 +114,11 @@ addEventListener('keypress', (event: KeyboardEvent) => {
   /////////////
  // Logging //\
 ///////////// \\
-// PWA - Initialize `deferredPrompt` for use later to show browser install prompt.
-let deferredPrompt: BeforeInstallPromptEvent | void
+// PWA
+// when will `navigator.standalone` be supported
+dimension(1, matchMedia('(display-mode: standalone)')?.matches  ? 'standalone' : 'browser')
 
+let deferredPrompt: BeforeInstallPromptEvent | void // for use later to show browser install prompt.
 addEventListener('appinstalled', () => deferredPrompt = log('install', 'complete'))
 addEventListener('beforeinstallprompt', event => {
   deferredPrompt = event as BeforeInstallPromptEvent
@@ -148,7 +151,9 @@ const skip = { // TODO this is horrible!! I just don't wanna log the 1st time lo
   name: false,
   state: false,
 }
-addEventListener('p2p-update', () => skip.update ? log('p2p', 'update', `group with ${p2p.peers.length}`) : skip.update = true)
+// @ts-ignore ...
+addEventListener('p2p-update', ({ detail }: CustomEvent<boolean | string>) => !skip.update ? skip.update = true :
+  log('p2p', detail == 'astroturf' ? 'astroturf' : 'update', `group with ${p2p.peers.length}`))
 new MutationObserver(records => {
   for (const record of records)
     if (skip[record.attributeName as 'state' | 'name'])

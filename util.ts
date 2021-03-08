@@ -1,14 +1,15 @@
-// Uncomment before release
 import { Card, Details } from 'sets-game-engine'
-
-// git update-index --no-skip-worktree demo/util.ts
-// import { Card } from 'sets-game-engine'
-// import { Details } from '../doNotStage.js'
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
   userChoice: Promise<'accepted' | 'dismissed'>
   platforms: string[]
+}
+
+/** One bit of data to send over the wire. */
+export const enum Status {
+  HINT,
+  REMATCH,
 }
 
 /** A user cause "interactive", event to save */
@@ -22,8 +23,16 @@ export function log(category: string, action: string, label?: string, value?: nu
       eventValue: value,
       nonInteraction: !interaction,
     })
-  // else // Allow logging in prod for now
+  else // Allow logging in prod for now??
     console.log(new Date, arguments)
+}
+
+/** Record a custom dimension */
+export function dimension(id: number, value: string) {
+  if ('ga' in window)
+    ga('set', `dimension${id}`, value)
+  else
+    console.log(new Date, `dimension #${id}`, value)
 }
 
 /** Generator that returns linear values given `y = mx + b` */

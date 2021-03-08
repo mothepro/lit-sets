@@ -1,20 +1,15 @@
+import type { Peer } from '@mothepro/fancy-p2p'
 import type LitSets from '../index.js'
 import type { TakeEvent } from '../index.js'
 import { LitElement, customElement, html, css, internalProperty, PropertyValues, property } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import { milliseconds } from '../src/helper.js'
-import { getNeededCard, linear } from './util.js'
+import { getNeededCard, linear, Status } from './util.js'
 
 import 'lit-confetti'         // <lit-confetti>
 import '@mothepro/lit-chart'  // <lit-chart>
 import '@mothepro/lit-clock'  // <lit-chart>
 import '../index.js'          // <lit-sets>
-
-/** One bit of data to send over the wire. */
-const enum Status {
-  HINT,
-  REMATCH,
-}
 
 export type StartEvent = CustomEvent<void>
 export type FinishEvent = CustomEvent<number>
@@ -22,6 +17,7 @@ export type DifficultyChangeEvent = CustomEvent<void>
 export type GameTakeEvent = CustomEvent<boolean>
 export type RearrangeEvent = CustomEvent<void>
 export type RestartEvent = CustomEvent<void>
+export type SelectedEvent = CustomEvent<void>
 export type HintEvent = CustomEvent<boolean>
 
 declare global {
@@ -33,6 +29,7 @@ declare global {
     'game-rearrange': RearrangeEvent
     'game-take': GameTakeEvent
     'game-hint': HintEvent
+    'game-selected': SelectedEvent
   }
 }
 
@@ -90,7 +87,7 @@ export default class extends LitElement {
   protected wantRematch: number[] = []
 
   /** The sets game engine */
-  private engine!: Game
+  engine!: Game
 
   /** Cached `instance` my player in the game engine */
   private mainPlayer!: Player
@@ -194,23 +191,30 @@ export default class extends LitElement {
     // Update the final chart when when the screen resizes
     addEventListener('resize', () => p2p && this.engine && !this.engine.filled.isAlive && this.requestUpdate())
 
-    // Start game and bind peers (order shouldn't matter)
+    // Refresh selected count and remove shake animation after selecting a card
+    this.addEventListener('game-selected', () => this.takeFailed = this.requestUpdate() && false)
+
+    // Start game and bind peers
     p2p?.peers.map(this.bindPeer)
-    this.restartGame()
   }
 
   protected updated(changed: PropertyValues) {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
     
-    // Not first time
-    if (changed.has('easyMode') && typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1) {
-      this.dispatchEvent(new CustomEvent('game-difficulty'))
+    if (changed.has('easyMode') && p2p.peers.length == 1) {
       this.restartGame()
+        
+      // Not first time & solo only
+      if (typeof changed.get('easyMode') != 'undefined')
+        this.dispatchEvent(new CustomEvent('game-difficulty'))
     }
   }
 
   private async restartGame() {
+    if (p2p.peers.length != 1)
+      this.easyMode = false
+    
     // Make the players
     // For multiplayer uses generators defined at the top will be used.
     // TODO For singleplayer use the default rules... for now
@@ -222,7 +226,7 @@ export default class extends LitElement {
         p2p.peers.length == 1 ? undefined : linear(this.scoreGainIncrement, this.scoreGainInitial)))
     
     // Number of cards to make
-    this.cardsLeft = this.easyMode && p2p.peers.length == 1
+    this.cardsLeft = this.easyMode
       // Easy mode - remove opacity
       // This is SAFE because opacity is the last feature that's incremented (most signifigant bit/feature)
       ? (Details.COUNT - 1) ** Details.SIZE
@@ -279,7 +283,7 @@ export default class extends LitElement {
   }
 
   /** Works on the engine on behalf of a peer & sets main player */
-  private bindPeer = async ({ message, close, isYou, name }: typeof p2p.peers[0], index: number) => {
+  private bindPeer = async ({ message, close, isYou, name }: Peer, index: number) => {
     try {
       for await (const data of message)
         if (data instanceof ArrayBuffer) {
@@ -288,16 +292,17 @@ export default class extends LitElement {
             case 1: // Status Bit
               switch (view[0]) {
                 case Status.HINT:
-                  this.dispatchEvent(new CustomEvent('game-hint', {
-                    detail: this.engine.takeHint(this.engine.players[index])
-                  }))
+                  const detail = this.engine.takeHint(this.engine.players[index])
+                  if (isYou)
+                    this.dispatchEvent(new CustomEvent('game-hint', { detail }))
                   break
                 
                 case Status.REMATCH:
                   this.wantRematch = [...new Set(this.wantRematch).add(index)]
-                  if (this.wantRematch.length == p2p.peers.length)
+                  if (this.wantRematch.length == p2p.peers.length) {
                     this.restartGame()
-                  this.dispatchEvent(new CustomEvent('game-restart'))
+                    this.dispatchEvent(new CustomEvent('game-restart'))
+                  }
                   break
                 
                 default:
@@ -312,7 +317,9 @@ export default class extends LitElement {
                 detail = this.engine.takeSet(
                   this.engine.players[index],
                   this.engine.cards.filter((_, i) => indexs.has(i)) as CardSet)
-              this.dispatchEvent(new CustomEvent('game-take', { detail }))
+              
+              if (isYou)
+                this.dispatchEvent(new CustomEvent('game-take', { detail }))
 
               if (detail) // allows new cards to zoom in again
                 (this.renderRoot.firstElementChild as LitSets).previousSelection = undefined
@@ -322,7 +329,8 @@ export default class extends LitElement {
               throw Error(`${view.byteLength} unexpected bytes: 0x${[...view]
                 .map(byte => byte.toString(16).padStart(2, '0').toUpperCase()).join(' 0x')}`)
           }
-        }
+        } else
+          throw Error(`Expected an ArrayBuffer but got a ${typeof data}: ${JSON.stringify(data)} "${data}"`)
     } catch (error) {
       error.peer = name
       this.dispatchEvent(new ErrorEvent('p2p-error', { error, bubbles: true, composed: true }))
@@ -358,10 +366,8 @@ export default class extends LitElement {
         .cards=${this.engine.cards}
         .hint=${this.mainPlayer.hintCards.map(card => this.engine.cards.indexOf(card))}
         @take=${({ detail }: TakeEvent) => p2p.broadcast(new Uint8Array(detail))}
-        @selected=${() => {
-          this.takeFailed = false
-          this.requestUpdate() // since count has changed
-        }}></lit-sets>
+        @selected=${() => this.dispatchEvent(new CustomEvent('game-selected'))}
+      ></lit-sets>
       <lit-clock
         part="clock"
         .ticks=${this.restartClock ? 0 : null}
@@ -428,7 +434,7 @@ export default class extends LitElement {
       : html`<slot name="no-singleplayer-score"></slot>`}${
       
       // Big hint
-      this.easyMode && p2p.peers.length == 1
+      this.easyMode
         && (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length == 2
         // Cache these cards for the render below
         && (firstCard = this.getSelectedCard(0)!)
