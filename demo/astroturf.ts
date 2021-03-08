@@ -3,7 +3,6 @@ import type { Fab } from '@material/mwc-fab'
 import type litP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets'
 import type Game from 'sets-game-engine'
-import type { Player } from 'sets-game-engine'
 
 import { MockPeer } from '@mothepro/fancy-p2p'
 import { Emitter } from 'fancy-emitter'
@@ -84,6 +83,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
 
   private startGame = async () => {
     this.engine = p2pDemoElement.engine
+    // this.currentRound = 0 // shouldn't matter
     
     for await (const _ of this.engine.filled)
       this.round(++this.currentRound)
@@ -94,67 +94,53 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   }
 
   /** New cards are on the field... time to astroturf 😈 */
+  // TODO pass in times thru generator
   private async round(round: number) {
     // Wait a bit before doing anything
     await milliseconds(
       4000 // animation
-      + 120000 * this.difficulty
-      + 5000 * Math.random())
+      + 20000 * this.difficulty
+      + 10000 * Math.random())
 
-    // Dummy (unlucky) took the wrong thing!
-    if (Math.random() * maxDifficulty < this.difficulty ** 2)
-      await this.takeRandom(round, 60000 * Math.random())
+    // Dummy took a bad set!
+    if (Math.random() < (this.difficulty / maxDifficulty) ** 2) {
+      if (round != this.currentRound || !this.engine.filled.isAlive)
+        return
+      this.send(new Uint8Array([1, 2, 3])) // This is the "random" set LOL
+      await milliseconds(4000
+        + 30000 * this.difficulty
+        + 60000 * Math.random())
+    }
 
     // Hints, increased likelyhood the higher the difficulty
-    for (
-      let time = 0, skill = -this.difficulty;
-      time < 2 && skill < 0;
-      time++, skill += Math.random() * maxDifficulty)
-      await this.hint(round, 
-        time == 0
-        ? 5000 // First hint
-          + 90000 * this.difficulty
-          + 60000 * Math.random()
-        : 3000 // Second hint
-          + 10000 * this.difficulty
-          + 5000 * Math.random())
+    let skill = -this.difficulty
+    skill += Math.random() * maxDifficulty - minDifficulty
+    if (skill < 0) { // 1st hint
+      if (round != this.currentRound || !this.engine.filled.isAlive)
+        return
+      
+      this.send(new Uint8Array([Status.HINT]))
+      await milliseconds(5000 
+        + 30000 * this.difficulty
+        + 60000 * Math.random())
+    }
 
-    this.takeSuccess(round)
-  }
-  
-  private hint(round: number, ms: number) {
-    if (round != this.currentRound)
-      return
+    skill += Math.random() * maxDifficulty - minDifficulty
+    if (skill < 0) { // 2nd hint
+      if (round != this.currentRound || !this.engine.filled.isAlive)
+        return
+      
+      this.send(new Uint8Array([Status.HINT]))
+      await milliseconds(3000 // less wait
+        + 10000 * this.difficulty
+        + 5000 * Math.random())
+    }
 
-    if (!this.engine.filled.isAlive)
-      throw Error('Can not astroturf hint when game is completed')
-    
-    this.send(new Uint8Array([Status.HINT]))
-    return milliseconds(ms)
-  }
-
-  private takeSuccess(round: number) {
-    if (round != this.currentRound)
-      return
-
-    if (!this.engine.filled.isAlive)
-      throw Error('Can not astroturf take when game is completed')
-
+    // Finally take the right set
     const cards = this.engine.solution
-    if (!cards)
-      throw Error('Unable to find an astroturfed solution')
+    if (round != this.currentRound || !this.engine.filled.isAlive || !cards)
+      return
     
     this.send(new Uint8Array(cards.map(card => this.engine.cards.indexOf(card))))
-  }
-
-  private takeRandom(round: number, ms: number) {
-    if (round != this.currentRound)
-      return
-
-    if (!this.engine.filled.isAlive)
-      throw Error('Can not astroturf take when game is completed')
-
-    this.send(new Uint8Array([1, 2, 3])) // This is the "random" set LOL
-    return milliseconds(ms)
   }
 }
