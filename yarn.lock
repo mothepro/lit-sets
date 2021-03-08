@@ -530,6 +530,14 @@
     fancy-emitter "^2.0.0"
     simple-peer "^9.9.3"
 
+"@mothepro/fancy-p2p@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@mothepro/fancy-p2p/-/fancy-p2p-0.0.23.tgz#943291147e18de2f668c160836e5f06e04154bb5"
+  integrity sha512-QNImRPhMv25UB0HrSFv7i71Nn587enBqCOOEmUfc17uv1KN+Ud81CmD1rBcuHLlsFlJu8WV08+i83CR6ownfIA==
+  dependencies:
+    fancy-emitter "^2.0.0"
+    simple-peer "^9.9.3"
+
 "@mothepro/lit-chart@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@mothepro/lit-chart/-/lit-chart-0.0.2.tgz#cfb6869399c3a8fea1129810ba69670d93b25634"

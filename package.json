@@ -41,7 +41,7 @@
   "devDependencies": {
     "@material/icon-button": "^10.0.0",
     "@material/mwc-dialog": "^0.20.0",
-    "@mothepro/fancy-p2p": "^0.0.22",
+    "@mothepro/fancy-p2p": "^0.0.23",
     "@mothepro/signaling-lobby": "^0.3.3",
     "@types/google.analytics": "^0.0.41",
     "@types/mocha": "^8.2.1",

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Sets by Mo - The realtime puzziling card game</title>
+  <title>Sets by Mo &bull; Realtime Puzzle Card Game</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -40,7 +40,7 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit>
+<body first-visit astroturf astroturf-player-range="[2,4]" astroturf-names='["bear"]'>
   <lit-p2p
     fallback
     local-storage
@@ -219,7 +219,17 @@
       <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
-    <span slot="p2p-alone" class="p2p-lobby centered-text" style="line-height: 3em">
+    <div class="astroturf p2p-lobby" slot="p2p-alone">
+      <mwc-list class="client-list" multi></mwc-list>
+      <mwc-fab
+        icon="done"
+        label="Make Group"
+        selected="0"
+        class="make-group"
+      ></mwc-fab>
+    </div>
+
+    <span slot="p2p-alone" class="p2p-lobby centered-text not-astroturf" style="line-height: 3em">
       Waiting for players to join&hellip;
       <br />
       Invite your friends
@@ -230,7 +240,7 @@
         title="Share Sets by Mo"
       ></mwc-icon-button>
     </span>
-    <div slot="p2p-alone" class="p2p-lobby centered loading"><div></div><div></div></div>
+    <div slot="p2p-alone" class="p2p-lobby centered loading not-astroturf"><div></div><div></div></div>
 
     <mwc-dialog id="feedback">
       <iframe

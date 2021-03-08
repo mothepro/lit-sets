@@ -14,8 +14,7 @@
 
 + Arrow key to choose card (assume 3xN grid)
 + Mini tutorial can be more clear
-+ Astroturfing?? (instead of `alone` slot)
-  + easy mode in multiplayer
++ easy mode in multiplayer
 + Extend signaling fallback duration
   + Why is p2p so unreliable :'( `lit-p2p[retries="-1"]`
 + censor bad words for viewer

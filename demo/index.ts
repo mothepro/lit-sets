@@ -4,6 +4,7 @@ import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
 import { log, BeforeInstallPromptEvent, dimension } from './util.js'
+import './astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
@@ -150,7 +151,9 @@ const skip = { // TODO this is horrible!! I just don't wanna log the 1st time lo
   name: false,
   state: false,
 }
-addEventListener('p2p-update', () => skip.update ? log('p2p', 'update', `group with ${p2p.peers.length}`) : skip.update = true)
+// @ts-ignore ...
+addEventListener('p2p-update', ({ detail }: CustomEvent<boolean | string>) => !skip.update ? skip.update = true :
+  log('p2p', detail == 'astroturf' ? 'astroturf' : 'update', `group with ${p2p.peers.length}`))
 new MutationObserver(records => {
   for (const record of records)
     if (skip[record.attributeName as 'state' | 'name'])

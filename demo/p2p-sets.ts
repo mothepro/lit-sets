@@ -1,20 +1,15 @@
+import type { Peer } from '@mothepro/fancy-p2p'
 import type LitSets from '../index.js'
 import type { TakeEvent } from '../index.js'
 import { LitElement, customElement, html, css, internalProperty, PropertyValues, property } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import { milliseconds } from '../src/helper.js'
-import { getNeededCard, linear } from './util.js'
+import { getNeededCard, linear, Status } from './util.js'
 
 import 'lit-confetti'         // <lit-confetti>
 import '@mothepro/lit-chart'  // <lit-chart>
 import '@mothepro/lit-clock'  // <lit-chart>
 import '../index.js'          // <lit-sets>
-
-/** One bit of data to send over the wire. */
-const enum Status {
-  HINT,
-  REMATCH,
-}
 
 export type StartEvent = CustomEvent<void>
 export type FinishEvent = CustomEvent<number>
@@ -92,7 +87,7 @@ export default class extends LitElement {
   protected wantRematch: number[] = []
 
   /** The sets game engine */
-  private engine!: Game
+  engine!: Game
 
   /** Cached `instance` my player in the game engine */
   private mainPlayer!: Player
@@ -199,19 +194,20 @@ export default class extends LitElement {
     // Refresh selected count and remove shake animation after selecting a card
     this.addEventListener('game-selected', () => this.takeFailed = this.requestUpdate() && false)
 
-    // Start game and bind peers (order shouldn't matter)
+    // Start game and bind peers
     p2p?.peers.map(this.bindPeer)
-    this.restartGame()
   }
 
   protected updated(changed: PropertyValues) {
     if (changed.has('restartClock') && this.restartClock)
       this.restartClock = false
     
-    // Not first time
-    if (changed.has('easyMode') && typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1) {
-      this.dispatchEvent(new CustomEvent('game-difficulty'))
+    if (changed.has('easyMode')) {
       this.restartGame()
+        
+      // Not first time
+      if (typeof changed.get('easyMode') != 'undefined' && p2p.peers.length == 1)
+        this.dispatchEvent(new CustomEvent('game-difficulty'))
     }
   }
 
@@ -284,7 +280,7 @@ export default class extends LitElement {
   }
 
   /** Works on the engine on behalf of a peer & sets main player */
-  private bindPeer = async ({ message, close, isYou, name }: typeof p2p.peers[0], index: number) => {
+  private bindPeer = async ({ message, close, isYou, name }: Peer, index: number) => {
     try {
       for await (const data of message)
         if (data instanceof ArrayBuffer) {
@@ -300,9 +296,10 @@ export default class extends LitElement {
                 
                 case Status.REMATCH:
                   this.wantRematch = [...new Set(this.wantRematch).add(index)]
-                  if (this.wantRematch.length == p2p.peers.length)
+                  if (this.wantRematch.length == p2p.peers.length) {
                     this.restartGame()
-                  this.dispatchEvent(new CustomEvent('game-restart'))
+                    this.dispatchEvent(new CustomEvent('game-restart'))
+                  }
                   break
                 
                 default:

@@ -6,6 +6,12 @@ export interface BeforeInstallPromptEvent extends Event {
   platforms: string[]
 }
 
+/** One bit of data to send over the wire. */
+export const enum Status {
+  HINT,
+  REMATCH,
+}
+
 /** A user cause "interactive", event to save */
 // TODO add better support for interactive vs non-interactive
 export function log(category: string, action: string, label?: string, value?: number, interaction = true) {
