@@ -357,6 +357,10 @@ export default class extends LitElement {
     return litSets?.cards[ litSets.selected[index] ]
   }
 
+  private get selectedCount() {
+    return (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length ?? 0
+  }
+
   protected readonly render = () => p2p && this.engine && (this.engine.filled.isAlive
     // In game
     ? html`
@@ -418,7 +422,7 @@ export default class extends LitElement {
         extended
         icon="done_outline"
         label="Take Set"
-        ?disabled=${this.mainPlayer.isBanned || (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length != 3}
+        ?disabled=${this.mainPlayer.isBanned || this.selectedCount != 3}
         @click=${() => (this.renderRoot.firstElementChild as LitSets | null)?.takeSet()}
       ></mwc-fab>
       ${this.engine.players.length > 1 || this.engine.players[0].score > 0 ? html`
@@ -428,14 +432,11 @@ export default class extends LitElement {
           .scores=${this.engine.players.map(({ score }) => score)}
           .isBanned=${this.engine.players.map(({isBanned}) => isBanned)}
           .names=${p2p.peers?.map(peer => peer.name) ?? []}
-        ></sets-leaderboard>`
-      
-      // TODO show leaderboard as default (child of this slot)
-      : html`<slot name="no-singleplayer-score"></slot>`}${
+        ></sets-leaderboard>` : ''}${
       
       // Big hint
       this.easyMode
-        && (this.renderRoot.firstElementChild as LitSets | null)?.selected?.length == 2
+        && this.selectedCount == 2
         // Cache these cards for the render below
         && (firstCard = this.getSelectedCard(0)!)
         && (secondCard = this.getSelectedCard(1)!)
@@ -456,7 +457,14 @@ export default class extends LitElement {
             quantity=${nextCard.quantity}
             color=${nextCard.color}
           ></sets-card>
-        </div>` : ''}`
+        </div>` : ''}${
+      
+      // Mini guide
+      // TODO show this as default as the child of a leaderboard slot
+      this.engine.players.length == 1
+        && this.engine.players[0].score == 0
+        && this.selectedCount < 2
+      ? html`<slot name="no-singleplayer-score"></slot>` : ''}`
 
     // Game over
     : html`
