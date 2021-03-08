@@ -19,8 +19,9 @@ const
   // Elements
   litP2pElement = document.querySelector('lit-p2p')! as litP2P,
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
-  clientList = document.querySelector('.astroturf mwc-list') as List,
-  makeGroupBtn = document.querySelector('.astroturf mwc-fab') as Fab
+  defaultAstros = document.querySelectorAll('[slot="p2p-alone"].astroturf-default') as unknown as HTMLElement[],
+  clientList = document.querySelector('mwc-list[slot="p2p-alone"]') as List,
+  makeGroupBtn = document.querySelector('mwc-fab[slot="p2p-alone"]') as Fab
 
 // For my best friend
 if (Math.random() < 0.1)
@@ -28,12 +29,30 @@ if (Math.random() < 0.1)
 else if (Math.random() > 0.9)
   names.push('🐯boy')
 
-// Fill player list
-for (let i = 0; i < minPlayers + (1 + maxPlayers - minPlayers) * Math.random(); i++)
-  clientList.innerHTML +=
-  '<mwc-check-list-item>' +
-    (names.splice(Math.trunc(Math.random() * names.length), 1)[0] ?? `Anonymous ${backupNames.next().value}`) +
-  '</mwc-check-list-item>'
+// stuff on change
+if (document.body.hasAttribute('astroturf'))
+  new MutationObserver(async () => {
+    if (litP2pElement.getAttribute('state') == '1') {
+      // Fill player list
+      for (let i = 0; i < minPlayers + (1 + maxPlayers - minPlayers) * Math.random(); i++) {
+        await milliseconds(3000 + 7000 * Math.random())
+        clientList.innerHTML +=
+          '<mwc-check-list-item>' +
+            (names.splice(Math.trunc(Math.random() * names.length), 1)[0] ?? `Anonymous ${backupNames.next().value}`) +
+          '</mwc-check-list-item>'
+        
+        // Hide defualts and actually show the list!
+        defaultAstros.forEach(e => e.toggleAttribute('hidden', true))
+        clientList.toggleAttribute('hidden', false)
+        await milliseconds(17500 * Math.random())
+      }
+    } else { // reset
+      defaultAstros.forEach(e => e.toggleAttribute('hidden', false))
+      makeGroupBtn.setAttribute('selected', '0')
+      clientList.toggleAttribute('hidden', true)
+      clientList.innerHTML = ''
+    }
+  }).observe(litP2pElement, { attributes: true, attributeFilter: ['state'] })
 
 // @ts-ignore Ensure button count matches the selection from list
 clientList.addEventListener('selected', ({ detail: { index } }: CustomEvent<{ index: Set<number> }>) =>

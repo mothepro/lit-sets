@@ -406,6 +406,9 @@ mwc-dialog iframe {
   min-width: 330px;
 }
 /* Mini tutorial */
+[slot="no-singleplayer-score"] {
+  padding: 0 2em;
+}
 [selected-count="2"] [slot="no-singleplayer-score"] {
   display: none;
 }
