@@ -295,9 +295,6 @@ mwc-button:not([raised]), /* Weird */
 [slot="post-tip-text"] {
   margin: 1em 0;
 }
-[slot="p2p-alone"] {
-  min-height: var(--loading-size);
-}
 [slot="game-over"] {
   margin-top: 5em;
   line-height: 3em;

@@ -36,6 +36,7 @@ if (document.body.hasAttribute('astroturf'))
   new MutationObserver(async () => {
     if (litP2pElement.getAttribute('state') == '1') {
       // Fill player list
+      // TODO leave in groups too!
       for (let i = 0; i < playersToAdd; i++) {
         await milliseconds(3000 + 7000 * Math.random())
         clientList.innerHTML +=
@@ -65,7 +66,9 @@ clientList.addEventListener('selected', ({ detail: { index } }: CustomEvent<{ in
 
 // Start astroturf'd game
 makeGroupBtn.addEventListener('click', () => {
-  if (typeof clientList.index == 'number' || clientList.index.size == 0)
+  if (typeof clientList.index == 'number'
+    || clientList.index.size < litP2pElement.minPeers
+    || clientList.index.size > litP2pElement.maxPeers)
     return
   
   // Hide online/offline
@@ -131,8 +134,8 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
     // Wait a bit before doing anything
     await milliseconds(
       4000 // animation
-      + 20000 * this.difficulty
-      + 10000 * Math.random())
+      + 10000 * this.difficulty
+      + 7000 * Math.random())
 
     // Dummy took a bad set!
     if (Math.random() < (this.difficulty / maxDifficulty) ** 2) {
@@ -140,8 +143,8 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
         return
       this.send(new Uint8Array([1, 2, 3])) // This is the "random" set LOL
       await milliseconds(4000
-        + 30000 * this.difficulty
-        + 60000 * Math.random())
+        + 10000 * this.difficulty
+        + 20000 * Math.random())
     }
 
     // Hints, increased likelyhood the higher the difficulty
@@ -153,8 +156,8 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
       
       this.send(new Uint8Array([Status.HINT]))
       await milliseconds(5000 
-        + 30000 * this.difficulty
-        + 60000 * Math.random())
+        + 10000 * this.difficulty
+        + 20000 * Math.random())
     }
 
     skill += Math.random() * maxDifficulty - minDifficulty
