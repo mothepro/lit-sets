@@ -1,7 +1,7 @@
 {
     "name": "Sets by Mo",
     "short_name": "Sets",
-    "start_url": "/",
+    "start_url": "/?pwa",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

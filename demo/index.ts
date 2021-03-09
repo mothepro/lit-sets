@@ -3,7 +3,7 @@ import type { IconButton } from '@material/mwc-icon-button'
 import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
-import { log, BeforeInstallPromptEvent, dimension } from './util.js'
+import { log, BeforeInstallPromptEvent } from './util.js'
 import './astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
@@ -115,9 +115,6 @@ addEventListener('keypress', (event: KeyboardEvent) => {
  // Logging //\
 ///////////// \\
 // PWA
-// when will `navigator.standalone` be supported
-dimension(1, matchMedia('(display-mode: standalone)')?.matches  ? 'standalone' : 'browser')
-
 let deferredPrompt: BeforeInstallPromptEvent | void // for use later to show browser install prompt.
 addEventListener('appinstalled', () => deferredPrompt = log('install', 'complete'))
 addEventListener('beforeinstallprompt', event => {
