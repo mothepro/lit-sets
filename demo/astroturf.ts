@@ -113,7 +113,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   constructor(
     readonly name: string,
     /** Positive number to determine the skill, the lower the better */
-    readonly difficulty = Math.random()) { 
+    readonly difficulty: number) { 
     p2pDemoElement.addEventListener('game-start', this.startGame)
   }
 
@@ -131,21 +131,20 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   /** New cards are on the field... time to astroturf 😈 */
   // TODO pass in times thru generator
   private async round(round: number) {
+    // Dummy took a bad set!
+    if (Math.random() < (this.difficulty / maxDifficulty) ** 2) {
+      if (round != this.currentRound || !this.engine.filled.isAlive)
+        return
+      await milliseconds(2000
+        + 4000 * Math.random())
+      this.send(new Uint8Array([1, 2, 3])) // This is the "random" set LOL
+    }
+
     // Wait a bit before doing anything
     await milliseconds(
       4000 // animation
       + 10000 * this.difficulty
       + 7000 * Math.random())
-
-    // Dummy took a bad set!
-    if (Math.random() < (this.difficulty / maxDifficulty) ** 2) {
-      if (round != this.currentRound || !this.engine.filled.isAlive)
-        return
-      this.send(new Uint8Array([1, 2, 3])) // This is the "random" set LOL
-      await milliseconds(4000
-        + 10000 * this.difficulty
-        + 20000 * Math.random())
-    }
 
     // Hints, increased likelyhood the higher the difficulty
     let skill = -this.difficulty
@@ -160,6 +159,15 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
         + 20000 * Math.random())
     }
 
+    // Dummy took a bad set with a possible hint!
+    if (Math.random() < (this.difficulty / maxDifficulty) ** 2 && 0.5 < Math.random()) {
+      if (round != this.currentRound || !this.engine.filled.isAlive)
+        return
+      await milliseconds(1000
+        + 3000 * Math.random())
+      this.send(new Uint8Array([1, 2, 3]))
+    }
+
     skill += Math.random() * maxDifficulty - minDifficulty
     if (skill < 0) { // 2nd hint
       if (round != this.currentRound || !this.engine.filled.isAlive)
@@ -168,7 +176,17 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
       this.send(new Uint8Array([Status.HINT]))
       await milliseconds(3000 // less wait
         + 10000 * this.difficulty
-        + 5000 * Math.random())
+        + 7000 * Math.random())
+    }
+
+    skill += Math.random() * maxDifficulty - minDifficulty
+    if (skill < 0) { // 3rd hint
+      if (round != this.currentRound || !this.engine.filled.isAlive)
+        return
+      
+      this.send(new Uint8Array([Status.HINT]))
+      await milliseconds(1000 // lesser wait
+        + 4000 * Math.random())
     }
 
     // Finally take the right set
