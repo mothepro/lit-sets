@@ -38,7 +38,7 @@ if (document.body.hasAttribute('astroturf'))
       // Fill player list
       // TODO leave in groups too!
       for (let i = 0; i < playersToAdd; i++) {
-        await milliseconds(3000 + 7000 * Math.random())
+        await milliseconds(3000 + 4000 * Math.random())
         clientList.innerHTML +=
           '<mwc-check-list-item>' +
             (names.splice(Math.trunc(Math.random() * names.length), 1)[0] ?? `Anonymous ${backupNames.next().value}`) +
@@ -144,7 +144,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
     await milliseconds(
       4000 // animation
       + 10000 * this.difficulty
-      + 7000 * Math.random())
+      + 20000 * Math.random())
 
     // Hints, increased likelyhood the higher the difficulty
     let skill = -this.difficulty
@@ -164,7 +164,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
       if (round != this.currentRound || !this.engine.filled.isAlive)
         return
       await milliseconds(1000
-        + 3000 * Math.random())
+        + 5000 * Math.random())
       this.send(new Uint8Array([1, 2, 3]))
     }
 
@@ -176,7 +176,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
       this.send(new Uint8Array([Status.HINT]))
       await milliseconds(3000 // less wait
         + 10000 * this.difficulty
-        + 7000 * Math.random())
+        + 10000 * Math.random())
     }
 
     skill += Math.random() * maxDifficulty - minDifficulty
@@ -186,7 +186,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
       
       this.send(new Uint8Array([Status.HINT]))
       await milliseconds(1000 // lesser wait
-        + 4000 * Math.random())
+        + 5000 * Math.random())
     }
 
     // Finally take the right set
