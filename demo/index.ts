@@ -19,7 +19,8 @@ const // Elements in index.html
   toggleHiddenBtns = document.querySelectorAll('[toggle-hidden]')! as unknown as IconButton[],
   helpDialogElement = document.getElementById('help')! as Dialog,
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
-  dialogOpenerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[]
+  openerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[],
+  trackerElements = document.querySelectorAll('[track-click]')! as unknown as HTMLElement[]
 
 // Service worker to make this a PWA
 if (location.protocol == 'https:')
@@ -44,7 +45,7 @@ if (!navigator.onLine)
     .forEach(elem => elem.toggleAttribute('hidden', true))
 
 // Dialog openers
-for (const opener of dialogOpenerElements)
+for (const opener of openerElements)
   opener.addEventListener('click', () => document
     .getElementById(opener.getAttribute('open-dialog') ?? '')
     ?.toggleAttribute('open'))
@@ -139,6 +140,17 @@ document.querySelector('theme-toggle')
 
 document.querySelectorAll('mwc-dialog').forEach(dialog =>
   dialog.addEventListener('opened', () => log('dialog', 'opened', dialog.id)))
+
+// Click trackers!
+for (const element of trackerElements) {
+  let count = 0
+  element.addEventListener('click', () => log(
+    'click',
+    element.getAttribute('track-click')!,
+    element.hasAttribute('track-click-attr')
+      ? element.getAttribute(element.getAttribute('track-click-attr')!) ?? 'void 0'
+      : `${count++}`))
+}
 
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) =>
