@@ -27,14 +27,6 @@ export function log(category: string, action: string, label?: string, value?: nu
     console.log(new Date, arguments)
 }
 
-/** Record a custom dimension */
-export function dimension(id: number, value: string) {
-  if ('ga' in window)
-    ga('set', `dimension${id}`, value)
-  else
-    console.log(new Date, `dimension #${id}`, value)
-}
-
 /** Generator that returns linear values given `y = mx + b` */
 export function* linear(m: number, b: number): Generator<number, never, unknown> {
   yield b

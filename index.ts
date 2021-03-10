@@ -3,12 +3,13 @@ import type { IconButton } from '@material/mwc-icon-button'
 import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
-import { log, BeforeInstallPromptEvent, dimension } from './util.js'
+import { log, BeforeInstallPromptEvent } from './util.js'
 import './astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
+import '@material/mwc-menu'     // <mwc-menu>
 import './p2p-sets.js'          // <p2p-sets>
 
 const // Elements in index.html
@@ -22,7 +23,7 @@ const // Elements in index.html
 
 // Service worker to make this a PWA
 if (location.protocol == 'https:')
-  navigator?.serviceWorker.register('sw.js')
+  navigator?.serviceWorker?.register('sw.js')
 
 // first-visit attribute
 if (localStorage.length)
@@ -58,7 +59,7 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
   toggleOnlineBtn.addEventListener('click', () => 
     litP2pElement.setAttribute('state', (litP2pElement.getAttribute('state') ?? '-1') == '-1' // is disconnected
       ? '' // try to connect
-      : '-1')) // not trying to connect
+      : 'back to solo')) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
 if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('first-visit-help-delay'))
@@ -115,9 +116,6 @@ addEventListener('keypress', (event: KeyboardEvent) => {
  // Logging //\
 ///////////// \\
 // PWA
-// when will `navigator.standalone` be supported
-dimension(1, matchMedia('(display-mode: standalone)')?.matches  ? 'standalone' : 'browser')
-
 let deferredPrompt: BeforeInstallPromptEvent | void // for use later to show browser install prompt.
 addEventListener('appinstalled', () => deferredPrompt = log('install', 'complete'))
 addEventListener('beforeinstallprompt', event => {
@@ -152,8 +150,11 @@ const skip = { // TODO this is horrible!! I just don't wanna log the 1st time lo
   state: false,
 }
 // @ts-ignore ...
-addEventListener('p2p-update', ({ detail }: CustomEvent<boolean | string>) => !skip.update ? skip.update = true :
-  log('p2p', detail == 'astroturf' ? 'astroturf' : 'update', `group with ${p2p.peers.length}`))
+addEventListener('p2p-update', () => !skip.update ? skip.update = true : log('p2p', 'update', `group with ${p2p.peers.length}`))
+addEventListener('p2p-astroturf', () => log(
+  'astroturf',
+  `${p2p.peers[0].name} with ${p2p.peers.length} CPUs ${document.body.getAttribute('astroturf-difficulty-range') ?? [0,1]}`,
+  p2p.peers.map(astropeer => (astropeer as any).difficulty ?? '').join(' ').trim()))
 new MutationObserver(records => {
   for (const record of records)
     if (skip[record.attributeName as 'state' | 'name'])

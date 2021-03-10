@@ -13,7 +13,7 @@
   --sets-shape-size: 2.4em;
   --sets-shape-spacing: 8px;
   --sets-grid-template-columns: repeat(2, minmax(150px, 45vw));
-  --sets-gap: 2em;
+  --sets-gap: 1.25em;
   --sets-cards-per-row: 2;
   --sets-card-animation-delay: 250ms;
 
@@ -70,16 +70,14 @@ mwc-button[toggle-online], .desktop-only {
   /* Too big for mobile (must be before media queries) */
   display: none;
 }
-@media (min-width: 576px) {
-  /* bootstrap "sm" */
+@media (min-width: 576px) { /* bootstrap "sm" */
   :root {
     --how-to-table-template-columns: 50% 50%;
     --how-to-sets-template-columns: 30% 30% 30%;
     --sets-shape-size: 3.5em;
   }
 }
-@media (min-width: 768px) {
-  /* bootstrap "md" */
+@media (min-width: 768px) { /* bootstrap "md" */
   :root {
     --sets-shape-spacing: 12px;
     --sets-gap: 1.5em;
@@ -94,8 +92,7 @@ mwc-button[toggle-online], .desktop-only {
     display: none;
   }
 }
-@media (min-width: 992px) {
-  /* bootstrap "lg" */
+@media (min-width: 992px) { /* bootstrap "lg" */
   :root {
     --sets-gap: 2.5em;
     --sets-shape-spacing: 18px 12px;
@@ -104,8 +101,7 @@ mwc-button[toggle-online], .desktop-only {
     display: initial;
   }
 }
-@media (min-width: 1200px) {
-  /* bootstrap "xl" */
+@media (min-width: 1200px) { /* bootstrap "xl" */
   :root {
     --sets-gap: 3em;
     --sets-shape-size: 4.5em;
@@ -294,9 +290,6 @@ mwc-button:not([raised]), /* Weird */
 }
 [slot="post-tip-text"] {
   margin: 1em 0;
-}
-[slot="p2p-alone"] {
-  min-height: var(--loading-size);
 }
 [slot="game-over"] {
   margin-top: 5em;
