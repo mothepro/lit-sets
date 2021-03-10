@@ -1,7 +1,8 @@
 import type { Peer } from '@mothepro/fancy-p2p'
 import type LitSets from '../index.js'
 import type { TakeEvent } from '../index.js'
-import { LitElement, customElement, html, css, internalProperty, PropertyValues, property } from 'lit-element'
+import type LitClock from '@mothepro/lit-clock'
+import { LitElement, customElement, html, css, internalProperty, PropertyValues, property, query } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
 import { milliseconds } from '../src/helper.js'
 import { getNeededCard, linear, Status } from './util.js'
@@ -79,8 +80,8 @@ export default class extends LitElement {
   @internalProperty()
   protected confetti = 0
 
-  @internalProperty()
-  protected restartClock = false
+  @query('lit-clock')
+  protected litClock?: LitClock
 
   /** Indexs of peers who wanna go again. If all p2p.peers are here, start the game again. */
   @internalProperty()
@@ -199,9 +200,6 @@ export default class extends LitElement {
   }
 
   protected updated(changed: PropertyValues) {
-    if (changed.has('restartClock') && this.restartClock)
-      this.restartClock = false
-    
     if (changed.has('easyMode') && p2p.peers.length == 1) {
       this.restartGame()
         
@@ -254,7 +252,8 @@ export default class extends LitElement {
 
     // Reset things
     this.runningScores = this.engine.players.map(() => [])
-    this.restartClock = true
+    if (this.litClock)
+      this.litClock.ticks = 0
     this.wantRematch = []
     this.confetti = 0
     this.compliment = compliments[Math.trunc(Math.random() * compliments.length)] 
@@ -374,7 +373,6 @@ export default class extends LitElement {
       ></lit-sets>
       <lit-clock
         part="clock"
-        .ticks=${this.restartClock ? 0 : null}
         ?hidden=${!this.showClock}
         ?pause-on-blur=${this.engine.players.length == 1}
         @tick=${() => this.engine.players
