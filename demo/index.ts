@@ -9,6 +9,7 @@ import './astroturf.js'
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
+import '@material/mwc-menu'     // <mwc-menu>
 import './p2p-sets.js'          // <p2p-sets>
 
 const // Elements in index.html
