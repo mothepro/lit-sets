@@ -58,7 +58,7 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
   toggleOnlineBtn.addEventListener('click', () => 
     litP2pElement.setAttribute('state', (litP2pElement.getAttribute('state') ?? '-1') == '-1' // is disconnected
       ? '' // try to connect
-      : '-1')) // not trying to connect
+      : 'back to solo')) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
 if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('first-visit-help-delay'))
@@ -149,8 +149,11 @@ const skip = { // TODO this is horrible!! I just don't wanna log the 1st time lo
   state: false,
 }
 // @ts-ignore ...
-addEventListener('p2p-update', ({ detail }: CustomEvent<boolean | string>) => !skip.update ? skip.update = true :
-  log('p2p', detail == 'astroturf' ? 'astroturf' : 'update', `group with ${p2p.peers.length}`))
+addEventListener('p2p-update', () => !skip.update ? skip.update = true : log('p2p', 'update', `group with ${p2p.peers.length}`))
+addEventListener('p2p-astroturf', () => log(
+  'astroturf',
+  `${p2p.peers[0].name} with ${p2p.peers.length} CPUs ${document.body.getAttribute('astroturf-difficulty-range') ?? [0,1]}`,
+  p2p.peers.map(astropeer => (astropeer as any).difficulty ?? '').join(' ').trim()))
 new MutationObserver(records => {
   for (const record of records)
     if (skip[record.attributeName as 'state' | 'name'])
