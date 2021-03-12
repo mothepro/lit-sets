@@ -115,7 +115,6 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   readonly send = (data: ArrayBuffer | ArrayBufferView) =>
     this.message.activate(ArrayBuffer.isView(data) ? data.buffer : data)
   
-  private currentRound = 0
   private engine!: Game
 
   /** The difficulty in the range [0,1) */
@@ -139,16 +138,15 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
     this.engine = p2pDemoElement.engine
     
     for await (const _ of this.engine.filled)
-      this.round(++this.currentRound)
+      this.round(this.engine.filled.count)
 
     // Rematch!
     await milliseconds(3000 + 5000 * Math.random())
     this.send(new Uint8Array([Status.REMATCH]))
   }
 
-  // TODO i don't think this is needed!
   private sendVerify(round: number, ...bytes: number[]) {
-    if (round == this.currentRound && this.engine.filled.isAlive)
+    if (round == this.engine.filled.count && this.engine.filled.isAlive)
       this.send(new Uint8Array(bytes))
   }
 
