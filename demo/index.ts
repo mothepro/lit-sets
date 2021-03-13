@@ -154,7 +154,9 @@ for (const element of trackerElements) {
 
 // @ts-ignore P2P Events
 addEventListener('p2p-error', ({ error }: ErrorEvent) =>
-  log('error', `me: "${p2pDemoElement.getAttribute('name')}" causer: "${error?.peer}" message: ${error.message} `, error.stack))
+  log('error',
+    `me: "${p2pDemoElement.getAttribute('name')}" causer: "${error?.peer}" p2p state: "${litP2pElement.p2p?.state}" message: ${error.message} `,
+    error.stack + '\n\n' + JSON.stringify(litP2pElement.p2p, null, 2)))
 
 const skip = { // TODO this is horrible!! I just don't wanna log the 1st time loading events
   update: false,

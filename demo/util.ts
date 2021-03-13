@@ -12,6 +12,11 @@ export const enum Status {
   REMATCH,
 }
 
+/** Random number in range. Defaults to [0,1) */
+export function random(min = 0, max = 1) {
+  return Math.random() * (max - min) + min;
+}
+
 /** A user cause "interactive", event to save */
 // TODO add better support for interactive vs non-interactive
 export function log(category: string, action: string, label?: string, value?: number, interaction = true) {
