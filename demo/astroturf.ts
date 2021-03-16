@@ -8,16 +8,40 @@ import type { Peer } from '@mothepro/fancy-p2p'
 import { foreverStrings } from '@mothepro/emojis'
 import { MockPeer } from '@mothepro/fancy-p2p'
 import { Emitter } from 'fancy-emitter'
-import { Status } from './util.js'
+import { Status, random } from './util.js'
 import { milliseconds } from '../src/helper.js'
+import { ANIMATION_DURATION } from '../src/card.js'
+
+type Tuple<T = number> = [T, T]
+
+function config<T>(attribute: string, fallback: T): T {
+  return document.body.hasAttribute(`astroturf-${attribute}`)
+    ? JSON.parse(document.body.getAttribute(`astroturf-${attribute}`)!)
+    : fallback
+}
 
 const
-  names = JSON.parse(document.body.getAttribute('astroturf-names') ?? '[]'),
+  names = config('names', [] as string[]),
   backupNames = foreverStrings(),
-  [minDifficulty = 0, maxDifficulty = 1] = JSON.parse(document.body.getAttribute('astroturf-difficulty-range') ?? '[]'),
-  [minPlayers = 0, maxPlayers = 0] = JSON.parse(document.body.getAttribute('astroturf-player-range') ?? '[]'),
-  timeScale = parseInt(document.body.getAttribute('astroturf-time-scale') ?? '0') || maxDifficulty * 1000,
-  playersToAdd = Math.trunc(minPlayers + Math.random() * (maxPlayers - minPlayers + 1)),
+  playerAddDelay = config('player-delay', [0, 0] as Tuple),
+  playersToAdd = Math.ceil(random(config('player-count', [0, 0]))),
+
+  // CPU Difficulty
+  roundDelay = config('round-delay', [0, 0] as Tuple),
+  delayScale = config('delay-scale', [1, 1] as Tuple),
+
+  // Taking a bad set
+  failureRate = config('failure-rate', [0, 1] as Tuple),
+  failureDelay = config('failure-delay', [0, 0] as Tuple),
+  failureDelay1 = config('failure-delay-1', failureDelay),
+  failureDelay2 = config('failure-delay-2', failureDelay),
+
+  // Taking a hint
+  hintRate = config('hint-rate', [0, 1] as Tuple),
+  hintDelay = config('hint-delay', [0, 0] as Tuple),
+  hintDelay1 = config('hint-delay-1', hintDelay),
+  hintDelay2 = config('hint-delay-2', hintDelay),
+  hintDelay3 = config('hint-delay-3', hintDelay),
 
   // Elements
   litP2pElement = document.querySelector('lit-p2p')! as litP2P,
@@ -41,16 +65,15 @@ if (document.body.hasAttribute('astroturf'))
       // Fill player list
       // TODO leave in groups too!
       for (let i = 0; i < playersToAdd; i++) {
-        await milliseconds(3000 + 4000 * Math.random())
+        await milliseconds(random(playerAddDelay))
         clientList.innerHTML +=
           '<mwc-check-list-item>' +
             (names.splice(Math.trunc(Math.random() * names.length), 1)[0] ?? `Anonymous ${backupNames.next().value}`) +
           '</mwc-check-list-item>'
         
-        // Hide defualts and actually show the list!
+        // Hide default slots and actually show the list!
         defaultAstros.forEach(e => e.toggleAttribute('hidden', true))
         clientList.toggleAttribute('hidden', false)
-        await milliseconds(7500 * Math.random())
       }
     } else { // reset after a bit, so name changes don't look jank
       await milliseconds(2000)
@@ -82,7 +105,10 @@ makeGroupBtn.addEventListener('click', async () => {
   for (const index of clientList.index)
     peers.push(new AstroPeer(
       clientList.children[index].textContent!.trim(),
-      minDifficulty + Math.random() * (maxDifficulty - minDifficulty)))
+      random(failureRate),
+      random(hintRate),
+      random(delayScale),
+    ))
   
   makeGroupBtn.setAttribute('selected', '0')
   // TODO wait a bit to make it feel real
@@ -117,32 +143,25 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   
   private engine!: Game
 
-  /** The difficulty in the range [0,1) */
-  readonly scaledDifficulty = (this.difficulty - minDifficulty) / (maxDifficulty - minDifficulty)
-
-  /**
-   * An exponentially smaller form of difficulty.
-   * <0.5 ->> 0
-   * >=0.5 -> 0
-   */
-  readonly squaredDifficulty = this.scaledDifficulty ** 2 //(this.difficulty / maxDifficulty) ** 2
-
   constructor(
     readonly name: string,
-    /** Positive number to determine the skill, the lower the better */
-    readonly difficulty: number) { 
-    p2pDemoElement.addEventListener('game-start', this.startGame)
-  }
-
-  private startGame = async () => {
-    this.engine = p2pDemoElement.engine
+    /** [0,1] probability to take a bad set. */
+    readonly failureRate: number,
+    /** [0,1] probability to take a hint. */
+    readonly hintRate: number,
+    /** Positive factor to adjust delay timing calculations. */
+    readonly delayScale = 1,
+  ) {
+    p2pDemoElement.addEventListener('game-start', async () => {
+      this.engine = p2pDemoElement.engine
     
-    for await (const _ of this.engine.filled)
-      this.round(this.engine.filled.count)
+      for await (const _ of this.engine.filled)
+        this.round(this.engine.filled.count)
 
-    // Rematch!
-    await milliseconds(3000 + 5000 * Math.random())
-    this.send(new Uint8Array([Status.REMATCH]))
+      // Rematch!
+      await milliseconds(3000 + 5000 * Math.random())
+      this.send(new Uint8Array([Status.REMATCH]))
+    })
   }
 
   private sendVerify(round: number, ...bytes: number[]) {
@@ -153,52 +172,44 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
   /** New cards are on the field... time to astroturf 😈 */
   // TODO pass in times thru generator
   private async round(round: number) {
-    await milliseconds(3000) // animation
+    await milliseconds(this.engine.cards.length * ANIMATION_DURATION)
 
-    // Dummy took a bad set!
-    if (Math.random() < this.squaredDifficulty / 2) {
-      await milliseconds(4000 * Math.random())
+    // Dummy took a bad set! (this is early to kinda rush the player)
+    if (Math.random() < this.failureRate) {
+      await milliseconds(this.delayScale * random(failureDelay1))
       this.sendVerify(round, 1, 2, 3) // This is the "random" set 
     }
 
     // Wait a bit before doing anything
-    await milliseconds(
-        10000 * this.difficulty
-      + timeScale * Math.random())
+    await milliseconds(this.delayScale * random(roundDelay))
 
     // Hints, increased likelyhood the higher the difficulty
-    let skill = -this.scaledDifficulty + 2 / 3
+    let skill = -this.hintRate
     // 1st hint
     skill += Math.random()
     if (skill < 0) {      
       this.sendVerify(round, Status.HINT)
-      await milliseconds(5000 // maybe use Math.max instead?
-        + 10000 * this.difficulty
-        + timeScale * Math.random())
+      await milliseconds(this.delayScale * random(hintDelay1))
     }
 
-    // Dummy took a bad set with a possible hint!
-    if (Math.random() < this.squaredDifficulty / 3) {
+    // Dummy took a bad set, even with a possible hint!
+    if (Math.random() < this.failureRate * 2 / 3) {
       this.sendVerify(round, 1, 2, 3)
-      await milliseconds(1000
-        + 5000 * Math.random())
+      await milliseconds(this.delayScale * random(failureDelay2))
     }
 
     // 2nd hint
     skill += Math.random()
     if (skill < 0) {      
       this.sendVerify(round, Status.HINT)
-      await milliseconds(3000 // less wait
-        + 10000 * this.difficulty
-        + timeScale / 2 * Math.random())
+      await milliseconds(this.delayScale * random(hintDelay2))
     }
 
     // 3rd hint
     skill += Math.random()
     if (skill < 0) {      
       this.sendVerify(round, Status.HINT)
-      await milliseconds(1000 // lesser wait
-        + 5000 * Math.random())
+      await milliseconds(this.delayScale * random(hintDelay3))
     }
 
     // Finally take the right set
