@@ -66,7 +66,7 @@
 }
 
 /*** Media Queries ***/
-.not-mobile-only {
+.not-mobile-only, .desktop-flex {
   /* Too big for mobile (must be before media queries) */
   display: none;
 }
@@ -98,8 +98,8 @@
     --sets-gap: 2.5em;
     --sets-shape-spacing: 18px 12px;
   }
-  .desktop-only {
-    display: initial;
+  .desktop-flex {
+    display: flex;
   }
 }
 @media (min-width: 1200px) { /* bootstrap "xl" */
@@ -183,6 +183,9 @@ header mwc-button {
 
   background: var(--mdc-theme-secondary);
   color: var(--mdc-theme-on-secondary);
+}
+mwc-menu:not([open]) { /* For cleaner loading */
+  display: none;
 }
 mwc-menu {
   position: absolute;
