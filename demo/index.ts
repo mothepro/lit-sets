@@ -4,6 +4,7 @@ import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
 import type P2PSets from './p2p-sets.js'
 import { log, BeforeInstallPromptEvent } from './util.js'
+import { milliseconds } from '../src/helper.js'
 import './astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
@@ -19,6 +20,7 @@ const // Elements in index.html
   toggleHiddenBtns = document.querySelectorAll('[toggle-hidden]')! as unknown as IconButton[],
   keyboardDialogElement = document.getElementById('keyboard')! as Dialog,
   helpDialogElement = document.getElementById('help')! as Dialog,
+  feedbackDialogElement = document.getElementById('feedback')! as Dialog,
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   openerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[],
   trackerElements = document.querySelectorAll('[track-click]')! as unknown as HTMLElement[]
@@ -44,6 +46,16 @@ if (!navigator.onLine)
   document
     .querySelectorAll('[hide-offline]')
     .forEach(elem => elem.toggleAttribute('hidden', true))
+
+// Get feedback after first game
+let asked = false
+p2pDemoElement.addEventListener('game-finish', async () => {
+  await milliseconds(5555)
+  if (!asked && document.body.hasAttribute('first-visit')) {
+    feedbackDialogElement.toggleAttribute('open', true)
+    asked = true
+  }
+})
 
 // Dialog openers
 for (const opener of openerElements)
