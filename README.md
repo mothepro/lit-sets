@@ -13,19 +13,18 @@
 ## TODO
 
 + Arrow key to choose card (assume 3xN grid)
-+ Mini tutorial can be more clear
++ Mini tutorial & tip can be more clear
+  + log these
 + easy mode in multiplayer
 + Extend signaling fallback duration
   + Why is p2p so unreliable :'( `lit-p2p[retries="-1"]`
 + censor bad words for viewer
-+ show big multi/single player button on first visit for **all** devices
 + Show loading when waiting for rematch
-+ Add support for a bundled `nomodule` script
++ Add support for a bundled `nomodule` script (get `esbuild`)
 + Allow non-linear generators to be defined in attributes
 + duplicate `theme-toggle` event if localStorage != OS preference
 + *No release needed*
   + nicer shapes
   + better color scheme
-  + hamburger menu?
-    + add key shortcuts and change log to their own dialogs
+  + add key shortcuts and change log to their own dialogs?
   + Fit feedback iframe for all sizes

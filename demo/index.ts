@@ -17,6 +17,7 @@ const // Elements in index.html
   p2pDemoElement = document.querySelector('p2p-sets')! as P2PSets,
   toggleOnlineBtns = document.querySelectorAll('[toggle-online]')! as unknown as IconButton[],
   toggleHiddenBtns = document.querySelectorAll('[toggle-hidden]')! as unknown as IconButton[],
+  keyboardDialogElement = document.getElementById('keyboard')! as Dialog,
   helpDialogElement = document.getElementById('help')! as Dialog,
   installBtn = document.querySelector('mwc-icon-button[icon=download]')!,
   openerElements = document.querySelectorAll('[open-dialog]')! as unknown as IconButton[],
@@ -87,7 +88,7 @@ addEventListener('keypress', (event: KeyboardEvent) => {
     takeBtn = p2pDemoElement.shadowRoot?.querySelector('[part~="take"]') as IconButton | null
   switch (event.key) {
     case '?': // Show help
-      helpDialogElement.toggleAttribute('open')
+      keyboardDialogElement.toggleAttribute('open')
       break
       
     case 'c': // Show clock
