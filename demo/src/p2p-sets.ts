@@ -77,6 +77,9 @@ export default class extends LitElement {
   @property({ type: Number, reflect: true, attribute: 'ban-cost-increment' })
   banCostIncrement = 0
 
+  @property({ type: Number, reflect: true, attribute: 'card-count' })
+  cardCount = 0
+
   @internalProperty()
   protected confetti = 0
 
@@ -271,7 +274,7 @@ export default class extends LitElement {
 
     this.dispatchEvent(new CustomEvent('game-start'))
     for await (const _ of this.engine.filled)
-      this.requestUpdate()
+      this.cardCount = this.engine.cards.filter(x => !!x).length // requests update
     
     // push the final scores and drop confetti
     this.engine.players.map(({ score }, index) => this.runningScores[index].push(Math.max(0, score)))

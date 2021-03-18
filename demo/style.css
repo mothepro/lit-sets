@@ -240,7 +240,7 @@ mwc-list[noninteractive] {
   user-select: none;
   z-index: 1;
 }
-::part(bottom-btn), ::part(make-group), ::part(rematch), .make-group {
+::part(bottom-btn), ::part(make-group), ::part(rematch) {
   position: fixed;
   bottom: 1em;
   z-index: 1;
@@ -257,10 +257,10 @@ mwc-list[noninteractive] {
 ::part(difficulty) {
   left: 10em;
 }
-::part(take), ::part(make-group), .make-group {
+::part(take), ::part(make-group) {
   right: 1em;
 }
-::part(mwc-fab-disabled), [selected="0"].make-group {
+::part(mwc-fab-disabled) {
   display: none;
 }
 ::part(chart-holder) {

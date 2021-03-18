@@ -24,17 +24,17 @@ export default class extends LitElement {
   @property({ type: Number, attribute: 'player-name-chance' })
   playerNameChance = 0
 
-  @property({ type: Number, attribute: 'player-add-delay' })
-  playerAddDelay: Tuple = [500, 1000]
-
-  @property({ type: Number, attribute: 'player-add-initial-scale' })
-  playerAddInitialScale = 1
-
-  @property({ type: Number, attribute: 'player-remove-delay' })
-  playerRemoveDelay: Tuple = [10000, 20000]
-
   @property({ type: Number, attribute: 'player-max' })
   playerMax = 10
+
+  @property({ type: Number, attribute: 'player-add-initial-scale' })
+  playerAddInitialScale = 0
+
+  @property({ type: Array, attribute: 'player-add-delay' })
+  playerAddDelay: Tuple = [500, 1000]
+
+  @property({ type: Array, attribute: 'player-remove-delay' })
+  playerRemoveDelay: Tuple = [10000, 20000]
 
   @property({ type: Array, attribute: 'delay-scale' })
   delayScale: Tuple = [1, 1]
@@ -77,7 +77,7 @@ export default class extends LitElement {
   private backupNames = foreverStrings()
 
   private get canMake() {
-    return litP2pElement.minPeers < this.selected.size && this.selected.size < litP2pElement.maxPeers 
+    return litP2pElement.minPeers - 1 < this.selected.size&& this.selected.size < litP2pElement.maxPeers - 1
   }
 
   protected async firstUpdated() {
@@ -98,6 +98,7 @@ export default class extends LitElement {
     this.players = [...new Set(this.players).add(name)]
     if (ms) {
       await milliseconds(ms)
+      // TODO could be better...
       this.selected.delete(this.players.indexOf(name))
       this.players = this.players.filter(player => player != name)
     }
