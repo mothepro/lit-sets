@@ -40,14 +40,11 @@
   <script dev-only type=dev-only-module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit
-  astroturf-player-range="[2,5]"
-  astroturf-difficulty-range="[5,10]"
-  astroturf>
+<body first-visit>
   <lit-p2p
     fallback
     local-storage
-    max-peers="5"
+    max-peers="10"
     signaling="wss://ws.parkshade.com:443"
     version="0.3.3"
     retries="-1"
@@ -61,115 +58,106 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
-    <h1 class="title">
+    <h1 class="title" track-click="title">
       Sets
-      <span class="subtitle">by <span class="signature">Mo</span></span>
+      <small>by <span class="signature">Mo</span></small>
     </h1>
     <a
       href="//github.com/mothepro/lit-sets"
       target="_blank"
       class="corner-ribbon"
       title="Come again! Updates are frequent"
+      track-click="beta"
     >Beta</a>
     <noscript>Requires Javascript to play!</noscript>
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
     <div slot="p2p-offline" class="loading centered p2p-offline"><div></div><div></div></div>
     <div slot="p2p-loading" class="loading centered p2p-loading"><div></div><div></div></div>
     <header>
-      <mwc-button
-        raised
-        toggle-online
-        hide-offline
-        class="p2p-disconnected"
-        trailingIcon
-        icon="groups"
-        label="Multiplayer"
-      ></mwc-button>
       <mwc-icon-button
-        toggle-online
-        hide-offline
-        icon="groups"
-        class="p2p-disconnected"
-        title="Multiplayer"
-        label="Multiplayer"
+        open-dialog="menu"
+        icon="menu"
+        track-click="menu"
       ></mwc-icon-button>
-      <mwc-button
-        raised
-        toggle-online
-        class="p2p-lobby"
-        trailingIcon
-        icon="person"
-        label="Singleplayer"
-      ></mwc-button>
-      <mwc-icon-button
-        toggle-online
-        icon="person"
-        class="p2p-lobby"
-        title="Singleplayer"
-        label="Singleplayer"
-      ></mwc-icon-button>
-      <mwc-icon-button
-        open-dialog="help"
-        icon="help"
-        label="How to Play"
-        title="How to Play"
-      ></mwc-icon-button>
+      <mwc-menu dropdown id="menu">
+        <mwc-list-item open-dialog="help" graphic="icon">
+          <mwc-icon slot="graphic" label="help">help</mwc-icon>
+          How to play
+        </mwc-list-item>
+        <theme-toggle persistent>
+          <mwc-list-item slot="dark" graphic="icon">
+            <mwc-icon slot="graphic">brightness_5</mwc-icon>
+            Switch to light theme
+          </mwc-list-item>
+          <mwc-list-item slot="light" graphic="icon">
+            <mwc-icon slot="graphic">nightlight</mwc-icon>
+            Switch to dark theme
+          </mwc-list-item>
+        </theme-toggle>
+        <a hide-offline target="_blank" href="//discord.gg/vrDUqr9P3s" track-click="discord">
+          <mwc-list-item graphic="icon">
+            <mwc-icon  slot="graphic" label="Discord">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240" style="max-width: 24px; max-height: 24px;">
+                <path d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"/>
+                <path d="M189.5 20h-134C44.2 20 35 29.2 35 40.6v135.2c0 11.4 9.2 20.6 20.5 20.6h113.4l-5.3-18.5 12.8 11.9 12.1 11.2 21.5 19V40.6c0-11.4-9.2-20.6-20.5-20.6zm-38.6 130.6s-3.6-4.3-6.6-8.1c13.1-3.7 18.1-11.9 18.1-11.9-4.1 2.7-8 4.6-11.5 5.9-5 2.1-9.8 3.5-14.5 4.3-9.6 1.8-18.4 1.3-25.9-.1-5.7-1.1-10.6-2.7-14.7-4.3-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.4-.3-1.8-1-2.8-1.7-2.8-1.7s4.8 8 17.5 11.8c-3 3.8-6.7 8.3-6.7 8.3-22.1-.7-30.5-15.2-30.5-15.2 0-32.2 14.4-58.3 14.4-58.3 14.4-10.8 28.1-10.5 28.1-10.5l1 1.2c-18 5.2-26.3 13.1-26.3 13.1s2.2-1.2 5.9-2.9c10.7-4.7 19.2-6 22.7-6.3.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5 1.1 19.7 3.9 30.1 9.6 0 0-7.9-7.5-24.9-12.7l1.4-1.6s13.7-.3 28.1 10.5c0 0 14.4 26.1 14.4 58.3 0 0-8.5 14.5-30.6 15.2z"/>
+              </svg>
+            </mwc-icon>
+            Join the community
+          </mwc-list-item>
+        </a>
+        <mwc-list-item hide-offline open-dialog="feedback" graphic="icon">
+          <mwc-icon slot="graphic" label="Send feedback">feedback</mwc-icon>
+          Improve this game
+        </mwc-list-item>
+        <mwc-list-item open-dialog="keyboard" graphic="icon" class="desktop-flex">
+          <mwc-icon slot="graphic">keyboard</mwc-icon>
+          Keyboard shortcuts
+        </mwc-list-item>
+        <!-- <a href="//github.com/mothepro/lit-sets" target="_blank">
+          <mwc-list-item graphic="icon">
+            <mwc-icon slot="graphic">code</mwc-icon>
+            Source code
+          </mwc-list-item>
+        </a> -->
+        <li divider role="separator"></li>
+        <mwc-list-item>
+          <div class="sharethis-inline-share-buttons"></div>
+        </mwc-list-item>
+      </mwc-menu>
       <mwc-icon-button
         hidden
         icon="download"
         label="Install"
         title="Install"
       ></mwc-icon-button>
-      <a
+      <mwc-button
+        raised
+        toggle-online
+        trailingIcon
         hide-offline
-        title="Join the community"
-        target="_blank"
-        href="//discord.gg/vrDUqr9P3s">
-        <mwc-icon-button>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240" style="max-width: 24px; max-height: 24px;">
-            <path d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"/>
-            <path d="M189.5 20h-134C44.2 20 35 29.2 35 40.6v135.2c0 11.4 9.2 20.6 20.5 20.6h113.4l-5.3-18.5 12.8 11.9 12.1 11.2 21.5 19V40.6c0-11.4-9.2-20.6-20.5-20.6zm-38.6 130.6s-3.6-4.3-6.6-8.1c13.1-3.7 18.1-11.9 18.1-11.9-4.1 2.7-8 4.6-11.5 5.9-5 2.1-9.8 3.5-14.5 4.3-9.6 1.8-18.4 1.3-25.9-.1-5.7-1.1-10.6-2.7-14.7-4.3-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.4-.3-1.8-1-2.8-1.7-2.8-1.7s4.8 8 17.5 11.8c-3 3.8-6.7 8.3-6.7 8.3-22.1-.7-30.5-15.2-30.5-15.2 0-32.2 14.4-58.3 14.4-58.3 14.4-10.8 28.1-10.5 28.1-10.5l1 1.2c-18 5.2-26.3 13.1-26.3 13.1s2.2-1.2 5.9-2.9c10.7-4.7 19.2-6 22.7-6.3.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5 1.1 19.7 3.9 30.1 9.6 0 0-7.9-7.5-24.9-12.7l1.4-1.6s13.7-.3 28.1 10.5c0 0 14.4 26.1 14.4 58.3 0 0-8.5 14.5-30.6 15.2z"/>
-          </svg>
-        </mwc-icon-button>
-      </a>
-      <mwc-icon-button
-        hide-offline
-        open-dialog="feedback"
-        title="Improve this game"
-        icon="feedback"
-        label="Send feedback"
-      ></mwc-icon-button>
-      <mwc-icon-button
-        toggle-hidden="share"
-        icon="share"
-        label="Share Sets by Mo"
-        title="Share Sets by Mo"
-      ></mwc-icon-button>
-      <theme-toggle persistent>
-        <mwc-icon-button
-          slot="dark"
-          icon="brightness_5"
-          label="Switch to light theme"
-          title="Switch to light theme"
-        ></mwc-icon-button>
-        <mwc-icon-button
-          slot="light"
-          icon="nightlight"
-          label="Switch to dark theme"
-          title="Switch to dark theme"
-        ></mwc-icon-button>
-      </theme-toggle>
-      <div id="share" hidden><div class="sharethis-inline-share-buttons"></div></div>
+        class="p2p-disconnected"
+        icon="groups"
+        label="Multiplayer"
+        track-click="multiplayer"
+      ></mwc-button>
+      <mwc-button
+        raised
+        toggle-online
+        trailingIcon
+        class="p2p-lobby"
+        icon="person"
+        label="Singleplayer"
+        track-click="singleplayer"
+      ></mwc-button>
     </header>
 
-    <mwc-textfield
-      hidden
+    <!-- <mwc-textfield
       outlined
       class="p2p-lobby"
       readonly
       label="Share"
       placeholder="https://sets.momos.games#multiplayer"
-    ></mwc-textfield>
+    ></mwc-textfield> -->
 
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
     <!-- <span slot="p2p-lobby" class="p2p-lobby">in <mwc-fab extended icon="speed" label="Novice difficulty"></mwc-fab></span> -->
@@ -191,21 +179,10 @@
           <strong>quantity</strong>
         </span>
         <br>
-        <mwc-list noninteractive>
-          <mwc-list-item graphic="avatar">
-            Gives a hint
-            <mwc-icon slot="graphic">lightbulb</mwc-icon>
-          </mwc-list-item>
-          <mwc-list-item graphic="avatar">
-            Shows guide
-            <span class="desktop-only">&amp; keyboard shortcuts</span>
-            <mwc-icon slot="graphic">help</mwc-icon>
-          </mwc-list-item>
-          <mwc-list-item graphic="avatar">
-            Changes difficulty
-            <mwc-icon slot="graphic">speed</mwc-icon>
-          </mwc-list-item>
-        </mwc-list>
+        <br>
+        No shame in using a hint
+        <mwc-icon slot="graphic" style="vertical-align: middle;">lightbulb</mwc-icon>
+        to help finding a set
       </div>
       <div slot="game-over" class="easy-mode">
         Ready for a challenge?
@@ -219,31 +196,47 @@
       </div>
       <div slot="pre-tip-text" class="corner-ribbon" style="z-index: -1">Tip</div>
       <span slot="pre-tip-text">The selected cards have</span>
-      <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
+      <div slot="post-tip-text">To complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
-    <mwc-list hidden rootTabbable slot="p2p-alone" class="p2p-lobby client-list" multi></mwc-list>
-    <mwc-fab
-      icon="done"
-      label="Make Group"
-      slot="p2p-alone"
-      selected="0"
-      class="make-group p2p-lobby"
-    ></mwc-fab>
+    <!-- Remove astroturfing by player-max=0 or removing this element and keeping the children (add 'p2p-lobby' class)-->
+    <p2p-astroturf
+      slot="p2p-alone" 
+      class="p2p-lobby"
 
-    <span slot="p2p-alone" class="astroturf-default p2p-lobby centered-text" style="line-height: 3em">
-      Waiting for players to join&hellip;
-      <br />
-      Invite your friends
-      <mwc-icon-button
-        toggle-hidden="share"
-        icon="share"
-        label="Share Sets by Mo"
-        title="Share Sets by Mo"
-      ></mwc-icon-button>
-    </span>
-    <div slot="p2p-alone" class="astroturf-default p2p-lobby centered loading"><div></div><div></div></div>
+      player-names='["Max ⭐️", "🐯boy"]'
+      player-name-chance="0.1"
+      player-max="7"
+      player-add-initial-scale="1"
+      player-add-delay="[5000, 15000]"
+      player-remove-delay="[20000, 360000]"
 
+      hint-rate="[0, 1]"
+      failure-rate="[0, 0.25]"
+      failure-rate-2="[0, 0.1]"
+
+      delay-scale="[0.8, 1.25]"
+      round-delay="[5000, 60000]"
+      failure-delay-1="[4000, 16000]"
+      failure-delay-2="[4000, 16000]"
+      hint-delay-1="[4000, 10000]"
+      hint-delay-2="[4000, 10000]"
+      hint-delay-3="[3000, 5000]">
+      <span part="centered-waiting-text">
+        Waiting for players to join&hellip;
+        <br />
+        Invite your friends
+        <mwc-icon-button
+          open-dialog="menu"
+          icon="share"
+          label="Share Sets by Mo"
+          title="Share Sets by Mo"
+          track-click="alone-share"
+        ></mwc-icon-button>
+      </span>
+      <div class="centered loading"><div></div><div></div></div>
+    </p2p-astroturf>
+    
     <mwc-dialog id="feedback">
       <iframe
         src="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform?embedded=true"
@@ -255,63 +248,55 @@
         marginheight="0"
         marginwidth="0"
       >Loading…</iframe>
-      <br />
-      Feel free to
-      <a href="//github.com/mothepro/lit-sets" target="_blank">
-        <mwc-button dense trailingIcon icon="open_in_new">
-          see how Sets works
-        </mwc-button>
-      </a>
-      &amp; improve it yourself!
-      <br><br>
-      <div class="sharethis-inline-share-buttons"></div>
+      <mwc-icon-button
+        slot="primaryAction"
+        dialogAction="close"
+        icon="clear"
+        track-click="close feedback"
+      ></mwc-icon-button>
+    </mwc-dialog>
 
-      <mwc-icon-button slot="primaryAction" dialogAction="close" icon="done"></mwc-icon-button>
+    <mwc-dialog id="keyboard" heading="Keyboard Shortcuts" hideActions>
+      <mwc-list noninteractive>
+        <mwc-list-item hasMeta>
+          Hightlight the next card
+          <span slot="meta">Tab</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Hightlight the previous card
+          <span slot="meta">⬆️Tab</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Select the hightlighted card
+          <span slot="meta">Space</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Take selected cards as a set
+          <span slot="meta">Enter</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Get a hint
+          <span slot="meta">H</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Show / Hide the elapsed time
+          <span slot="meta">C</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Rearrange cards on screen
+          <span slot="meta">R</span>
+        </mwc-list-item>
+        <mwc-list-item hasMeta>
+          Show keyboard shortcuts
+          <span slot="meta">?</span>
+        </mwc-list-item>
+      </mwc-list>
     </mwc-dialog>
 
     <mwc-dialog id="help" heading="Welcome to Sets by Mo">
-      <details>
-        <summary>Keyboard Shortcuts</summary>
-
-        <mwc-list noninteractive>
-          <mwc-list-item hasMeta>
-            Hightlight the next card
-            <span slot="meta">Tab</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Hightlight the previous card
-            <span slot="meta">⬆️Tab</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Select the hightlighted card
-            <span slot="meta">Space</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Take the selected cards as a set
-            <span slot="meta">Enter</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Get a hint
-            <span slot="meta">H</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Show / Hide the elapsed time
-            <span slot="meta">C</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Rearrange cards on screen
-            <span slot="meta">R</span>
-          </mwc-list-item>
-          <mwc-list-item hasMeta>
-            Show this guide
-            <span slot="meta">?</span>
-          </mwc-list-item>
-        </mwc-list>
-      </details>
-
       <p>
         This is a web version of the reflex card game
-        <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">
+        <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank" track-click="wikipedia">
           <mwc-button dense trailingIcon icon="open_in_new">Set</mwc-button>
         </a>
         designed by Marsha Falco in 1974.
@@ -507,7 +492,12 @@
         opacity="1"
       ></sets-card>
     
-      <mwc-icon-button slot="primaryAction" dialogAction="close" icon="done"></mwc-icon-button>
+      <mwc-icon-button 
+        slot="primaryAction" 
+        dialogAction="close" 
+        icon="done"
+        track-click="close-guide"
+      ></mwc-icon-button>
     </mwc-dialog>
   </lit-p2p>
 </body>

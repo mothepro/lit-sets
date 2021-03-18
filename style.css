@@ -28,9 +28,13 @@
   --chart-color-0: royalblue;
   --chart-color-1: red;
   --chart-color-2: green;
-  --chart-color-3: purple;
+  --chart-color-3: indigo;
   --chart-color-4: yellow;
-  --chart-color-5: cyan;
+  --chart-color-5: turquoise;
+  --chart-color-6: limegreen;
+  --chart-color-7: orange;
+  --chart-color-8: violet;
+  --chart-color-9: grey;
 
   --leaderboard-diff-font: bold 15px monospace;
   --leaderboard-diff-duration: 2s;
@@ -66,7 +70,7 @@
 }
 
 /*** Media Queries ***/
-mwc-button[toggle-online], .desktop-only {
+.not-mobile-only, .desktop-flex {
   /* Too big for mobile (must be before media queries) */
   display: none;
 }
@@ -76,6 +80,14 @@ mwc-button[toggle-online], .desktop-only {
     --how-to-sets-template-columns: 30% 30% 30%;
     --sets-shape-size: 3.5em;
   }
+
+  h1.title {
+    margin-top: 0.5em !important;
+  }
+  .mobile-only {
+    /* Too big for mobile (must be before media queries) */
+    display: none;
+  }
 }
 @media (min-width: 768px) { /* bootstrap "md" */
   :root {
@@ -84,21 +96,14 @@ mwc-button[toggle-online], .desktop-only {
     --sets-grid-template-columns: repeat(3, minmax(240px, 30vw));
     --chart-legend-position: absolute;
   }
-
-  mwc-button[toggle-online] {
-    display: inline-flex;
-  }
-  mwc-icon-button[toggle-online] {
-    display: none;
-  }
 }
 @media (min-width: 992px) { /* bootstrap "lg" */
   :root {
     --sets-gap: 2.5em;
     --sets-shape-spacing: 18px 12px;
   }
-  .desktop-only {
-    display: initial;
+  .desktop-flex {
+    display: flex;
   }
 }
 @media (min-width: 1200px) { /* bootstrap "xl" */
@@ -125,6 +130,8 @@ body {
   overscroll-behavior-y: contain;
   /* -webkit-tap-highlight-color: transparent; */
   text-align: center; /* It's a game! */
+  overflow-x: hidden;
+  height: 100%;
 }
 h1, h2, h3, h4, h5, h6 {
   text-align: center;
@@ -136,8 +143,8 @@ h1.title {
   font-size: 3rem;
   margin: 1em 0;
 }
-h1 span,
-h2 span {
+h1 small,
+h2 small {
   font-size: 1rem;
 }
 a {
@@ -155,7 +162,7 @@ lit-p2p { /* Make sure fab's are always given enough space w/o overlap */
 header {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   z-index: 1;
 }
 header,
@@ -169,10 +176,10 @@ header mwc-button {
 .corner-ribbon {
   position: absolute;
   line-height: 2em;
-  transform: rotate(-45deg);
+  transform: rotate(45deg);
   width: 100px;
   top: 14px;
-  left: -24px;
+  right: -24px;
   
   letter-spacing: 0.5ch;
   text-transform: uppercase;
@@ -180,6 +187,17 @@ header mwc-button {
 
   background: var(--mdc-theme-secondary);
   color: var(--mdc-theme-on-secondary);
+}
+mwc-menu:not([open]) { /* For cleaner loading */
+  display: none;
+}
+mwc-menu {
+  position: absolute;
+  left: 1em;
+  top: 1em;
+}
+mwc-list[noninteractive] {
+  min-width: 300px;
 }
 /* Discord "Blurple" */
 /* #discord path { fill: #7289DA; } */
@@ -226,7 +244,7 @@ header mwc-button {
   user-select: none;
   z-index: 1;
 }
-::part(bottom-btn), ::part(make-group), ::part(rematch), .make-group {
+::part(bottom-btn), ::part(make-group), ::part(rematch) {
   position: fixed;
   bottom: 1em;
   z-index: 1;
@@ -243,10 +261,10 @@ header mwc-button {
 ::part(difficulty) {
   left: 10em;
 }
-::part(take), ::part(make-group), .make-group {
+::part(take), ::part(make-group) {
   right: 1em;
 }
-::part(mwc-fab-disabled), [selected="0"].make-group {
+::part(mwc-fab-disabled) {
   display: none;
 }
 ::part(chart-holder) {
@@ -272,7 +290,7 @@ mwc-button:not([raised]), /* Weird */
   --mdc-typography-button-text-transform: none;
 }
 ::part(tip) {
-  animation: fadeIn 2.45s ease 1s both;
+  animation: fadeIn 2.45s ease 0.25s both;
   display: inline-block;
   overflow: hidden;
   padding: 2em;
@@ -305,7 +323,8 @@ mwc-button:not([raised]), /* Weird */
   padding-top: var(--loading-size);
   white-space: nowrap;
 }
-[slot="p2p-alone"].centered-text {
+[part="centered-waiting-text"], ::part(centered-waiting-text) {
+  line-height: 3em;
   position: fixed;
   top: 50%;
   left: 0;
