@@ -180,8 +180,8 @@ const skip = { // TODO this is horrible!! I just don't wanna log the 1st time lo
 addEventListener('p2p-update', () => !skip.update ? skip.update = true : log('p2p', 'update', `group with ${p2p.peers.length}`))
 addEventListener('p2p-astroturf', () => log(
   'astroturf',
-  `${p2p.peers[0].name} with ${p2p.peers.length} CPUs ${document.body.getAttribute('astroturf-difficulty-range') ?? [0,1]}`,
-  p2p.peers.map(astropeer => (astropeer as any).difficulty ?? '').join(' ').trim()))
+  `${p2p.peers[0].name} with ${p2p.peers.length - 1} CPUs`,
+  p2p.peers.map(astropeer => (astropeer as any) ?? '').join(' ').trim()))
 new MutationObserver(records => {
   for (const record of records)
     if (skip[record.attributeName as 'state' | 'name'])
@@ -201,6 +201,7 @@ p2pDemoElement.addEventListener('game-difficulty', () => log('game', 'difficulty
 p2pDemoElement.addEventListener('game-hint', ({ detail }) => log('game', 'hint', detail.toString()))
 p2pDemoElement.addEventListener('game-rearrange', () => log('game', 'rearrange'))
 p2pDemoElement.addEventListener('game-take', ({ detail }) => log('game', 'take', detail.toString()))
+// save scores for multiplayer too!
 p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', `${p2pDemoElement.winnerText}
   ${detail} seconds, ${p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'} difficulty`))
 // p2pDemoElement.addEventListener('game-selected', () => log('game', 'selected')) // Do I even care about this

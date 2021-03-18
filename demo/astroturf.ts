@@ -26,7 +26,7 @@ const
   playerAddDelay = config('player-delay', [0, 0] as Tuple),
   playersToAdd = Math.ceil(random(config('player-count', [0, 0]))),
 
-  // CPU Difficulty
+  // CPU Difficulty (slowness)
   roundDelay = config('round-delay', [0, 0] as Tuple),
   delayScale = config('delay-scale', [1, 1] as Tuple),
 
@@ -159,6 +159,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
         this.round(this.engine.filled.count)
 
       // Rematch!
+      dispatchEvent(new CustomEvent('game-finish-astroturf'))
       await milliseconds(3000 + 5000 * Math.random())
       this.send(new Uint8Array([Status.REMATCH]))
     })
@@ -180,7 +181,7 @@ class AstroPeer implements MockPeer<ArrayBuffer> {
       this.sendVerify(round, 1, 2, 3) // This is the "random" set 
     }
 
-    // Wait a bit before doing anything
+    // "Thinking..." Wait a bit before doing anything
     await milliseconds(this.delayScale * random(roundDelay))
 
     // Hints, increased likelyhood the higher the difficulty

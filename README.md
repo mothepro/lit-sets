@@ -16,6 +16,7 @@
 + Mini tutorial & tip can be more clear
   + log these
 + easy mode in multiplayer
+  + show toggle disabled for now?
 + Extend signaling fallback duration
   + Why is p2p so unreliable :'( `lit-p2p[retries="-1"]`
 + censor bad words for viewer
