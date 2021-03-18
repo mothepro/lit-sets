@@ -58,7 +58,7 @@
       "stun:stun3.l.google.com:19302",
       "stun:stun4.l.google.com:19302"
     ]'>
-    <h1 class="title">
+    <h1 class="title" track-click="title">
       Sets
       <small>by <span class="signature">Mo</span></small>
     </h1>
@@ -67,6 +67,7 @@
       target="_blank"
       class="corner-ribbon"
       title="Come again! Updates are frequent"
+      track-click="beta"
     >Beta</a>
     <noscript>Requires Javascript to play!</noscript>
     <div class="loading centered p2p-default-state"><div></div><div></div></div>
@@ -93,7 +94,7 @@
             Switch to dark theme
           </mwc-list-item>
         </theme-toggle>
-        <a hide-offline target="_blank" href="//discord.gg/vrDUqr9P3s">
+        <a hide-offline target="_blank" href="//discord.gg/vrDUqr9P3s" track-click="discord">
           <mwc-list-item graphic="icon">
             <mwc-icon  slot="graphic" label="Discord">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240" style="max-width: 24px; max-height: 24px;">
@@ -119,7 +120,7 @@
           </mwc-list-item>
         </a> -->
         <li divider role="separator"></li>
-        <mwc-list-item noninteractive>
+        <mwc-list-item>
           <div class="sharethis-inline-share-buttons"></div>
         </mwc-list-item>
       </mwc-menu>
@@ -137,6 +138,7 @@
         class="p2p-disconnected"
         icon="groups"
         label="Multiplayer"
+        track-click="multiplayer"
       ></mwc-button>
       <mwc-button
         raised
@@ -145,17 +147,17 @@
         class="p2p-lobby"
         icon="person"
         label="Singleplayer"
+        track-click="singleplayer"
       ></mwc-button>
     </header>
 
-    <mwc-textfield
-      hidden
+    <!-- <mwc-textfield
       outlined
       class="p2p-lobby"
       readonly
       label="Share"
       placeholder="https://sets.momos.games#multiplayer"
-    ></mwc-textfield>
+    ></mwc-textfield> -->
 
     <span class="p2p-lobby next-to-lobby">You're playing as</span>
     <!-- <span slot="p2p-lobby" class="p2p-lobby">in <mwc-fab extended icon="speed" label="Novice difficulty"></mwc-fab></span> -->
@@ -197,7 +199,7 @@
       <div slot="post-tip-text">To complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
-    <!-- Remove astroturfing by removing this element and keeping the children (add 'p2p-lobby' class)-->
+    <!-- Remove astroturfing by player-max=0 or removing this element and keeping the children (add 'p2p-lobby' class)-->
     <p2p-astroturf
       slot="p2p-alone" 
       class="p2p-lobby"
@@ -229,6 +231,7 @@
           icon="share"
           label="Share Sets by Mo"
           title="Share Sets by Mo"
+          track-click="alone-share"
         ></mwc-icon-button>
       </span>
       <div class="centered loading"><div></div><div></div></div>
@@ -245,7 +248,12 @@
         marginheight="0"
         marginwidth="0"
       >Loading…</iframe>
-      <mwc-icon-button slot="primaryAction" dialogAction="close" icon="clear"></mwc-icon-button>
+      <mwc-icon-button
+        slot="primaryAction"
+        dialogAction="close"
+        icon="clear"
+        track-click="close feedback"
+      ></mwc-icon-button>
     </mwc-dialog>
 
     <mwc-dialog id="keyboard" heading="Keyboard Shortcuts" hideActions>
@@ -288,7 +296,7 @@
     <mwc-dialog id="help" heading="Welcome to Sets by Mo">
       <p>
         This is a web version of the reflex card game
-        <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank">
+        <a href="https://en.wikipedia.org/wiki/Set_(card_game)" target="_blank" track-click="wikipedia">
           <mwc-button dense trailingIcon icon="open_in_new">Set</mwc-button>
         </a>
         designed by Marsha Falco in 1974.
@@ -484,7 +492,12 @@
         opacity="1"
       ></sets-card>
     
-      <mwc-icon-button slot="primaryAction" dialogAction="close" icon="done"></mwc-icon-button>
+      <mwc-icon-button 
+        slot="primaryAction" 
+        dialogAction="close" 
+        icon="done"
+        track-click="close-guide"
+      ></mwc-icon-button>
     </mwc-dialog>
   </lit-p2p>
 </body>

@@ -73,7 +73,7 @@ for (const toggleOnlineBtn of toggleOnlineBtns)
   toggleOnlineBtn.addEventListener('click', () => 
     litP2pElement.setAttribute('state', (litP2pElement.getAttribute('state') ?? '-1') == '-1' // is disconnected
       ? '' // try to connect
-      : 'back to solo')) // not trying to connect
+      : '-1')) // not trying to connect
 
 // Add [open] to <mwc-dialog> after some time if first visit
 if (document.body.hasAttribute('first-visit') && document.body.hasAttribute('first-visit-help-delay'))
@@ -161,7 +161,7 @@ for (const element of trackerElements) {
     'click',
     element.getAttribute('track-click')!,
     element.hasAttribute('track-click-attr')
-      ? element.getAttribute(element.getAttribute('track-click-attr')!) ?? 'void 0'
+      ? element.getAttribute(element.getAttribute('track-click-attr')!) ?? undefined
       : `${count++}`))
 }
 
