@@ -28,9 +28,13 @@
   --chart-color-0: royalblue;
   --chart-color-1: red;
   --chart-color-2: green;
-  --chart-color-3: purple;
+  --chart-color-3: indigo;
   --chart-color-4: yellow;
-  --chart-color-5: cyan;
+  --chart-color-5: turquoise;
+  --chart-color-6: limegreen;
+  --chart-color-7: orange;
+  --chart-color-8: violet;
+  --chart-color-9: grey;
 
   --leaderboard-diff-font: bold 15px monospace;
   --leaderboard-diff-duration: 2s;

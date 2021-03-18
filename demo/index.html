@@ -205,19 +205,19 @@
       player-names='["Max ⭐️", "🐯boy"]'
       player-name-chance="0.1"
       player-max="7"
-      player-add-initial-scale="2"
+      player-add-initial-scale="1"
       player-add-delay="[5000, 15000]"
       player-remove-delay="[20000, 360000]"
 
       hint-rate="[0, 1]"
-      failure-rate="[0.001, 0.35]"
-      failure-rate-2="[0.001, 0.35]"
+      failure-rate="[0, 0.25]"
+      failure-rate-2="[0, 0.1]"
 
-      delay-scale="[0.8, 1.5]"
-      round-delay="[10000, 120000]"
+      delay-scale="[0.8, 1.25]"
+      round-delay="[5000, 60000]"
       failure-delay-1="[4000, 16000]"
       failure-delay-2="[4000, 16000]"
-      hint-delay="[4000, 10000]"
+      hint-delay-1="[4000, 10000]"
       hint-delay-2="[4000, 10000]"
       hint-delay-3="[3000, 5000]">
       <span part="centered-waiting-text">
@@ -248,7 +248,7 @@
       <mwc-icon-button slot="primaryAction" dialogAction="close" icon="clear"></mwc-icon-button>
     </mwc-dialog>
 
-    <mwc-dialog id="keyboard" heading="Keyboard Shortcuts">
+    <mwc-dialog id="keyboard" heading="Keyboard Shortcuts" hideActions>
       <mwc-list noninteractive>
         <mwc-list-item hasMeta>
           Hightlight the next card
@@ -283,11 +283,6 @@
           <span slot="meta">?</span>
         </mwc-list-item>
       </mwc-list>
-      <mwc-icon-button
-        slot="primaryAction"
-        dialogAction="close"
-        icon="done"
-      ></mwc-icon-button>
     </mwc-dialog>
 
     <mwc-dialog id="help" heading="Welcome to Sets by Mo">
