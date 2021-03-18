@@ -9,8 +9,8 @@ import { foreverStrings } from '@mothepro/emojis'
 import { MockPeer } from '@mothepro/fancy-p2p'
 import { Emitter } from 'fancy-emitter'
 import { Status, random } from './util.js'
-import { milliseconds } from '../src/helper.js'
-import { ANIMATION_DURATION } from '../src/card.js'
+import { milliseconds } from '../../src/helper.js'
+import { ANIMATION_DURATION } from '../../src/card.js'
 
 type Tuple<T = number> = [T, T]
 

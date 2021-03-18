@@ -2,16 +2,16 @@ import type { Dialog } from '@material/mwc-dialog'
 import type { IconButton } from '@material/mwc-icon-button'
 import type { ThemeEvent } from '@mothepro/theme-toggle'
 import type LitP2P from 'lit-p2p'
-import type P2PSets from './p2p-sets.js'
-import { log, BeforeInstallPromptEvent } from './util.js'
+import type P2PSets from './src/p2p-sets.js'
+import { log, BeforeInstallPromptEvent } from './src/util.js'
 import { milliseconds } from '../src/helper.js'
-import './astroturf.js'
+import './src/astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
 import '@mothepro/theme-toggle' // <theme-toggle>
 import '@material/mwc-dialog'   // <mwc-dialog>
 import '@material/mwc-menu'     // <mwc-menu>
-import './p2p-sets.js'          // <p2p-sets>
+import './src/p2p-sets.js'      // <p2p-sets>
 
 const // Elements in index.html
   litP2pElement = document.querySelector('lit-p2p')! as LitP2P,

@@ -1,16 +1,16 @@
 import type { Peer } from '@mothepro/fancy-p2p'
-import type LitSets from '../index.js'
-import type { TakeEvent } from '../index.js'
+import type LitSets from '../../index.js'
+import type { TakeEvent } from '../../index.js'
 import type LitClock from '@mothepro/lit-clock'
 import { LitElement, customElement, html, css, internalProperty, PropertyValues, property, query } from 'lit-element'
 import Game, { Player, Details, Card, CardSet } from 'sets-game-engine'
-import { milliseconds } from '../src/helper.js'
+import { milliseconds } from '../../src/helper.js'
 import { getNeededCard, linear, Status } from './util.js'
 
 import 'lit-confetti'         // <lit-confetti>
 import '@mothepro/lit-chart'  // <lit-chart>
 import '@mothepro/lit-clock'  // <lit-chart>
-import '../index.js'          // <lit-sets>
+import '../../index.js'          // <lit-sets>
 
 export type StartEvent = CustomEvent<void>
 export type FinishEvent = CustomEvent<number>
