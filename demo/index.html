@@ -40,18 +40,7 @@
   <script dev-only type=module-shim src="./index.ts"></script>
 </head>
 
-<body first-visit
-  astroturf-round-delay="[10000,120000]"
-  astroturf-delay-scale="[0.8, 1.5]"
-  astroturf-failure-rate="[0.001, 0.35]"
-  astroturf-failure-delay="[4000, 16000]"
-  astroturf-hint-rate="[0, 0.5]"
-  astroturf-hint-delay="[4000, 10000]"
-  astroturf-hint-delay-3="[3000, 5000]"
-
-  astroturf-player-count="[2, 3]"
-  astroturf-player-delay="[5000, 12000]"
-  astroturf>
+<body first-visit>
   <lit-p2p
     fallback
     local-storage
@@ -191,7 +180,7 @@
         <br>
         No shame in using a hint
         <mwc-icon slot="graphic" style="vertical-align: middle;">lightbulb</mwc-icon>
-        to find a set!
+        to help finding a set
       </div>
       <div slot="game-over" class="easy-mode">
         Ready for a challenge?
@@ -205,31 +194,46 @@
       </div>
       <div slot="pre-tip-text" class="corner-ribbon" style="z-index: -1">Tip</div>
       <span slot="pre-tip-text">The selected cards have</span>
-      <div slot="post-tip-text">Meaning, to complete the set, you need to find &amp; select</div>
+      <div slot="post-tip-text">To complete the set, you need to find &amp; select</div>
     </p2p-sets>
     
-    <mwc-list hidden rootTabbable slot="p2p-alone" class="p2p-lobby client-list" multi></mwc-list>
-    <mwc-fab
-      icon="done"
-      label="Make Group"
-      slot="p2p-alone"
-      selected="0"
-      class="make-group p2p-lobby"
-    ></mwc-fab>
+    <!-- Remove astroturfing by removing this element and keeping the children (add 'p2p-lobby' class)-->
+    <p2p-astroturf
+      slot="p2p-alone" 
+      class="p2p-lobby"
 
-    <span slot="p2p-alone" class="astroturf-default p2p-lobby centered-text" style="line-height: 3em">
-      Waiting for players to join&hellip;
-      <br />
-      Invite your friends
-      <mwc-icon-button
-        toggle-hidden="share"
-        icon="share"
-        label="Share Sets by Mo"
-        title="Share Sets by Mo"
-      ></mwc-icon-button>
-    </span>
-    <div slot="p2p-alone" class="astroturf-default p2p-lobby centered loading"><div></div><div></div></div>
+      player-names='["Max ⭐️", "🐯boy"]'
+      player-name-chance="0.1"
+      player-max="7"
+      player-add-initial-scale="2"
+      player-add-delay="[5000, 15000]"
+      player-remove-delay="[20000, 360000]"
 
+      hint-rate="[0, 1]"
+      failure-rate="[0.001, 0.35]"
+      failure-rate-2="[0.001, 0.35]"
+
+      delay-scale="[0.8, 1.5]"
+      round-delay="[10000, 120000]"
+      failure-delay-1="[4000, 16000]"
+      failure-delay-2="[4000, 16000]"
+      hint-delay="[4000, 10000]"
+      hint-delay-2="[4000, 10000]"
+      hint-delay-3="[3000, 5000]">
+      <span part="centered-waiting-text">
+        Waiting for players to join&hellip;
+        <br />
+        Invite your friends
+        <mwc-icon-button
+          open-dialog="menu"
+          icon="share"
+          label="Share Sets by Mo"
+          title="Share Sets by Mo"
+        ></mwc-icon-button>
+      </span>
+      <div class="centered loading"><div></div><div></div></div>
+    </p2p-astroturf>
+    
     <mwc-dialog id="feedback">
       <iframe
         src="//docs.google.com/forms/d/e/1FAIpQLSfRwls4DV8N1DdDqfx9WMc59OIUep0sMhaY9vT_pUBC4rc-FA/viewform?embedded=true"

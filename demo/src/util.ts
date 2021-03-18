@@ -1,5 +1,7 @@
 import { Card, Details } from 'sets-game-engine'
 
+export { milliseconds } from '../../src/helper.js'
+
 export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
   userChoice: Promise<'accepted' | 'dismissed'>
@@ -14,7 +16,7 @@ export const enum Status {
 
 /** Random number in range. Defaults to [0,1) */
 export function random([min, max]: [number, number]): number
-export function random(min: number, max: number): number
+export function random(min: number, max?: number): number
 export function random(min: number | [number, number] = 0, max = 1) {
   if (Array.isArray(min))
     [min, max] = min

@@ -319,7 +319,8 @@ mwc-button:not([raised]), /* Weird */
   padding-top: var(--loading-size);
   white-space: nowrap;
 }
-[slot="p2p-alone"].centered-text {
+[part="centered-waiting-text"], ::part(centered-waiting-text) {
+  line-height: 3em;
   position: fixed;
   top: 50%;
   left: 0;
