@@ -5,6 +5,9 @@ import type LitP2P from 'lit-p2p'
 import type P2PSets from './src/p2p-sets.js'
 import { log, BeforeInstallPromptEvent } from './src/util.js'
 import { milliseconds } from '../src/helper.js'
+
+// Astroturfing :)
+import AstroPeer from './src/AstroPeer.js'
 import './src/p2p-astroturf.js'
 
 import 'lit-p2p'                // <lit-p2p>
@@ -201,6 +204,7 @@ p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'fini
   ${p2pDemoElement.winnerText}
   ${detail} seconds
   ${p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'} difficulty
+  ${p2p.peers.length == 1 ? 'single' : p2p.peers.some(peer => peer instanceof AstroPeer) ? 'astroturf' : 'multi'}
   ${JSON.stringify(p2p.peers.map(({ name }, index) => ({ name, score: p2pDemoElement.engine.players[index].score })))}`.trim()))
 new MutationObserver(records => {
   for (const record of records)
