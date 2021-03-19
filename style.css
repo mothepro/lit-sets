@@ -112,6 +112,19 @@
     --sets-shape-size: 4.5em;
     --sets-shape-spacing: 36px 12px;
   }
+
+  /* Too many cards, shrink them a bit */
+  p2p-sets[card-count="15"],
+  p2p-sets[card-count="16"],
+  p2p-sets[card-count="17"],
+  p2p-sets[card-count="18"],
+  p2p-sets[card-count="19"],
+  p2p-sets[card-count="20"],
+  p2p-sets[card-count="21"] {
+    --sets-gap: 2em;
+    --sets-shape-size: 4em;
+    --sets-shape-spacing: 18px 12px;
+  }
 }
 
 @font-face {
