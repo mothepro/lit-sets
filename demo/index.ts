@@ -200,12 +200,18 @@ p2pDemoElement.addEventListener('game-difficulty', () => log('game', 'difficulty
 p2pDemoElement.addEventListener('game-hint', ({ detail }) => log('game', 'hint', detail.toString()))
 p2pDemoElement.addEventListener('game-rearrange', () => log('game', 'rearrange'))
 p2pDemoElement.addEventListener('game-take', ({ detail }) => log('game', 'take', detail.toString()))
-p2pDemoElement.addEventListener('game-finish', ({ detail }) => log('game', 'finish', `
-  ${p2pDemoElement.winnerText}
-  ${detail} seconds
-  ${p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard'} difficulty
-  ${p2p.peers.length == 1 ? 'single' : p2p.peers.some(peer => peer instanceof AstroPeer) ? 'astroturf' : 'multi'}
-  ${JSON.stringify(p2p.peers.map(({ name }, index) => ({ name, score: p2pDemoElement.engine.players[index].score })))}`.trim()))
+p2pDemoElement.addEventListener('game-finish', ({ detail }) => {
+  const labels = {
+    winner: p2pDemoElement.winnerText,
+    time: detail,
+    difficulty: p2pDemoElement.hasAttribute('easy-mode') ? 'easy' : 'standard',
+    players: p2p.peers.length == 1 ? 'single' : p2p.peers.some(peer => peer instanceof AstroPeer) ? 'astroturf' : 'multi',
+    scores: p2p.peers.map(({ name }, index) => ({ name, score: p2pDemoElement.engine.players[index].score })),
+  }
+  for (const [key, value] of Object.entries(labels))
+    log('game', `finish-${key}`, typeof value == 'string' ? value : JSON.stringify(value, null, 2))
+  log('game', 'finish', JSON.stringify(labels, null, 2))
+})
 new MutationObserver(records => {
   for (const record of records)
     log('game', record.attributeName!)
@@ -218,4 +224,4 @@ new MutationObserver(records => {
 addEventListener('p2p-astroturf', () => log(
   'astroturf',
   `${p2p.peers[0].name} with ${p2p.peers.length - 1} CPUs`,
-  JSON.stringify(p2p.peers.filter(peer => !peer.isYou))))
+  JSON.stringify(p2p.peers.filter(peer => !peer.isYou), null, 2)))
