@@ -469,6 +469,10 @@ mwc-dialog iframe {
 }
 
 /*** Helpers ***/
+.fixed {
+  position: fixed !important;
+}
+
 .next-to-lobby {
   display: inline-block;
   line-height: 36px;

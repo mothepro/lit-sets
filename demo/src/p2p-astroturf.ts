@@ -8,10 +8,7 @@ import { MockPeer } from '@mothepro/fancy-p2p'
 import { random, milliseconds } from './util.js'
 import AstroPeer, { Tuple } from './AstroPeer.js'
 
-const
-  litP2pElement = document.querySelector('lit-p2p')! as litP2P,
-  p2pDemoElemeent = document.querySelector('p2p-sets')! as P2PSets
-
+const litP2pElement = document.querySelector('lit-p2p')! as litP2P
 
 @customElement('p2p-astroturf')
 export default class extends LitElement {
@@ -115,7 +112,7 @@ export default class extends LitElement {
 
     for (const index of this.selected)
       peers.push(new AstroPeer(
-        p2pDemoElemeent,
+        document.querySelector('p2p-sets')! as P2PSets,
         this.players[index],
         {
           failure: random(this.failureRate),
