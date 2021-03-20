@@ -1,4 +1,6 @@
-import { Card, Details } from 'sets-game-engine'
+// git update-index --skip-worktree demo/src/util.ts
+import { Card } from 'sets-game-engine'
+import { Details } from '../../doNotStage.js'
 
 export { milliseconds } from '../../src/helper.js'
 
