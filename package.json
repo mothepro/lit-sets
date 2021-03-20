@@ -32,7 +32,7 @@
     "html:dev:shim": "replace \"dev-only type=\" \"dev-only type=dev-only-\" demo/index.html",
     "html:prod:real": "replace \"prod-only type=prod-only-\" \"prod-only type=\" demo/index.html",
     "html:prod:shim": "replace \"prod-only type=\" \"prod-only type=prod-only-\" demo/index.html",
-    "predeploy": "npm run html:dev:shim && npm run html:prod:real && npm run html:prod:signaling && npm run build",
+    "predeploy": "npm run html:dev:shim && npm run html:prod:real && npm run html:prod:signaling",
     "postdeploy": "npm run html:dev:real && npm run html:prod:shim && npm run html:dev:signaling",
     "build:npm": "tsc",
     "build:esm": "tsc -p tsconfig.esm.json",
