@@ -9,6 +9,7 @@ interface FetchEvent extends InstallEvent {
   respondWith(promise?: Promise<Response | void> | Response): void
 }
 
+// Build cache
 async function installer(event: InstallEvent) {
   const cache = await caches.open(version),
     images = [
@@ -24,15 +25,20 @@ async function installer(event: InstallEvent) {
   return cache.addAll(images)
 }
 
+// Read cache
 async function fetcher(event: FetchEvent) {
   const cache = await caches.open(version)
   let response = await cache.match(event.request)
   if (response?.ok)
     event.waitUntil(cache.add(event.request))
   else {
-    response = await fetch(event.request)
-    if (response.ok)
-      cache.put(event.request, response.clone())
+    try {
+      response = await fetch(event.request)
+      if (response.ok)
+        cache.put(event.request, response.clone())
+    } catch {
+      console.error(`Can not fetch ${event.request}`)
+    }
   }
   return response
 }
